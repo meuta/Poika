@@ -8,9 +8,25 @@
     android:padding="24dp">
 
     <androidx.media3.ui.PlayerView
-        android:id="@+id/playerView"
+        android:id="@+id/playerView1"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"
+        />
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"
+        />
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView3"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_marginBottom="24dp"
         android:layout_gravity="center"
         />
@@ -21,6 +37,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/play"/>
+
+    <Button
+        android:id="@+id/pauseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pause"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/stopButton"

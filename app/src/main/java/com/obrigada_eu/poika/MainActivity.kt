@@ -6,7 +6,6 @@ import androidx.activity.viewModels
 import com.obrigada_eu.poika.databinding.ActivityMainBinding
 import com.obrigada_eu.poika.ui.player.PlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.core.net.toUri
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -20,17 +19,19 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.playerView.player = playerViewModel.player
+        binding.playerView1.player = playerViewModel.players[0]
+        binding.playerView2.player = playerViewModel.players[1]
+        binding.playerView3.player = playerViewModel.players[2]
 
-        val audioUri = "android.resource://$packageName/raw/minus".toUri()
+        val audioUri1 = "android.resource://$packageName/raw/minus"
+        val audioUri2 = "android.resource://$packageName/raw/soprano"
+        val audioUri3 = "android.resource://$packageName/raw/alto"
 
-        binding.playButton.setOnClickListener {
-            playerViewModel.play(audioUri)
-        }
+        playerViewModel.loadTracks(audioUri1, audioUri2, audioUri3)
 
-        binding.stopButton.setOnClickListener {
-            playerViewModel.stop()
-        }
+        binding.playButton.setOnClickListener { playerViewModel.play() }
+        binding.pauseButton.setOnClickListener { playerViewModel.pause() }
+        binding.stopButton.setOnClickListener { playerViewModel.stop() }
     }
 
     override fun onStop() {

@@ -1,6 +1,5 @@
 package com.obrigada_eu.poika.ui.player
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.obrigada_eu.poika.player.AudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,19 +11,13 @@ class PlayerViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    val player = audioController.getPlayer()
+    val players = audioController.getPlayers()
 
-    fun play(uri: Uri) {
-        audioController.play(uri)
-    }
+    fun loadTracks(uri1: String, uri2: String, uri3: String) = audioController.loadTracks(uri1, uri2, uri3)
 
-    fun pause() {
-        audioController.pause()
-    }
-
-    fun stop() {
-        audioController.stop()
-    }
+    fun play() = audioController.play()
+    fun pause() = audioController.pause()
+    fun stop() = audioController.stop()
 
     override fun onCleared() {
         super.onCleared()
