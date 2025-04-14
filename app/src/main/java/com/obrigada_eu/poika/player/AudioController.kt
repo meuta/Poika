@@ -48,4 +48,10 @@ class AudioController @Inject constructor(
     }
 
     fun getPlayers(): List<ExoPlayer> = players
+
+    fun setVolume(trackIndex: Int, volume: Float) {
+        if (trackIndex in players.indices) {
+            players[trackIndex].volume = volume.coerceIn(0f, 1f)
+        }
+    }
 }

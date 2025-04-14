@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,49 +8,67 @@
     android:orientation="vertical"
     android:padding="24dp">
 
-    <androidx.media3.ui.PlayerView
-        android:id="@+id/playerView1"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center"
-        />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="16dp">
 
-    <androidx.media3.ui.PlayerView
-        android:id="@+id/playerView2"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center"
-        />
+            <Button
+                android:id="@+id/playButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/play"
+                android:layout_marginHorizontal="8dp"
+                tools:ignore="ButtonStyle" />
 
-    <androidx.media3.ui.PlayerView
-        android:id="@+id/playerView3"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center"
-        />
+            <Button
+                android:id="@+id/pauseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pause"
+                android:layout_marginHorizontal="8dp"
+                tools:ignore="ButtonStyle" />
 
+            <Button
+                android:id="@+id/stopButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stop"
+                android:layout_marginHorizontal="8dp"
+                tools:ignore="ButtonStyle" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/playButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/play"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/pauseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pause"
-        android:layout_marginTop="16dp"/>
+            <SeekBar
+                android:id="@+id/seekBarVoice1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="100"
+                android:layout_marginVertical="16dp" />
 
-    <Button
-        android:id="@+id/stopButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/stop"
-        android:layout_marginTop="16dp"/>
+            <SeekBar
+                android:id="@+id/seekBarVoice2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="100"
+                android:layout_marginVertical="16dp" />
+
+            <SeekBar
+                android:id="@+id/seekBarMinus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="100"
+                android:layout_marginVertical="16dp" />
+
+        </LinearLayout>
+
 
 </LinearLayout>

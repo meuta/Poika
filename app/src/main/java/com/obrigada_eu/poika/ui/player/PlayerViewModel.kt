@@ -10,14 +10,16 @@ class PlayerViewModel @Inject constructor(
     private val audioController: AudioController
 ) : ViewModel() {
 
-
-    val players = audioController.getPlayers()
-
     fun loadTracks(uri1: String, uri2: String, uri3: String) = audioController.loadTracks(uri1, uri2, uri3)
 
     fun play() = audioController.play()
     fun pause() = audioController.pause()
     fun stop() = audioController.stop()
+
+    fun setVolume(trackIndex: Int, progress: Int) {
+        val volume = progress / 100f
+        audioController.setVolume(trackIndex, volume)
+    }
 
     override fun onCleared() {
         super.onCleared()
