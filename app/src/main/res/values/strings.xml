@@ -3,4 +3,8 @@
     <string name="play">Play</string>
     <string name="stop">Stop</string>
     <string name="pause">Pause</string>
+    <string name="_00_00">00:00</string>
+    <string name="alto">alto</string>
+    <string name="soprano">soprano</string>
+    <string name="minus">minus</string>
 </resources>

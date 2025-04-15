@@ -1,18 +1,47 @@
 package com.obrigada_eu.poika.player
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.obrigada_eu.poika.ui.player.ProgressStateFlow
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class AudioController @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val progressState: ProgressStateFlow
 ) {
 
     private val players: List<ExoPlayer> = List(3) {
         ExoPlayer.Builder(context).build()
+    }
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val updateProgress: Runnable = object : Runnable {
+        override fun run() {
+            updateProgress(current = minOf(getCurrentPosition(), getDuration()))
+            handler.postDelayed(this, 100)
+        }
+    }
+
+    private fun runProgress(run: Boolean) {
+        if (run) updateProgress.run() else handler.removeCallbacks(updateProgress)
+    }
+
+    private fun updateProgress(current: Long = 0) {
+        progressState.update(progressState.value().copy(current = current))
+    }
+
+    private fun updateProgressFinish() {
+        progressState.update(progressState.value().copy(isFinished = true))
+    }
+
+    private fun updateDuration(duration: Long?) {
+        duration?.let { progressState.update(progressState.value().copy(duration = it)) }
     }
 
     fun loadTracks(uri1: String, uri2: String, uri3: String) {
@@ -23,24 +52,38 @@ class AudioController @Inject constructor(
                 prepare()
             }
         }
+        players[0].addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(state: Int) {
+                if (state == Player.STATE_READY) {
+                    val durationMs = players[0].duration
+                    updateDuration(durationMs)
+                }
+                if (state == Player.STATE_ENDED) {
+                    stop()
+                    updateProgressFinish()
+                }
+            }
+        })
     }
+
 
     fun play() {
         players.forEach {
             if (it.playbackState == Player.STATE_IDLE) { it.prepare() }
             it.playWhenReady = true
+            runProgress(true)
         }
     }
 
     fun pause() {
         players.forEach { it.playWhenReady = false }
+        runProgress(false)
     }
 
     fun stop() {
-        players.forEach {
-            it.stop()
-            it.seekTo(0)
-        }
+        players.forEach { it.stop() }
+        seekToAll(0)
+        runProgress(false)
     }
 
     fun release() {
@@ -53,5 +96,24 @@ class AudioController @Inject constructor(
         if (trackIndex in players.indices) {
             players[trackIndex].volume = volume.coerceIn(0f, 1f)
         }
+    }
+
+
+    fun seekToAll(positionMs: Long) {
+        players.forEach { it.seekTo(positionMs) }
+        updateProgress(current = positionMs)
+    }
+
+    fun getCurrentPosition(): Long {
+        return players.firstOrNull()?.currentPosition ?: 0L
+    }
+
+    fun getDuration(): Long {
+        return players.firstOrNull()?.duration ?: 0L
+    }
+
+
+    companion object {
+        private const val TAG = "AudioController"
     }
 }
