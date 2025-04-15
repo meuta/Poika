@@ -21,7 +21,8 @@
             android:text="Moby - Natural Blues"
             tools:ignore="HardcodedText"
             android:layout_margin="32dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="16sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,7 +39,8 @@
                 android:text="@string/_00_00"
                 android:textIsSelectable="true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="16sp"/>
 
 
             <TextView
@@ -51,7 +53,8 @@
                 android:text="@string/_00_00"
                 android:textIsSelectable="true"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <SeekBar
@@ -60,7 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="16dp"
             android:max="100"
-            android:progress="0" />
+            android:progress="0"
+            android:thumb="@drawable/controller_thumb"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -104,15 +108,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/soprano" />
+                android:text="@string/soprano"
+                android:maxLines="1"
+                android:textSize="16sp"/>
 
             <SeekBar
                 android:id="@+id/seekBarVoice1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="4"
                 android:max="100"
-                android:progress="100" />
+                android:progress="100"
+                android:thumb="@drawable/volume_thumb"/>
         </LinearLayout>
 
         <LinearLayout
@@ -125,15 +132,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/alto" />
+                android:text="@string/alto"
+                android:maxLines="1"
+                android:textSize="16sp"/>
 
             <SeekBar
                 android:id="@+id/seekBarVoice2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="4"
                 android:max="100"
-                android:progress="100" />
+                android:progress="100"
+                android:thumb="@drawable/volume_thumb"/>
         </LinearLayout>
 
 
@@ -147,15 +157,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/minus" />
+                android:text="@string/minus"
+                android:maxLines="1"
+                android:textSize="16sp"/>
 
             <SeekBar
                 android:id="@+id/seekBarMinus"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="4"
                 android:max="100"
-                android:progress="100" />
+                android:progress="100"
+                android:thumb="@drawable/volume_thumb"/>
         </LinearLayout>
 
 
