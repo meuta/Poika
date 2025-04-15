@@ -23,9 +23,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val audioUri1 = "android.resource://$packageName/raw/minus"
-        val audioUri2 = "android.resource://$packageName/raw/soprano"
-        val audioUri3 = "android.resource://$packageName/raw/alto"
+        val audioUri1 = "android.resource://$packageName/raw/soprano"
+        val audioUri2 = "android.resource://$packageName/raw/alto"
+        val audioUri3 = "android.resource://$packageName/raw/minus"
 
         if (savedInstanceState == null) playerViewModel.loadTracks(audioUri1, audioUri2, audioUri3)
 
