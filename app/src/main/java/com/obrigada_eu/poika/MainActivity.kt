@@ -2,13 +2,18 @@ package com.obrigada_eu.poika
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.viewModels
+import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.obrigada_eu.poika.databinding.ActivityMainBinding
+import com.obrigada_eu.poika.ui.ListDialog
 import com.obrigada_eu.poika.ui.player.PlayerViewModel
 import com.obrigada_eu.poika.ui.player.StringFormatter
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,41 +34,81 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val audioUri1 = "android.resource://$packageName/raw/soprano"
-        val audioUri2 = "android.resource://$packageName/raw/alto"
-        val audioUri3 = "android.resource://$packageName/raw/minus"
-
-        if (savedInstanceState == null) playerViewModel.loadTracks(audioUri1, audioUri2, audioUri3)
+        setSupportActionBar(binding.mainToolbar)
+        addMenuProvider(menuProvider)
 
         binding.playButton.setOnClickListener { playerViewModel.play() }
         binding.pauseButton.setOnClickListener { playerViewModel.pause() }
         binding.stopButton.setOnClickListener { playerViewModel.stop() }
 
         setupVolumeSeekbars()
-        setupControllerSeekbar()
+        setupPlaybackSeekbar()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 playerViewModel.progressFlow.collect {
                     with(binding) {
                         if (!isUserSeeking) {
-                            with(seekBarController) { post { progress = it.currentPositionSec.toInt() } }
+                            with(playbackSeekbar) { post { progress = it.currentPositionSec.toInt() } }
                         }
-                        controllerTvCurrentTime.text = it.currentPositionString
-                        controllerTvTotalTime.text = it.durationString
-                        seekBarController.max = it.durationSec.toInt()
+                        currentPositionText.text = it.currentPositionString
+                        trackDurationText.text = it.durationString
+                        playbackSeekbar.max = it.durationSec.toInt()
                     }
                 }
             }
         }
     }
 
-    private fun setupControllerSeekbar() {
-        binding.seekBarController.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+    private val menuProvider = object : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.main_activity_menu, menu)
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            return when (menuItem.itemId) {
+
+                R.id.action_choose_song -> {
+                    showChooseSongDialog()
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
+
+    private fun showChooseSongDialog() {
+        ListDialog(
+            getString(R.string.choose_song),
+            listOf("Moby - Natural Blues", "Muse - Uprising", "Radiohead - Creep")
+        ) {
+            when (it) {
+                "Moby - Natural Blues" -> playerViewModel.loadTracks(
+                    "android.resource://$packageName/raw/natural_blues_soprano",
+                    "android.resource://$packageName/raw/natural_blues_alto",
+                    "android.resource://$packageName/raw/natural_blues_minus"
+                )
+                "Muse - Uprising" -> playerViewModel.loadTracks(
+                    "android.resource://$packageName/raw/uprising_soprano",
+                    "android.resource://$packageName/raw/uprising_alto",
+                    "android.resource://$packageName/raw/uprising_minus"
+                )
+                "Radiohead - Creep" -> playerViewModel.loadTracks(
+                    "android.resource://$packageName/raw/creep_soprano",
+                    "android.resource://$packageName/raw/creep_alto",
+                    "android.resource://$packageName/raw/creep_minus"
+                )
+            }
+            binding.songTitleText.text = it
+        }.show(this)
+    }
+
+    private fun setupPlaybackSeekbar() {
+        binding.playbackSeekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    binding.controllerTvCurrentTime.text =
+                    binding.currentPositionText.text =
                         StringFormatter().formatSecToString(progress)
                 }
             }
@@ -90,7 +135,7 @@ class MainActivity : AppCompatActivity() {
 
         with(binding) {
             seekBarVolumeList = listOf(
-                seekBarVoice1, seekBarVoice2, seekBarMinus
+                voiceOneSeekbar, voiceTwoSeekbar, minusSeekbar
             ).apply { forEach { it.setOnSeekBarChangeListener(seekVolumeAdapter) } }
         }
     }

@@ -15,6 +15,8 @@ class AudioController @Inject constructor(
     private val progressState: ProgressStateFlow
 ) {
 
+    private var playerIsReady = false
+
     private val players: List<ExoPlayer> = List(3) {
         ExoPlayer.Builder(context).build()
     }
@@ -45,6 +47,9 @@ class AudioController @Inject constructor(
     }
 
     fun loadTracks(uri1: String, uri2: String, uri3: String) {
+
+        stop()
+
         val uris = listOf(uri1, uri2, uri3)
         for (i in uris.indices) {
             players[i].apply {
@@ -57,6 +62,7 @@ class AudioController @Inject constructor(
                 if (state == Player.STATE_READY) {
                     val durationMs = players[0].duration
                     updateDuration(durationMs)
+                    playerIsReady = true
                 }
                 if (state == Player.STATE_ENDED) {
                     stop()
@@ -68,9 +74,13 @@ class AudioController @Inject constructor(
 
 
     fun play() {
-        players.forEach {
-            if (it.playbackState == Player.STATE_IDLE) { it.prepare() }
-            it.playWhenReady = true
+        if (playerIsReady) {
+            players.forEach {
+                if (it.playbackState == Player.STATE_IDLE) {
+                    it.prepare()
+                }
+                it.playWhenReady = true
+            }
             runProgress(true)
         }
     }
@@ -81,7 +91,10 @@ class AudioController @Inject constructor(
     }
 
     fun stop() {
-        players.forEach { it.stop() }
+        players.forEach {
+            it.stop()
+            it.playWhenReady = false
+        }
         seekToAll(0)
         runProgress(false)
     }

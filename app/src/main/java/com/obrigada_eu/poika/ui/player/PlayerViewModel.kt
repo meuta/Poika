@@ -1,6 +1,5 @@
 package com.obrigada_eu.poika.ui.player
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.obrigada_eu.poika.player.AudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +28,6 @@ class PlayerViewModel @Inject constructor(
 
     fun setSongProgress(progress: Int) {
         val newPosition = (progress * 1000).toLong()
-        Log.d(TAG, "setSongProgress: newPosition = $newPosition")
         audioController.seekToAll(newPosition)
     }
 
