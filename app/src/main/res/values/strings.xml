@@ -7,4 +7,6 @@
     <string name="alto">alto</string>
     <string name="soprano">soprano</string>
     <string name="minus">minus</string>
+    <string name="choose_song">Choose Song</string>
+    <string name="cancel">Cancel</string>
 </resources>
