@@ -1,1 +1,7 @@
 /build
+/debug/app-debug.apk
+/release/app-release.apk
+/release/baselineProfiles/0/app-release.dm
+/release/baselineProfiles/1/app-release.dm
+/debug/output-metadata.json
+/release/output-metadata.json

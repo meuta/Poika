@@ -1,7 +1,9 @@
 package com.obrigada_eu.poika
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -14,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.obrigada_eu.poika.databinding.ActivityMainBinding
 import com.obrigada_eu.poika.ui.ListDialog
+import com.obrigada_eu.poika.ui.Toaster
 import com.obrigada_eu.poika.ui.player.PlayerViewModel
 import com.obrigada_eu.poika.ui.player.StringFormatter
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +37,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        handleIncomingZip(intent)
+
         setSupportActionBar(binding.mainToolbar)
         addMenuProvider(menuProvider)
 
@@ -58,7 +64,37 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        observeSingleMessages()
     }
+
+    fun observeSingleMessages() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                playerViewModel.singleMessage.collect() {
+                    if (it.isNotBlank()) Toaster(it).show(this@MainActivity)
+                }
+            }
+        }
+    }
+
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIncomingZip(intent)
+    }
+
+
+    private fun handleIncomingZip(intent: Intent) {
+        if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
+            intent.data?.let { uri ->
+                playerViewModel.handleZipImport(uri)
+            } ?: run {
+                Log.e("Poika", "URI is null")
+            }
+        }
+    }
+
 
     private val menuProvider = object : MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
