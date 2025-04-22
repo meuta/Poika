@@ -4,10 +4,14 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.obrigada_eu.poika.domain.SongMetaData
+import com.obrigada_eu.poika.domain.usecase.GetAllSongsUseCase
 import com.obrigada_eu.poika.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.player.AudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,22 +23,35 @@ class PlayerViewModel @Inject constructor(
     application: Application,
     private val audioController: AudioController,
     progressState: ProgressStateFlow,
-    progressUiMapper: ProgressMapper
+    progressUiMapper: ProgressMapper,
+    private val importZipUseCase: ImportZipUseCase,
+    private val getAllSongsUseCase: GetAllSongsUseCase
 ) : AndroidViewModel(application) {
 
-    private var _singleMessage = MutableSharedFlow<String>()
-    val singleMessage: SharedFlow<String> = _singleMessage
 
-    suspend fun showMessage(message: String) {
-        _singleMessage.emit(message)
+    private val _songs = MutableStateFlow<List<SongMetaData>>(emptyList())
+    val songs: StateFlow<List<SongMetaData>> = _songs
+
+
+    private val _toastMessage = MutableSharedFlow<String>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val toastMessage: SharedFlow<String> = _toastMessage
+
+    fun showMessage(message: String) {
+        viewModelScope.launch { _toastMessage.emit(message) }
     }
 
-    private val importZipUseCase = ImportZipUseCase(application)
-
     fun handleZipImport(uri: Uri) {
-        viewModelScope.launch {
-            if (importZipUseCase(uri) == null) showMessage("Error importing a song")
-        }
+        if (importZipUseCase(uri) == null) showMessage("Error importing a song")
+    }
+
+    fun loadSongsList() {
+        val songs = getAllSongsUseCase()
+        _songs.value = getAllSongsUseCase()
+        if (songs.isEmpty()) showMessage("The song list is empty.")
     }
 
     val progressFlow: StateFlow<ProgressStateUi> = progressState.map(progressUiMapper)

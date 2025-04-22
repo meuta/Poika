@@ -1,8 +1,5 @@
 package com.obrigada_eu.poika.ui.player
 
-import javax.inject.Singleton
-
-@Singleton
 class ProgressMapper(private val stringFormatter: StringFormatter) {
 
     operator fun invoke(progressState: ProgressState): ProgressStateUi {

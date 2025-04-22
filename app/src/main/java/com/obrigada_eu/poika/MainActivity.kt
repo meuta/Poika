@@ -65,14 +65,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        observeSingleMessages()
+        observeToastMessages()
+        observeAvailableSongs()
     }
 
-    fun observeSingleMessages() {
+    fun observeToastMessages() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playerViewModel.singleMessage.collect() {
+                playerViewModel.toastMessage.collect {
                     if (it.isNotBlank()) Toaster(it).show(this@MainActivity)
+                }
+            }
+        }
+    }
+
+    fun observeAvailableSongs() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                playerViewModel.songs.collect {
+                    Log.d(TAG, "observeAvailableSongs: songs = $it")
+                    if (it.isNotEmpty()) {
+                        val songTitles = it.map { song -> "${song.artist} - ${song.title}" }
+                        showChooseSongDialog(songTitles)
+                    } else {
+                        Toaster("The song list is empty.").show(this@MainActivity)
+                    }
                 }
             }
         }
@@ -90,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             intent.data?.let { uri ->
                 playerViewModel.handleZipImport(uri)
             } ?: run {
-                Log.e("Poika", "URI is null")
+                Log.e(getString(R.string.app_name), "URI is null")
             }
         }
     }
@@ -105,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             return when (menuItem.itemId) {
 
                 R.id.action_choose_song -> {
-                    showChooseSongDialog()
+                    playerViewModel.loadSongsList()
                     true
                 }
 
@@ -114,28 +131,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showChooseSongDialog() {
+
+    private fun showChooseSongDialog(songList: List<String>) {
         ListDialog(
             getString(R.string.choose_song),
-            listOf("Moby - Natural Blues", "Muse - Uprising", "Radiohead - Creep")
+            songList
         ) {
-            when (it) {
-                "Moby - Natural Blues" -> playerViewModel.loadTracks(
-                    "android.resource://$packageName/raw/natural_blues_soprano",
-                    "android.resource://$packageName/raw/natural_blues_alto",
-                    "android.resource://$packageName/raw/natural_blues_minus"
-                )
-                "Muse - Uprising" -> playerViewModel.loadTracks(
-                    "android.resource://$packageName/raw/uprising_soprano",
-                    "android.resource://$packageName/raw/uprising_alto",
-                    "android.resource://$packageName/raw/uprising_minus"
-                )
-                "Radiohead - Creep" -> playerViewModel.loadTracks(
-                    "android.resource://$packageName/raw/creep_soprano",
-                    "android.resource://$packageName/raw/creep_alto",
-                    "android.resource://$packageName/raw/creep_minus"
-                )
-            }
+//            when (it) {
+//                "Moby - Natural Blues" -> playerViewModel.loadTracks(
+//                    "android.resource://$packageName/raw/natural_blues_soprano",
+//                    "android.resource://$packageName/raw/natural_blues_alto",
+//                    "android.resource://$packageName/raw/natural_blues_minus"
+//                )
+//                "Muse - Uprising" -> playerViewModel.loadTracks(
+//                    "android.resource://$packageName/raw/uprising_soprano",
+//                    "android.resource://$packageName/raw/uprising_alto",
+//                    "android.resource://$packageName/raw/uprising_minus"
+//                )
+//                "Radiohead - Creep" -> playerViewModel.loadTracks(
+//                    "android.resource://$packageName/raw/creep_soprano",
+//                    "android.resource://$packageName/raw/creep_alto",
+//                    "android.resource://$packageName/raw/creep_minus"
+//                )
+//            }
             binding.songTitleText.text = it
         }.show(this)
     }

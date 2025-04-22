@@ -1,6 +1,10 @@
 package com.obrigada_eu.poika.di
 
 import android.content.Context
+import com.obrigada_eu.poika.data.MetaDataParser
+import com.obrigada_eu.poika.data.SongRepository
+import com.obrigada_eu.poika.data.SongRepositoryImpl
+import com.obrigada_eu.poika.data.ZipImporter
 import com.obrigada_eu.poika.player.AudioController
 import com.obrigada_eu.poika.ui.player.ProgressMapper
 import com.obrigada_eu.poika.ui.player.ProgressStateFlow
@@ -18,15 +22,10 @@ object PlayerModule {
 
     @Provides
     @Singleton
-    fun provideProgressState(): ProgressStateFlow {
-        return ProgressStateFlow()
-    }
+    fun provideProgressState(): ProgressStateFlow = ProgressStateFlow()
 
     @Provides
-    @Singleton
-    fun provideProgressUiMapper(): ProgressMapper {
-        return ProgressMapper(StringFormatter())
-    }
+    fun provideProgressUiMapper(): ProgressMapper = ProgressMapper(StringFormatter())
 
     @Provides
     @Singleton
@@ -36,4 +35,16 @@ object PlayerModule {
     ): AudioController {
         return AudioController(context, progressStateFlow)
     }
+
+
+    @Provides
+    fun provideZipImporter(@ApplicationContext context: Context): ZipImporter =
+        ZipImporter(context, MetaDataParser())
+
+
+    @Provides
+    @Singleton
+    fun provideSongRepository(@ApplicationContext context: Context): SongRepository =
+        SongRepositoryImpl(context, MetaDataParser())
+
 }

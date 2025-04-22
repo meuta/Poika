@@ -3,14 +3,16 @@ package com.obrigada_eu.poika.data
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.google.gson.Gson
 import com.obrigada_eu.poika.domain.SongMetaData
 import java.io.File
 import java.io.FileOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
-class ZipImporter(private val context: Context) {
+class ZipImporter(
+    private val context: Context,
+    private val metadataParser: MetaDataParser
+) {
 
 
     fun importDataFromUri(uri: Uri): SongMetaData? {
@@ -23,7 +25,7 @@ class ZipImporter(private val context: Context) {
         }
 
         return try {
-            val songMetaData = parseMetadata(metaFile)
+            val songMetaData = metadataParser.parse(metaFile)
             val folderName = generateFolderNameFromMetaData(songMetaData)
             val targetDir = File(context.filesDir, "songs/$folderName")
 
@@ -67,13 +69,7 @@ class ZipImporter(private val context: Context) {
         return outputDir
     }
 
-    private fun parseMetadata(file: File): SongMetaData {
-        val json = file.readText()
-        val gson = Gson()
-        return gson.fromJson(json, SongMetaData::class.java)
-    }
-
-    fun copyFiles(from: File, to: File) {
+    private fun copyFiles(from: File, to: File) {
         if (!from.exists()) throw IllegalArgumentException("Source folder does not exist: ${from.absolutePath}")
         if (!from.isDirectory) throw IllegalArgumentException("Source is not a directory: ${from.absolutePath}")
         if (!to.exists()) to.mkdirs()
