@@ -26,7 +26,7 @@ class ZipImporter(
 
         return try {
             val songMetaData = metadataParser.parse(metaFile)
-            val folderName = generateFolderNameFromMetaData(songMetaData)
+            val folderName = songMetaData.folderName
             val targetDir = File(context.filesDir, "songs/$folderName")
 
             copyFiles(tempDir, targetDir)
@@ -38,13 +38,6 @@ class ZipImporter(
             tempDir.deleteRecursively()
         }
     }
-
-
-    private fun generateFolderNameFromMetaData(songMetaData: SongMetaData): String =
-        "${songMetaData.artist}_${songMetaData.title}"
-            .lowercase()
-            .replace(" ", "_")
-            .replace(Regex("[^a-z0-9_]"), "")
 
 
     private fun unzipToTemporaryFolder(uri: Uri): File? {

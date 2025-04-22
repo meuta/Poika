@@ -10,20 +10,27 @@ import android.view.MenuItem
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.viewModels
+import android.app.AlertDialog
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.obrigada_eu.poika.databinding.ActivityMainBinding
-import com.obrigada_eu.poika.ui.ListDialog
+import com.obrigada_eu.poika.domain.SongMetaData
+import com.obrigada_eu.poika.ui.SongMetaDataMapper
 import com.obrigada_eu.poika.ui.Toaster
+import com.obrigada_eu.poika.ui.UiEvent
 import com.obrigada_eu.poika.ui.player.PlayerViewModel
 import com.obrigada_eu.poika.ui.player.StringFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject lateinit var stringFormatter: StringFormatter
+    @Inject lateinit var metaMapper: SongMetaDataMapper
 
     private lateinit var binding: ActivityMainBinding
 
@@ -32,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var seekBarVolumeList: List<SeekBar>
 
     private var isUserSeeking = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,31 +73,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        observeToastMessages()
-        observeAvailableSongs()
+        observeUiEvents()
+        observeSongTitleText()
     }
 
-    fun observeToastMessages() {
+
+    fun observeUiEvents() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playerViewModel.toastMessage.collect {
-                    if (it.isNotBlank()) Toaster(it).show(this@MainActivity)
+                playerViewModel.uiEvent.collect { event ->
+//                    Log.d(TAG, "observeUiEvents: uiEvent = $event")
+                    when (event) {
+                        is UiEvent.ShowSongDialog -> showChooseSongDialog(event.songs)
+                        is UiEvent.ShowToast -> if (event.message.isNotBlank()) {
+                            Toaster(event.message).show(this@MainActivity)
+                        }
+                    }
                 }
             }
         }
     }
 
-    fun observeAvailableSongs() {
+    fun observeSongTitleText() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playerViewModel.songs.collect {
-                    Log.d(TAG, "observeAvailableSongs: songs = $it")
-                    if (it.isNotEmpty()) {
-                        val songTitles = it.map { song -> "${song.artist} - ${song.title}" }
-                        showChooseSongDialog(songTitles)
-                    } else {
-                        Toaster("The song list is empty.").show(this@MainActivity)
-                    }
+                playerViewModel.songTitleText.collect {
+//                    Log.d(TAG, "observeSongTitleText: songTitleText = $it")
+                    it?.let { binding.songTitleText.text = it }
                 }
             }
         }
@@ -131,39 +141,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showChooseSongDialog(songList: List<SongMetaData>) {
+        val songTitles = songList.map { song -> metaMapper.mapToSongTitle(song) }
 
-    private fun showChooseSongDialog(songList: List<String>) {
-        ListDialog(
-            getString(R.string.choose_song),
-            songList
-        ) {
-//            when (it) {
-//                "Moby - Natural Blues" -> playerViewModel.loadTracks(
-//                    "android.resource://$packageName/raw/natural_blues_soprano",
-//                    "android.resource://$packageName/raw/natural_blues_alto",
-//                    "android.resource://$packageName/raw/natural_blues_minus"
-//                )
-//                "Muse - Uprising" -> playerViewModel.loadTracks(
-//                    "android.resource://$packageName/raw/uprising_soprano",
-//                    "android.resource://$packageName/raw/uprising_alto",
-//                    "android.resource://$packageName/raw/uprising_minus"
-//                )
-//                "Radiohead - Creep" -> playerViewModel.loadTracks(
-//                    "android.resource://$packageName/raw/creep_soprano",
-//                    "android.resource://$packageName/raw/creep_alto",
-//                    "android.resource://$packageName/raw/creep_minus"
-//                )
-//            }
-            binding.songTitleText.text = it
-        }.show(this)
+        AlertDialog.Builder(this)
+            .setTitle("Choose a song")
+            .setItems(songTitles.toTypedArray()) { _, which ->
+                val selectedSong = songList[which]
+                playerViewModel.loadSong(selectedSong)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
+
 
     private fun setupPlaybackSeekbar() {
         binding.playbackSeekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    binding.currentPositionText.text =
-                        StringFormatter().formatSecToString(progress)
+                    binding.currentPositionText.text = stringFormatter.formatSecToString(progress)
                 }
             }
 

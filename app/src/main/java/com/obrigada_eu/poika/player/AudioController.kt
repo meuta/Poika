@@ -1,6 +1,7 @@
 package com.obrigada_eu.poika.player
 
 import android.content.Context
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import androidx.media3.common.MediaItem
@@ -46,21 +47,24 @@ class AudioController @Inject constructor(
         duration?.let { progressState.update(progressState.value().copy(duration = it)) }
     }
 
-    fun loadTracks(uri1: String, uri2: String, uri3: String) {
+    fun loadTracks(uri1: Uri?, uri2: Uri?, uri3: Uri?) {
 
         stop()
 
         val uris = listOf(uri1, uri2, uri3)
         for (i in uris.indices) {
             players[i].apply {
-                setMediaItem(MediaItem.fromUri(uris[i]))
-                prepare()
+                uris[i]?.let {
+                    setMediaItem(MediaItem.fromUri(it))
+                    prepare()
+                }
             }
         }
-        players[0].addListener(object : Player.Listener {
+        players.find { true }?.apply {
+            addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                 if (state == Player.STATE_READY) {
-                    val durationMs = players[0].duration
+                    val durationMs = duration
                     updateDuration(durationMs)
                     playerIsReady = true
                 }
@@ -70,6 +74,7 @@ class AudioController @Inject constructor(
                 }
             }
         })
+        }
     }
 
 

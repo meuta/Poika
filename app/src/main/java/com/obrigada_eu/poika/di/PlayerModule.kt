@@ -6,6 +6,7 @@ import com.obrigada_eu.poika.data.SongRepository
 import com.obrigada_eu.poika.data.SongRepositoryImpl
 import com.obrigada_eu.poika.data.ZipImporter
 import com.obrigada_eu.poika.player.AudioController
+import com.obrigada_eu.poika.ui.SongMetaDataMapper
 import com.obrigada_eu.poika.ui.player.ProgressMapper
 import com.obrigada_eu.poika.ui.player.ProgressStateFlow
 import com.obrigada_eu.poika.ui.player.StringFormatter
@@ -46,5 +47,11 @@ object PlayerModule {
     @Singleton
     fun provideSongRepository(@ApplicationContext context: Context): SongRepository =
         SongRepositoryImpl(context, MetaDataParser())
+
+    @Provides
+    fun provideSongMetaDataMapper(): SongMetaDataMapper = SongMetaDataMapper()
+
+    @Provides
+    fun provideStringFormatter(): StringFormatter = StringFormatter()
 
 }
