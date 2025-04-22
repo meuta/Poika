@@ -80,11 +80,6 @@ class PlayerViewModel @Inject constructor(
         audioController.seekToAll(newPosition)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        audioController.release()
-    }
-
     companion object {
         private const val TAG = "PlayerViewModel"
     }

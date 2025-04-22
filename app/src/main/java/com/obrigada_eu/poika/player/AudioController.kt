@@ -18,9 +18,7 @@ class AudioController @Inject constructor(
 
     private var playerIsReady = false
 
-    private val players: List<ExoPlayer> = List(3) {
-        ExoPlayer.Builder(context).build()
-    }
+    private val players: List<ExoPlayer> = List(3) { ExoPlayer.Builder(context).build() }
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -60,20 +58,20 @@ class AudioController @Inject constructor(
                 }
             }
         }
-        players.find { true }?.apply {
+        players.firstOrNull()?.apply {
             addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(state: Int) {
-                if (state == Player.STATE_READY) {
-                    val durationMs = duration
-                    updateDuration(durationMs)
-                    playerIsReady = true
+                override fun onPlaybackStateChanged(state: Int) {
+                    if (state == Player.STATE_READY) {
+                        val durationMs = duration
+                        updateDuration(durationMs)
+                        playerIsReady = true
+                    }
+                    if (state == Player.STATE_ENDED) {
+                        stop()
+                        updateProgressFinish()
+                    }
                 }
-                if (state == Player.STATE_ENDED) {
-                    stop()
-                    updateProgressFinish()
-                }
-            }
-        })
+            })
         }
     }
 
