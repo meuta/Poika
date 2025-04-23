@@ -77,7 +77,7 @@ class AudioController @Inject constructor(
                         playerIsReady = true
                     }
                     if (state == Player.STATE_ENDED) {
-                        stop()
+                        this@AudioController.stop()
                         updateProgressFinish()
                     }
                 }
