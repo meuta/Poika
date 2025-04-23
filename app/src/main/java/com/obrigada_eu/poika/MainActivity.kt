@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+//        Log.d(TAG, "onCreate: ")
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -58,23 +59,33 @@ class MainActivity : AppCompatActivity() {
         setupVolumeSeekbars()
         setupPlaybackSeekbar()
 
+        observePlayback()
+
+        observeUiEvents()
+        observeSongTitleText()
+    }
+
+    override fun onResume() {
+//        Log.d(TAG, "onResume: ")
+        super.onResume()
+        playerViewModel.refreshUiState()
+    }
+    
+    private fun observePlayback() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playerViewModel.progressFlow.collect {
+                playerViewModel.progressFlow.collect { playback ->
                     with(binding) {
                         if (!isUserSeeking) {
-                            with(playbackSeekbar) { post { progress = it.currentPositionSec.toInt() } }
+                            playbackSeekbar.apply { post { progress = playback.currentPositionSec.toInt() } }
                         }
-                        currentPositionText.text = it.currentPositionString
-                        trackDurationText.text = it.durationString
-                        playbackSeekbar.max = it.durationSec.toInt()
+                        currentPositionText.text = playback.currentPositionString
+                        trackDurationText.text = playback.durationString
+                        playbackSeekbar.max = playback.durationSec.toInt()
                     }
                 }
             }
         }
-
-        observeUiEvents()
-        observeSongTitleText()
     }
 
 
@@ -107,6 +118,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onNewIntent(intent: Intent) {
+//        Log.d(TAG, "onNewIntent: ")
         super.onNewIntent(intent)
         handleIncomingZip(intent)
     }
@@ -193,6 +205,7 @@ class MainActivity : AppCompatActivity() {
     private fun onUpdateSeekBarVolume(seek: SeekBar) {
         playerViewModel.setVolume(seekBarVolumeList.indexOf(seek), seek.progress)
     }
+
 
     companion object {
 

@@ -65,6 +65,11 @@ class PlayerViewModel @Inject constructor(
         setSongTitleText(songMetaDataMapper.mapToSongTitle(songMetaData))
     }
 
+    fun refreshUiState() {
+        audioController.getCurrentSong()?.let {
+            setSongTitleText(songMetaDataMapper.mapToSongTitle(it))
+        }
+    }
 
     fun play() = audioController.play()
     fun pause() = audioController.pause()

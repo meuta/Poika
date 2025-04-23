@@ -1,14 +1,16 @@
 package com.obrigada_eu.poika.player
 
 import android.content.Context
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.obrigada_eu.poika.domain.SongMetaData
 import com.obrigada_eu.poika.ui.player.ProgressStateFlow
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
 import javax.inject.Inject
 
 class AudioController @Inject constructor(
@@ -29,6 +31,8 @@ class AudioController @Inject constructor(
         }
     }
 
+    private var currentSongMetaData: SongMetaData? = null
+
     private fun runProgress(run: Boolean) {
         if (run) updateProgress.run() else handler.removeCallbacks(updateProgress)
     }
@@ -45,9 +49,15 @@ class AudioController @Inject constructor(
         duration?.let { progressState.update(progressState.value().copy(duration = it)) }
     }
 
-    fun loadTracks(uri1: Uri?, uri2: Uri?, uri3: Uri?) {
+    fun loadTracks(songMetaData: SongMetaData) {
 
         stop()
+        currentSongMetaData = songMetaData
+
+        val base = File(context.filesDir, "songs/${songMetaData.folderName}")
+        val (uri1, uri2, uri3) = listOf("Soprano", "Alto", "Minus").map { part ->
+            songMetaData.tracks.find { it.name == part }?.file?.let { File(base, it).toUri() }
+        }
 
         val uris = listOf(uri1, uri2, uri3)
         for (i in uris.indices) {
@@ -75,6 +85,7 @@ class AudioController @Inject constructor(
         }
     }
 
+    fun getCurrentSong(): SongMetaData? = currentSongMetaData
 
     fun play() {
         if (playerIsReady) {
