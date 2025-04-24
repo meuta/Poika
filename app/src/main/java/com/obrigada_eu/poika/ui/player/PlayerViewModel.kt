@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obrigada_eu.poika.domain.SongMetaData
+import com.obrigada_eu.poika.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.domain.usecase.GetAllSongsUseCase
 import com.obrigada_eu.poika.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.domain.usecase.LoadSongUseCase
@@ -27,20 +28,27 @@ class PlayerViewModel @Inject constructor(
     private val songMetaDataMapper: SongMetaDataMapper,
     private val importZipUseCase: ImportZipUseCase,
     private val getAllSongsUseCase: GetAllSongsUseCase,
-    private val loadSongUseCase: LoadSongUseCase
+    private val loadSongUseCase: LoadSongUseCase,
+    private val deleteSongUseCase: DeleteSongUseCase
 ) : ViewModel() {
-
 
     private val _uiEvent = Channel<UiEvent>(Channel.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun loadSongsList() {
+    fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
+    fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
+
+    fun showListDialog(mode: UiEvent.Mode) {
         val songs = getAllSongsUseCase()
-        if (songs.isEmpty()) showMessage("The song list is empty.") else showDialog(songs)
+        if (songs.isEmpty()) {
+            showMessage("The song list is empty.")
+        } else {
+            showListDialog(songs, mode)
+        }
     }
 
-    fun showDialog(list: List<SongMetaData>) {
-        viewModelScope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list)) }
+    fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
+        viewModelScope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
     }
 
     private val _songTitleText = MutableStateFlow<String?>(null)
@@ -85,7 +93,23 @@ class PlayerViewModel @Inject constructor(
         audioController.seekToAll(newPosition)
     }
 
+    fun deleteSong(song: SongMetaData) {
+        viewModelScope.launch {
+            val success = deleteSongUseCase(song)
+            showMessage(if (success) "Song deleted" else "Deletion error")
+        }
+    }
+
+    fun deleteSongs(songs: List<SongMetaData>) {
+        viewModelScope.launch {
+            val success = songs.map { deleteSongUseCase(it) }.contains(false).not()
+            showMessage(if (success) "Songs deleted" else "Deletion error")
+        }
+    }
+
+
     companion object {
         private const val TAG = "PlayerViewModel"
     }
 }
+

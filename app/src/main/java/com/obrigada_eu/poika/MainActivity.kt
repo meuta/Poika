@@ -10,13 +10,14 @@ import android.view.MenuItem
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.viewModels
-import android.app.AlertDialog
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.obrigada_eu.poika.databinding.ActivityMainBinding
 import com.obrigada_eu.poika.domain.SongMetaData
+import com.obrigada_eu.poika.ui.ListDialog
+import com.obrigada_eu.poika.ui.ListDialog.Companion.showDeleteConfirmationDialog
 import com.obrigada_eu.poika.ui.SongMetaDataMapper
 import com.obrigada_eu.poika.ui.Toaster
 import com.obrigada_eu.poika.ui.UiEvent
@@ -39,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var seekBarVolumeList: List<SeekBar>
 
     private var isUserSeeking = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
 //        Log.d(TAG, "onCreate: ")
@@ -95,7 +95,12 @@ class MainActivity : AppCompatActivity() {
                 playerViewModel.uiEvent.collect { event ->
 //                    Log.d(TAG, "observeUiEvents: uiEvent = $event")
                     when (event) {
-                        is UiEvent.ShowSongDialog -> showChooseSongDialog(event.songs)
+                        is UiEvent.ShowSongDialog -> {
+                            when (event.mode) {
+                                UiEvent.Mode.CHOOSE -> showChooseSongDialog(event.songs)
+                                UiEvent.Mode.DELETE -> showDeleteSongDialog(event.songs)
+                            }
+                        }
                         is UiEvent.ShowToast -> if (event.message.isNotBlank()) {
                             Toaster(event.message).show(this@MainActivity)
                         }
@@ -144,7 +149,12 @@ class MainActivity : AppCompatActivity() {
             return when (menuItem.itemId) {
 
                 R.id.action_choose_song -> {
-                    playerViewModel.loadSongsList()
+                    playerViewModel.showChooseDialog()
+                    true
+                }
+
+                R.id.action_delete_song -> {
+                    playerViewModel.showDeleteDialog()
                     true
                 }
 
@@ -153,18 +163,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showChooseSongDialog(songList: List<SongMetaData>) {
-        val songTitles = songList.map { song -> metaMapper.mapToSongTitle(song) }
 
-        AlertDialog.Builder(this)
-            .setTitle("Choose a song")
-            .setItems(songTitles.toTypedArray()) { _, which ->
-                val selectedSong = songList[which]
-                playerViewModel.loadSong(selectedSong)
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+    private fun showChooseSongDialog(songs: List<SongMetaData>) {
+        ListDialog(
+            title = getString(R.string.choose_song),
+            items = songs,
+            onConfirm = playerViewModel::loadSong
+        ).show(this)
     }
+
+    private fun showDeleteSongDialog(songs: List<SongMetaData>) {
+        ListDialog(
+            title = getString(R.string.delete_song),
+            items = songs,
+            isMultiChoice = true,
+            onConfirmMultiChoice = {
+                showDeleteConfirmationDialog(this, it) { playerViewModel.deleteSongs(it) }
+            },
+            onEmptySelection = {
+                playerViewModel.showMessage(getString(R.string.select_at_least_one))
+            }
+        ).show(this)
+    }
+
 
 
     private fun setupPlaybackSeekbar() {
