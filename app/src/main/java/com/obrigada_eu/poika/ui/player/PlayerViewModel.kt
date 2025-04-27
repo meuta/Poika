@@ -12,6 +12,7 @@ import com.obrigada_eu.poika.player.AudioController
 import com.obrigada_eu.poika.ui.SongMetaDataMapper
 import com.obrigada_eu.poika.ui.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,11 +40,13 @@ class PlayerViewModel @Inject constructor(
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
 
     fun showListDialog(mode: UiEvent.Mode) {
-        val songs = getAllSongsUseCase()
-        if (songs.isEmpty()) {
-            showMessage("The song list is empty.")
-        } else {
-            showListDialog(songs, mode)
+        viewModelScope.launch(Dispatchers.IO) {
+            val songs = getAllSongsUseCase()
+            if (songs.isEmpty()) {
+                showMessage("The song list is empty.")
+            } else {
+                showListDialog(songs, mode)
+            }
         }
     }
 
@@ -62,8 +65,12 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message)) }
     }
 
+
     fun handleZipImport(uri: Uri) {
-        showMessage(importZipUseCase(uri)?.let { "New song is available" } ?: "Error importing a song")
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = importZipUseCase(uri)
+            showMessage(result?.let { "New song is available" } ?: "Error importing a song")
+        }
     }
 
     val progressFlow: StateFlow<ProgressStateUi> = progressState.map(progressUiMapper)
