@@ -1,6 +1,7 @@
 package com.obrigada_eu.poika.di
 
 import android.content.Context
+import com.obrigada_eu.poika.data.FileResolver
 import com.obrigada_eu.poika.data.MetaDataParser
 import com.obrigada_eu.poika.data.SongRepository
 import com.obrigada_eu.poika.data.SongRepositoryImpl
@@ -54,4 +55,6 @@ object PlayerModule {
     @Provides
     fun provideStringFormatter(): StringFormatter = StringFormatter()
 
+    @Provides
+    fun provideFileResolver(): FileResolver = FileResolver()
 }

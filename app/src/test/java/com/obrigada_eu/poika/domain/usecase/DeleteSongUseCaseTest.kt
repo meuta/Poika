@@ -1,12 +1,17 @@
+@file:Suppress("IllegalIdentifier")
+
 package com.obrigada_eu.poika.domain.usecase
 
 import android.content.Context
+import com.obrigada_eu.poika.data.DeletableFile
+import com.obrigada_eu.poika.data.FileResolver
 import com.obrigada_eu.poika.domain.SongMetaData
 import com.obrigada_eu.poika.domain.TrackInfo
 import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.assertFalse
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -15,46 +20,53 @@ import java.io.File
 class DeleteSongUseCaseTest {
 
     private lateinit var context: Context
+    private lateinit var fileResolver: FileResolver
+    private lateinit var deletableFile: DeletableFile
     private lateinit var useCase: DeleteSongUseCase
 
     @Before
     fun setup() {
         context = mock()
-        useCase = DeleteSongUseCase(context)
+        fileResolver = mock()
+        deletableFile = mock()
+        useCase = DeleteSongUseCase(context, fileResolver)
     }
 
     @Test
     fun `should delete folder and return true`() {
-        // given
-        val song = SongMetaData("Artist1", "Title1", listOf(TrackInfo("123", "456")), "artist1_title1")
 
+        // Given
+        val song = someSong()
         val filesDir = mock<File>()
-        val targetFolder = mock<File>()
+        val targetFolder = mock<DeletableFile>()
 
         whenever(context.filesDir).thenReturn(filesDir)
-        whenever(filesDir.resolve("songs/${song.folderName}")).thenReturn(targetFolder)
+        whenever(fileResolver.resolveDeletable(filesDir, "songs/${song.folderName}")).thenReturn(targetFolder)
         whenever(targetFolder.deleteRecursively()).thenReturn(true)
 
-        // when
+        // When
         val result = useCase(song)
 
-        // then
+        // Then
         assertTrue(result)
         verify(targetFolder).deleteRecursively()
     }
 
     @Test
     fun `should return false if deletion fails`() {
-        val song = SongMetaData(folderName = "bad_folder", title = "", artist = "", tracks = listOf())
+        val song = someSong()
         val filesDir = mock<File>()
-        val targetFolder = mock<File>()
+        val targetFolder = mock<DeletableFile>()
 
         whenever(context.filesDir).thenReturn(filesDir)
-        whenever(filesDir.resolve("songs/${song.folderName}")).thenReturn(targetFolder)
+        whenever(fileResolver.resolveDeletable(any(), any())).thenReturn(targetFolder)
         whenever(targetFolder.deleteRecursively()).thenReturn(false)
 
         val result = useCase(song)
 
         assertFalse(result)
     }
+
+    private fun someSong() = SongMetaData("Artist1", "Title1", listOf(TrackInfo("123", "456")), "artist1_title1")
+
 }
