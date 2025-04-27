@@ -1,3 +1,4 @@
+@file:Suppress("IllegalIdentifier")
 package com.obrigada_eu.poika.domain.usecase
 
 import com.obrigada_eu.poika.domain.SongMetaData
