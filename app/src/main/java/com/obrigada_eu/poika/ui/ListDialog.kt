@@ -56,8 +56,6 @@ class ListDialog(
 
     companion object {
 
-        private const val TAG = "ListDialog"
-
         fun showDeleteConfirmationDialog(context: Context, songs: List<SongMetaData>, onConfirm: () -> Unit) {
             val songTitles = songs.map { SongMetaDataMapper().mapToSongTitle(it) }
             AlertDialog.Builder(context)

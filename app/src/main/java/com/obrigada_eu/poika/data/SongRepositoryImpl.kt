@@ -1,8 +1,8 @@
 package com.obrigada_eu.poika.data
 
 import android.content.Context
-import android.util.Log
 import com.obrigada_eu.poika.domain.SongMetaData
+import com.obrigada_eu.poika.utils.Logger
 import java.io.File
 
 class SongRepositoryImpl(
@@ -21,7 +21,7 @@ class SongRepositoryImpl(
                     try {
                         metadataParser.parse(metaFile)
                     } catch (e: Exception) {
-                        Log.e("Repository", "Can't parse ${folder.name}", e)
+                        Logger.e("Repository", "Can't parse ${folder.name}", e)
                         null
                     }
                 } else null

@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.obrigada_eu.poika.domain.usecase
 
 import android.content.Context
@@ -21,14 +19,12 @@ class DeleteSongUseCaseTest {
 
     private lateinit var context: Context
     private lateinit var fileResolver: FileResolver
-    private lateinit var deletableFile: DeletableFile
     private lateinit var useCase: DeleteSongUseCase
 
     @Before
     fun setup() {
         context = mock()
         fileResolver = mock()
-        deletableFile = mock()
         useCase = DeleteSongUseCase(context, fileResolver)
     }
 

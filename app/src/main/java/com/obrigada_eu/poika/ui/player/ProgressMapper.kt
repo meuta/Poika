@@ -16,8 +16,4 @@ class ProgressMapper(private val stringFormatter: StringFormatter) {
             durationString
         )
     }
-
-    companion object {
-        const val TAG = "PlaybackMapper"
-    }
 }

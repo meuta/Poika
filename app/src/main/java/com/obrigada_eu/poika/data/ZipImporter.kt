@@ -2,8 +2,8 @@ package com.obrigada_eu.poika.data
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.obrigada_eu.poika.domain.SongMetaData
+import com.obrigada_eu.poika.utils.Logger
 import java.io.File
 import java.io.FileOutputStream
 import java.util.zip.ZipEntry
@@ -19,7 +19,7 @@ class ZipImporter(
         val tempDir = unzipToTemporaryFolder(uri) ?: return null
         val metaFile = File(tempDir, "metadata.json")
         if (!metaFile.exists()) {
-            Log.e("FileOps", "metadata.json not found in archive")
+            Logger.e("FileOps", "metadata.json not found in archive")
             tempDir.deleteRecursively()
             return null
         }
@@ -32,7 +32,7 @@ class ZipImporter(
             copyFiles(tempDir, targetDir)
             songMetaData
         } catch (e: Exception) {
-            Log.e("FileOps", "Error during import", e)
+            Logger.e("FileOps", "Error during import", e)
             null
         } finally {
             tempDir.deleteRecursively()
@@ -77,8 +77,4 @@ class ZipImporter(
         }
     }
 
-
-    companion object {
-        private const val TAG = "ZipImporter"
-    }
 }

@@ -113,12 +113,6 @@ class AudioController @Inject constructor(
         runProgress(false)
     }
 
-    fun release() {
-        players.forEach { it.release() }
-    }
-
-    fun getPlayers(): List<ExoPlayer> = players
-
     fun setVolume(trackIndex: Int, volume: Float) {
         if (trackIndex in players.indices) {
             players[trackIndex].volume = volume.coerceIn(0f, 1f)
@@ -137,10 +131,5 @@ class AudioController @Inject constructor(
 
     fun getDuration(): Long {
         return players.firstOrNull()?.duration ?: 0L
-    }
-
-
-    companion object {
-        private const val TAG = "AudioController"
     }
 }

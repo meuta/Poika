@@ -24,7 +24,4 @@ class ProgressStateFlow {
 
     fun value() = stateFlow.value
 
-    companion object {
-        private const val TAG = "ProgressStateFlow"
-    }
 }

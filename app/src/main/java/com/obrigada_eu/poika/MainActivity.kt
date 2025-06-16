@@ -3,7 +3,6 @@ package com.obrigada_eu.poika
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -23,6 +22,7 @@ import com.obrigada_eu.poika.ui.Toaster
 import com.obrigada_eu.poika.ui.UiEvent
 import com.obrigada_eu.poika.ui.player.PlayerViewModel
 import com.obrigada_eu.poika.ui.player.StringFormatter
+import com.obrigada_eu.poika.utils.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
     private var isUserSeeking = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        Log.d(TAG, "onCreate: ")
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -66,7 +65,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-//        Log.d(TAG, "onResume: ")
         super.onResume()
         playerViewModel.refreshUiState()
     }
@@ -93,7 +91,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 playerViewModel.uiEvent.collect { event ->
-//                    Log.d(TAG, "observeUiEvents: uiEvent = $event")
                     when (event) {
                         is UiEvent.ShowSongDialog -> {
                             when (event.mode) {
@@ -114,7 +111,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 playerViewModel.songTitleText.collect {
-//                    Log.d(TAG, "observeSongTitleText: songTitleText = $it")
                     it?.let { binding.songTitleText.text = it }
                 }
             }
@@ -123,7 +119,6 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onNewIntent(intent: Intent) {
-//        Log.d(TAG, "onNewIntent: ")
         super.onNewIntent(intent)
         handleIncomingZip(intent)
     }
@@ -134,7 +129,7 @@ class MainActivity : AppCompatActivity() {
             intent.data?.let { uri ->
                 playerViewModel.handleZipImport(uri)
             } ?: run {
-                Log.e(getString(R.string.app_name), "URI is null")
+                Logger.e(getString(R.string.app_name), "URI is null")
             }
         }
     }
@@ -225,11 +220,5 @@ class MainActivity : AppCompatActivity() {
 
     private fun onUpdateSeekBarVolume(seek: SeekBar) {
         playerViewModel.setVolume(seekBarVolumeList.indexOf(seek), seek.progress)
-    }
-
-
-    companion object {
-
-        const val TAG = "MainActivity"
     }
 }

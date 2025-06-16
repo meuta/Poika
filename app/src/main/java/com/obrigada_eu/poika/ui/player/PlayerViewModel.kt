@@ -100,13 +100,6 @@ class PlayerViewModel @Inject constructor(
         audioController.seekToAll(newPosition)
     }
 
-    fun deleteSong(song: SongMetaData) {
-        viewModelScope.launch {
-            val success = deleteSongUseCase(song)
-            showMessage(if (success) "Song deleted" else "Deletion error")
-        }
-    }
-
     fun deleteSongs(songs: List<SongMetaData>) {
         viewModelScope.launch {
             val success = songs.map { deleteSongUseCase(it) }.contains(false).not()
@@ -114,9 +107,5 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-
-    companion object {
-        private const val TAG = "PlayerViewModel"
-    }
 }
 
