@@ -12,4 +12,5 @@
     <string name="ok">OK</string>
     <string name="delete_song">Delete Song</string>
     <string name="select_at_least_one">Please select at least one song or click CANCEL</string>
+    <string name="text">text</string>
 </resources>
