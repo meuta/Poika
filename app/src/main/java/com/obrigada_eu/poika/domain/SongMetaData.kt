@@ -4,6 +4,7 @@ data class SongMetaData(
     val title: String,
     val artist: String,
     val tracks: List<TrackInfo>,
+    val video: List<TrackInfo>,
     val folderName: String
 )
 

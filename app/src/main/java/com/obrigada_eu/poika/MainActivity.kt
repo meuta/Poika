@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.viewModels
+import androidx.annotation.OptIn
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +28,8 @@ import com.obrigada_eu.poika.ui.player.StringFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.view.isVisible
+import androidx.media3.common.util.UnstableApi
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -52,17 +56,47 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.mainToolbar)
         addMenuProvider(menuProvider)
 
-        binding.playButton.setOnClickListener { playerViewModel.play() }
-        binding.pauseButton.setOnClickListener { playerViewModel.pause() }
-        binding.stopButton.setOnClickListener { playerViewModel.stop() }
+        setupControlButtons()
 
         setupVolumeSeekbars()
+        setupTextVideo()
         setupPlaybackSeekbar()
 
         observePlayback()
 
         observeUiEvents()
         observeSongTitleText()
+    }
+
+    @OptIn(UnstableApi::class)
+    private fun setupTextVideo() {
+        with(binding) {
+            showTextButton1.setOnClickListener {
+                playerView1.visibility = (if (playerView1.isVisible) View.GONE else {
+//                    val player = playerViewModel.getVideoPlayers()[0]
+                    val player = playerViewModel.getPlayers()[0]
+                    val info = player.videoFormat
+                    Log.d(TAG, "setupTextVideo: player = $player")
+                    Log.d(TAG, "setupTextVideo: Format = $info")
+                    binding.playerView1.player = player
+                    View.VISIBLE
+                })
+            }
+            showTextButton2.setOnClickListener {
+                playerView2.visibility = (if (playerView2.isVisible) View.GONE else {
+//                    binding.playerView2.player = playerViewModel.getPlayers()[1]
+                    val player = playerViewModel.getPlayers()[1]
+                    binding.playerView1.player = player
+                    View.VISIBLE
+                })
+            }
+        }
+    }
+
+    private fun setupControlButtons() {
+        binding.playButton.setOnClickListener { playerViewModel.play() }
+        binding.pauseButton.setOnClickListener { playerViewModel.pause() }
+        binding.stopButton.setOnClickListener { playerViewModel.stop() }
     }
 
     override fun onResume() {

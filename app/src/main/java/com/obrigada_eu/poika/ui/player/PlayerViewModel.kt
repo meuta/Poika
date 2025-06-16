@@ -3,6 +3,7 @@ package com.obrigada_eu.poika.ui.player
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.exoplayer.ExoPlayer
 import com.obrigada_eu.poika.domain.SongMetaData
 import com.obrigada_eu.poika.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.domain.usecase.GetAllSongsUseCase
@@ -114,6 +115,14 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    fun showText(parte: String) {}
+
+    fun getPlayers(): List<ExoPlayer> {
+        return audioController.getPlayers()
+    }
+//    fun getVideoPlayers(): List<ExoPlayer> {
+//        return audioController.getVideoPlayers()
+//    }
 
     companion object {
         private const val TAG = "PlayerViewModel"

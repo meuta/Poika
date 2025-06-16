@@ -14,7 +14,7 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.Material3.DynamicColors.DayNight"
-        app:title="@string/app_name"/>
+        app:title="@string/app_name" />
 
     <ScrollView
         android:id="@+id/main_scrollview"
@@ -37,12 +37,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="32dp"
-                tools:text="Song title"
+                android:gravity="center"
                 android:text="To start singing practice, please select a song from the menu\n(top right corner)"
+                android:textIsSelectable="true"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:gravity="center"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText"
+                tools:text="Song title" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -93,75 +94,122 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/playButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:text="@string/play"
-                tools:ignore="ButtonStyle" />
+                <Button
+                    android:id="@+id/playButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="@string/play"
+                    tools:ignore="ButtonStyle" />
 
-            <Button
-                android:id="@+id/pauseButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:text="@string/pause"
-                tools:ignore="ButtonStyle" />
+                <Button
+                    android:id="@+id/pauseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="@string/pause"
+                    tools:ignore="ButtonStyle" />
 
-            <Button
-                android:id="@+id/stopButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:text="@string/stop"
-                tools:ignore="ButtonStyle" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/stopButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="@string/stop"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
 
+            <androidx.media3.ui.PlayerView
+                android:id="@+id/player_view_1"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:resize_mode="fit"
+                app:use_controller="false"
+                android:visibility="gone"
+                tools:visibility="visible"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:maxLines="1"
                     android:text="@string/soprano"
+                    android:textIsSelectable="true"
                     android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/show_text_button_1"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="2"
+                    android:padding="0dp"
+                    android:text="@string/text"
+                    android:maxLines="2"
+                    android:textAllCaps="false"
+                    android:checked="true" />
 
                 <SeekBar
                     android:id="@+id/voice_one_seekbar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
+                    android:layout_weight="8"
                     android:max="100"
                     android:progress="100"
                     android:thumb="@drawable/volume_thumb" />
+
+
             </LinearLayout>
+
+            <androidx.media3.ui.PlayerView
+                android:id="@+id/player_view_2"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:resize_mode="fit"
+                app:use_controller="false"
+                android:visibility="gone"
+                tools:visibility="visible"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:maxLines="1"
                     android:text="@string/alto"
+                    android:textIsSelectable="true"
                     android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/show_text_button_2"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="2"
+                    android:padding="0dp"
+                    android:text="@string/text"
+                    android:maxLines="2"
+                    android:textAllCaps="false"
+                    android:checked="true" />
 
                 <SeekBar
                     android:id="@+id/voice_two_seekbar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
+                    android:layout_weight="8"
                     android:max="100"
                     android:progress="100"
                     android:thumb="@drawable/volume_thumb" />
@@ -171,22 +219,24 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="5"
                     android:maxLines="1"
                     android:text="@string/minus"
+                    android:textIsSelectable="true"
                     android:textSize="16sp" />
 
                 <SeekBar
                     android:id="@+id/minus_seekbar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
+                    android:layout_weight="8"
                     android:max="100"
                     android:progress="100"
                     android:thumb="@drawable/volume_thumb" />
