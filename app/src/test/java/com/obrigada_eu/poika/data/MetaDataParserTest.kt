@@ -16,7 +16,7 @@ class MetaDataParserTest {
     }
 
     @Test
-    fun `parse should correctly map json to SongMetaData`() {
+    fun `parse should correctly map json without voiceInstrument to SongMetaData`() {
         val json = """
             {
                 "title": "Creep",
@@ -44,7 +44,43 @@ class MetaDataParserTest {
             ),
             result.tracks
         )
-        assertEquals("radiohead_creep", result.folderName)
+        assertEquals("radiohead__creep", result.folderName)
+
+        tempFile.delete()
+    }
+
+    @Test
+    fun `parse should correctly map json with voiceInstrument to SongMetaData`() {
+        val json = """
+            {
+                "title": "Uprising",
+                "artist": "Muse",
+                "voiceInstrument": "piano",
+                "tracks": [
+                { "file": "uprising_soprano.mp3", "name": "Soprano" },
+                { "file": "uprising_alto.mp3", "name": "Alto" },
+                { "file": "uprising_minus.mp3", "name": "Minus" }
+                ]
+            }
+        """.trimIndent()
+
+        val tempFile = File.createTempFile("test_song", ".json")
+        tempFile.writeText(json)
+
+        val result = parser.parse(tempFile)
+
+        assertEquals("Muse", result.artist)
+        assertEquals("Uprising", result.title)
+        assertEquals("piano", result.voiceInstrument)
+        assertEquals(
+            listOf(
+                TrackInfo("uprising_soprano.mp3", "Soprano"),
+                TrackInfo("uprising_alto.mp3", "Alto"),
+                TrackInfo("uprising_minus.mp3", "Minus")
+            ),
+            result.tracks
+        )
+        assertEquals("muse__uprising__piano_version", result.folderName)
 
         tempFile.delete()
     }

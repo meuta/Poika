@@ -25,8 +25,8 @@ class GetAllSongsUseCaseTest {
     @Test
     fun `invoke should return list of SongMetaData from repository`() {
         val expected = listOf(
-            SongMetaData("Artist1", "Title1", listOf(TrackInfo("123", "456")), "artist1_title1"),
-            SongMetaData("Artist2", "Title2", listOf(TrackInfo("123", "456")), "artist2_title2")
+            SongMetaData("Artist1", "Title1", "piano", listOf(TrackInfo("123", "456")), "artist1_title1"),
+            SongMetaData("Artist2", "Title2", "guitar", listOf(TrackInfo("123", "456")), "artist2_title2")
         )
 
         whenever(repository.getAllSongsMetadata()).thenReturn(expected)

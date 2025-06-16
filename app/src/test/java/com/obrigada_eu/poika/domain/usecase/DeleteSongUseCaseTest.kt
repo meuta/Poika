@@ -67,6 +67,6 @@ class DeleteSongUseCaseTest {
         assertFalse(result)
     }
 
-    private fun someSong() = SongMetaData("Artist1", "Title1", listOf(TrackInfo("123", "456")), "artist1_title1")
+    private fun someSong() = SongMetaData("Artist1", "Title1", null, listOf(TrackInfo("123", "456")), "artist1_title1")
 
 }

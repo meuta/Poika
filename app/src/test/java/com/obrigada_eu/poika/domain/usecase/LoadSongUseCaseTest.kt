@@ -22,7 +22,7 @@ class LoadSongUseCaseTest {
 
     @Test
     fun `invoke should delegate to audioController`() {
-        val song = SongMetaData("MIKA", "Relax", listOf(TrackInfo("123", "456")), "mika_relax")
+        val song = SongMetaData("MIKA", "Relax", "voice", listOf(TrackInfo("123", "456")), "mika_relax")
 
         useCase(song)
 

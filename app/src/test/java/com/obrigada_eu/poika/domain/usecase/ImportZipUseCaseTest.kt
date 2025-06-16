@@ -25,7 +25,7 @@ class ImportZipUseCaseTest {
     @Test
     fun `invoke should return SongMetaData from importer`() {
         val uri = mock<Uri>()
-        val expected = SongMetaData("U2", "One", listOf(TrackInfo("123", "456")), "u2_one")
+        val expected = SongMetaData("U2", "One", "piano", listOf(TrackInfo("123", "456")), "u2_one")
 
         whenever(importer.importDataFromUri(uri)).thenReturn(expected)
 
