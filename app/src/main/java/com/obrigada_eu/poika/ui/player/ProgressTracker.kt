@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class ProgressStateFlow {
+class ProgressTracker {
 
     private val stateFlow: MutableStateFlow<ProgressState> = MutableStateFlow(ProgressState())
 

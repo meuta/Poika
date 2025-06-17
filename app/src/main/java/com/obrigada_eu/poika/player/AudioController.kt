@@ -8,46 +8,31 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.obrigada_eu.poika.domain.SongMetaData
-import com.obrigada_eu.poika.ui.player.ProgressStateFlow
+import com.obrigada_eu.poika.ui.player.ProgressTracker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
 
 class AudioController @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val progressState: ProgressStateFlow
+    private val progressTracker: ProgressTracker
 ) {
-
-    private var playerIsReady = false
 
     private val players: List<ExoPlayer> = List(3) { ExoPlayer.Builder(context).build() }
 
+    private var playerIsReady = false
+
+    private var currentSongMetaData: SongMetaData? = null
+
     private val handler = Handler(Looper.getMainLooper())
 
-    private val updateProgress: Runnable = object : Runnable {
+    private val progressUpdater: Runnable = object : Runnable {
         override fun run() {
-            updateProgress(current = minOf(getCurrentPosition(), getDuration()))
+            updateProgress(currentPosition = minOf(getCurrentPosition(), getDuration()))
             handler.postDelayed(this, 100)
         }
     }
 
-    private var currentSongMetaData: SongMetaData? = null
-
-    private fun runProgress(run: Boolean) {
-        if (run) updateProgress.run() else handler.removeCallbacks(updateProgress)
-    }
-
-    private fun updateProgress(current: Long = 0) {
-        progressState.update(progressState.value().copy(current = current))
-    }
-
-    private fun updateProgressFinish() {
-        progressState.update(progressState.value().copy(isFinished = true))
-    }
-
-    private fun updateDuration(duration: Long?) {
-        duration?.let { progressState.update(progressState.value().copy(duration = it)) }
-    }
 
     fun loadTracks(songMetaData: SongMetaData) {
 
@@ -85,6 +70,7 @@ class AudioController @Inject constructor(
         }
     }
 
+
     fun getCurrentSong(): SongMetaData? = currentSongMetaData
 
     fun play() {
@@ -119,17 +105,35 @@ class AudioController @Inject constructor(
         }
     }
 
-
     fun seekToAll(positionMs: Long) {
         players.forEach { it.seekTo(positionMs) }
-        updateProgress(current = positionMs)
+        updateProgress(currentPosition = positionMs)
     }
 
-    fun getCurrentPosition(): Long {
+
+    private fun getCurrentPosition(): Long {
         return players.firstOrNull()?.currentPosition ?: 0L
     }
 
-    fun getDuration(): Long {
+    private fun getDuration(): Long {
         return players.firstOrNull()?.duration ?: 0L
+    }
+
+
+    private fun runProgress(run: Boolean) {
+        if (run) progressUpdater.run() else handler.removeCallbacks(progressUpdater)
+    }
+
+    private fun updateProgress(currentPosition: Long = 0) {
+        progressTracker.update(progressTracker.value().copy(currentPosition = currentPosition))
+    }
+
+
+    private fun updateDuration(duration: Long?) {
+        duration?.let { progressTracker.update(progressTracker.value().copy(duration = it)) }
+    }
+
+    private fun updateProgressFinish() {
+        progressTracker.update(progressTracker.value().copy(isFinished = true))
     }
 }

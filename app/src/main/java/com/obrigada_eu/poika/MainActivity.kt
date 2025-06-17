@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     private fun observePlayback() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playerViewModel.progressFlow.collect { playback ->
+                playerViewModel.progressStateUi.collect { playback ->
                     with(binding) {
                         if (!isUserSeeking) {
                             playbackSeekbar.apply { post { progress = playback.currentPositionSec.toInt() } }

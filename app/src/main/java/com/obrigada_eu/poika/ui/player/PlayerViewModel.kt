@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val audioController: AudioController,
-    progressState: ProgressStateFlow,
+    progressTracker: ProgressTracker,
     progressUiMapper: ProgressMapper,
     private val songMetaDataMapper: SongMetaDataMapper,
     private val importZipUseCase: ImportZipUseCase,
@@ -35,6 +35,17 @@ class PlayerViewModel @Inject constructor(
 
     private val _uiEvent = Channel<UiEvent>(Channel.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    private val _songTitleText = MutableStateFlow<String?>(null)
+    val songTitleText: StateFlow<String?> = _songTitleText
+
+    val progressStateUi: StateFlow<ProgressStateUi> = progressTracker.map(progressUiMapper)
+
+    fun refreshUiState() {
+        audioController.getCurrentSong()?.let {
+            setSongTitleText(songMetaDataMapper.mapToSongTitle(it))
+        }
+    }
 
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
@@ -50,21 +61,17 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
+    private fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
         viewModelScope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
-    }
-
-    private val _songTitleText = MutableStateFlow<String?>(null)
-    val songTitleText: StateFlow<String?> = _songTitleText
-
-    fun setSongTitleText(title: String) {
-        _songTitleText.value = title
     }
 
     fun showMessage(message: String) {
         viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message)) }
     }
 
+    fun setSongTitleText(title: String) {
+        _songTitleText.value = title
+    }
 
     fun handleZipImport(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -73,16 +80,15 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    val progressFlow: StateFlow<ProgressStateUi> = progressState.map(progressUiMapper)
-
     fun loadSong(songMetaData: SongMetaData) {
         loadSongUseCase(songMetaData)
         setSongTitleText(songMetaDataMapper.mapToSongTitle(songMetaData))
     }
 
-    fun refreshUiState() {
-        audioController.getCurrentSong()?.let {
-            setSongTitleText(songMetaDataMapper.mapToSongTitle(it))
+    fun deleteSongs(songs: List<SongMetaData>) {
+        viewModelScope.launch {
+            val success = songs.map { deleteSongUseCase(it) }.contains(false).not()
+            showMessage(if (success) "Songs deleted" else "Deletion error")
         }
     }
 
@@ -99,13 +105,5 @@ class PlayerViewModel @Inject constructor(
         val newPosition = (progress * 1000).toLong()
         audioController.seekToAll(newPosition)
     }
-
-    fun deleteSongs(songs: List<SongMetaData>) {
-        viewModelScope.launch {
-            val success = songs.map { deleteSongUseCase(it) }.contains(false).not()
-            showMessage(if (success) "Songs deleted" else "Deletion error")
-        }
-    }
-
 }
 

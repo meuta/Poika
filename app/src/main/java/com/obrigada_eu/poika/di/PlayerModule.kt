@@ -9,7 +9,7 @@ import com.obrigada_eu.poika.data.ZipImporter
 import com.obrigada_eu.poika.player.AudioController
 import com.obrigada_eu.poika.ui.SongMetaDataMapper
 import com.obrigada_eu.poika.ui.player.ProgressMapper
-import com.obrigada_eu.poika.ui.player.ProgressStateFlow
+import com.obrigada_eu.poika.ui.player.ProgressTracker
 import com.obrigada_eu.poika.ui.player.StringFormatter
 import dagger.Module
 import dagger.Provides
@@ -24,7 +24,7 @@ object PlayerModule {
 
     @Provides
     @Singleton
-    fun provideProgressState(): ProgressStateFlow = ProgressStateFlow()
+    fun provideProgressState(): ProgressTracker = ProgressTracker()
 
     @Provides
     fun provideProgressUiMapper(): ProgressMapper = ProgressMapper(StringFormatter())
@@ -33,9 +33,9 @@ object PlayerModule {
     @Singleton
     fun provideAudioController(
         @ApplicationContext context: Context,
-        progressStateFlow: ProgressStateFlow,
+        progressTracker: ProgressTracker,
     ): AudioController {
-        return AudioController(context, progressStateFlow)
+        return AudioController(context, progressTracker)
     }
 
 
