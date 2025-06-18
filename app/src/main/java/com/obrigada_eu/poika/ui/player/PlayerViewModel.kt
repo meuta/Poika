@@ -50,6 +50,10 @@ class PlayerViewModel @Inject constructor(
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
 
+    fun showHelpDialog() {
+        viewModelScope.launch { _uiEvent.send(UiEvent.ShowHelpDialog) }
+    }
+
     fun showListDialog(mode: UiEvent.Mode) {
         viewModelScope.launch(Dispatchers.IO) {
             val songs = getAllSongsUseCase()
@@ -61,13 +65,14 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    fun showMessage(message: String) {
+        viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message)) }
+    }
+
     private fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
         viewModelScope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
     }
 
-    fun showMessage(message: String) {
-        viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message)) }
-    }
 
     fun setSongTitleText(title: String) {
         _songTitleText.value = title

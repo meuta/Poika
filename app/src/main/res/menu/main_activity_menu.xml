@@ -17,5 +17,11 @@
             android:title="@string/delete_song"
             app:showAsAction="never"/>
 
+        <item
+            android:id="@+id/menu_help"
+            android:orderInCategory="100"
+            android:title="@string/help"
+            app:showAsAction="never"/>
+
     </group>
 </menu>

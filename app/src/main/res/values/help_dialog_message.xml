@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="help_dialog_message">
+%1$s
+\n—————————————
+\n• To add a song to your study playlist, open its zip file outside the app via \"Open with\" and choose Poika.
+\n• To start practicing, select a song via the top-right menu.
+\n• Use sliders to control the volume of soprano, alto, and backing track.
+\n• To delete a song, use the same top-right menu.
+\n\n
+%2$s
+\n—————————————
+\n• Piano version: vocal parts played by piano
+\n• Voice version: vocal parts played by synthetic voices (no lyrics)
+\n(piano sounds more clearly, voices better show the duration of the notes)
+\n\n
+%3$s
+\n—————————————
+\n• If something doesn’t work — try restarting the app.
+
+    </string>
+</resources>

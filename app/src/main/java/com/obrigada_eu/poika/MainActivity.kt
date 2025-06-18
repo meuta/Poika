@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.obrigada_eu.poika.databinding.ActivityMainBinding
 import com.obrigada_eu.poika.domain.SongMetaData
+import com.obrigada_eu.poika.ui.HelpDialog
 import com.obrigada_eu.poika.ui.ListDialog
 import com.obrigada_eu.poika.ui.ListDialog.Companion.showDeleteConfirmationDialog
 import com.obrigada_eu.poika.ui.SongMetaDataMapper
@@ -101,6 +102,7 @@ class MainActivity : AppCompatActivity() {
                         is UiEvent.ShowToast -> if (event.message.isNotBlank()) {
                             Toaster(event.message).show(this@MainActivity)
                         }
+                        is UiEvent.ShowHelpDialog -> showHelpDialog()
                     }
                 }
             }
@@ -153,6 +155,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.menu_help -> {
+                    playerViewModel.showHelpDialog()
+                    true
+                }
+
                 else -> false
             }
         }
@@ -181,7 +188,9 @@ class MainActivity : AppCompatActivity() {
         ).show(this)
     }
 
-
+    private fun showHelpDialog() {
+        HelpDialog.show(this)
+    }
 
     private fun setupPlaybackSeekbar() {
         binding.playbackSeekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
