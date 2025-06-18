@@ -17,7 +17,7 @@ it makes rehearsals more accessible and personalized.
 
 ## 📥 How to Use
 
-1. **Add a song to the app's tracklist**  
+1. **Add a song to the app's songlist**  
    Open its `.zip` file outside the app via "Open with" → select **Poika**. 
    The app will import the song automatically.
 
@@ -32,7 +32,9 @@ it makes rehearsals more accessible and personalized.
 
 ---
 
-## 🎼 Song Versions
+## 🎼 Song Versions[Radiohead_PianoVersion_Impl.zip](../../Materiais/Android_Kotlin/PoikaText/zips/Radiohead_PianoVersion_Impl.zip)
+[Moby_VoiceVersion_Impl.zip](../../Materiais/Android_Kotlin/PoikaText/zips/Moby_VoiceVe[Radiohead_PianoVersion_Impl.zip](../../Materiais/Android_Kotlin/PoikaText/zips/Radiohead_PianoVersion_Impl.zip)
+[Moby_VoiceVersion_Impl.zip](../../Materiais/Android_Kotlin/PoikaText/zips/Moby_VoiceVersion_Impl.zip)rsion_Impl.zip)
 
 - **Piano version**  
   Vocal parts are played by piano - great for clean pitch and rhythm.

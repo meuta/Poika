@@ -3,7 +3,7 @@
     <string name="help_dialog_message">
 %1$s
 \n—————————————
-\n• To add a song to the app\'s tracklist, open its .zip file outside the app via \"Open with\" and choose Poika.
+\n• To add a song to the app\'s songlist, open its .zip file outside the app via \"Open with\" and choose Poika.
 \n• To start practicing, select a song via the top-right menu.
 \n• Use sliders to control the volume of soprano, alto, and backing track.
 \n• To delete a song, use the same top-right menu.
