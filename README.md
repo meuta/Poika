@@ -17,8 +17,8 @@ it makes rehearsals more accessible and personalized.
 
 ## 📥 How to Use
 
-1. **Add a song to the app's playlist**  
-   Open its `.zip` file outside the app with "Open with" → select **Poika**. 
+1. **Add a song to the app's tracklist**  
+   Open its `.zip` file outside the app via "Open with" → select **Poika**. 
    The app will import the song automatically.
 
 2. **Start practicing**  
