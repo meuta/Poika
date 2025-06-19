@@ -6,7 +6,7 @@ it makes rehearsals more accessible and personalized.
 
 ---
 
-## 🎵 Features
+## Features
 
 - Practice **soprano** and **alto** parts separately or together
 - Control volume of each track: **soprano**, **alto**, and **backing**
@@ -15,7 +15,7 @@ it makes rehearsals more accessible and personalized.
 
 ---
 
-## 📥 How to Use
+## How to Use
 
 1. **Add a song to the app's songlist**  
    Open its `.zip` file outside the app via "Open with" → select **Poika**. 
@@ -32,9 +32,18 @@ it makes rehearsals more accessible and personalized.
 
 ---
 
-## 🎼 Song Versions[Radiohead_PianoVersion_Impl.zip](../../Materiais/Android_Kotlin/PoikaText/zips/Radiohead_PianoVersion_Impl.zip)
-[Moby_VoiceVersion_Impl.zip](../../Materiais/Android_Kotlin/PoikaText/zips/Moby_VoiceVe[Radiohead_PianoVersion_Impl.zip](../../Materiais/Android_Kotlin/PoikaText/zips/Radiohead_PianoVersion_Impl.zip)
-[Moby_VoiceVersion_Impl.zip](../../Materiais/Android_Kotlin/PoikaText/zips/Moby_VoiceVersion_Impl.zip)rsion_Impl.zip)
+## Current Status & Future Plans
+
+Currently, Poika is a tool created to support the choir in which I sing.  
+All musical content (audio files, arrangements, metadata) is prepared manually,  
+taking into account the repertoire and needs of the participants.
+
+Future plans include adding tutorials and tools that will allow other users  
+to create songs for Poika and use the app in their musical practice.
+
+---
+
+## Song Versions
 
 - **Piano version**  
   Vocal parts are played by piano - great for clean pitch and rhythm.
@@ -44,14 +53,14 @@ it makes rehearsals more accessible and personalized.
 
 ---
 
-## 🛠 Troubleshooting
+## Troubleshooting
 
 - If something doesn’t work, **try restarting the app**.
 - Make sure the `.zip` file follows the expected format.
 
 ---
 
-## 📁 Development
+## Development
 
 This is a personal project created for a local choir community with the goals of:
 - improving development skills,
@@ -65,14 +74,14 @@ Built with:
 
 ---
 
-## ❤️ Credits
+## Credits
 
 Created with care for the members of a beloved choir.  
 Thanks to everyone who supported and tested the app.
 
 ---
 
-## 📄 License
+## License
 
 MIT License.  
 Feel free to use, modify, or contribute - just be kind and credit the project.
