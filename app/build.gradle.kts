@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -31,6 +32,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -60,6 +62,13 @@ dependencies {
 
     // Gson
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Jetpack Compose
+    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation("androidx.compose.ui:ui:1.8.3")
+    implementation("androidx.compose.material3:material3:1.3.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
 
     testImplementation("junit:junit:4.13.2")
 
