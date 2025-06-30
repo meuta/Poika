@@ -20,15 +20,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.obrigada_eu.poika.R
+import com.obrigada_eu.poika.ui.player.PlayerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun PoikaTopAppBar() {
+fun PoikaTopAppBar(
+    playerViewModel: PlayerViewModel
+) {
     var expanded by remember { mutableStateOf(false) }
     TopAppBar(
         title = { Text(text = stringResource(R.string.app_name)) },
@@ -44,17 +45,25 @@ fun PoikaTopAppBar() {
             ) {
                 CustomDropdownMenuItem(
                     text = stringResource(R.string.choose_song),
-                    onClick = { /* Handle Action 1 */ }
+                    onClick = {
+                        expanded = false
+                        playerViewModel.showChooseDialog()
+                    }
                 )
                 CustomDropdownMenuItem(
                     text = stringResource(R.string.delete_song),
-                    onClick = { /* Handle Action 2 */ }
+                    onClick = {
+                        expanded = false
+                        playerViewModel.showDeleteDialog()
+                    }
                 )
                 CustomDropdownMenuItem(
                     text = stringResource(R.string.help),
-                    onClick = { /* Handle Action 3 */ }
+                    onClick = {
+                        expanded = false
+                        playerViewModel.showHelpDialog()
+                    }
                 )
-
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
