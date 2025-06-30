@@ -17,6 +17,7 @@
     <string name="title_how_to_use">HOW TO USE THE APP</string>
     <string name="title_song_versions">SONG VERSIONS</string>
     <string name="title_troubleshooting">TROUBLESHOOTING</string>
+    <string name="to_start_singing_practice_">To start singing practice, please select a song from the menu\n(top right corner)</string>
 
 
 </resources>
