@@ -17,9 +17,7 @@ import com.obrigada_eu.poika.databinding.ActivityMainBinding
 import com.obrigada_eu.poika.domain.SongMetaData
 import com.obrigada_eu.poika.ui.HelpDialog
 import com.obrigada_eu.poika.ui.ListDialog
-import com.obrigada_eu.poika.ui.ListDialog.Companion.showDeleteConfirmationDialog
-import com.obrigada_eu.poika.ui.SongMetaDataMapper
-import com.obrigada_eu.poika.ui.Toaster
+import com.obrigada_eu.poika.ui.ListDialog.Companion.showDeleteConfirmationDialog import com.obrigada_eu.poika.ui.Toaster
 import com.obrigada_eu.poika.ui.UiEvent
 import com.obrigada_eu.poika.ui.player.PlayerViewModel
 import com.obrigada_eu.poika.ui.player.StringFormatter
@@ -32,7 +30,6 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var stringFormatter: StringFormatter
-    @Inject lateinit var metaMapper: SongMetaDataMapper
 
     private lateinit var binding: ActivityMainBinding
 
@@ -47,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        handleIncomingZip(intent)
+        if (savedInstanceState == null) handleIncomingZip(intent)
 
         setSupportActionBar(binding.mainToolbar)
         addMenuProvider(menuProvider)
@@ -65,10 +62,10 @@ class MainActivity : AppCompatActivity() {
         observeSongTitleText()
     }
 
-    override fun onResume() {
-        super.onResume()
-        playerViewModel.refreshUiState()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        playerViewModel.refreshUiState()
+//    }
     
     private fun observePlayback() {
         lifecycleScope.launch {
@@ -214,7 +211,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupVolumeSeekbars() {
         val seekVolumeAdapter = object : OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
-                onUpdateSeekBarVolume(seek)
+                if (fromUser) onUpdateSeekBarVolume(seek)
             }
             override fun onStartTrackingTouch(seek: SeekBar) {}
             override fun onStopTrackingTouch(seek: SeekBar) {}

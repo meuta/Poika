@@ -1,6 +1,7 @@
 package com.obrigada_eu.poika.di
 
 import android.content.Context
+import com.obrigada_eu.poika.PlayerSession
 import com.obrigada_eu.poika.data.FileResolver
 import com.obrigada_eu.poika.data.MetaDataParser
 import com.obrigada_eu.poika.data.SongRepository
@@ -34,10 +35,15 @@ object PlayerModule {
     fun provideAudioController(
         @ApplicationContext context: Context,
         progressTracker: ProgressTracker,
+        playerSession: PlayerSession,
+        songMetaDataMapper: SongMetaDataMapper,
     ): AudioController {
-        return AudioController(context, progressTracker)
+        return AudioController(context, progressTracker, playerSession, songMetaDataMapper)
     }
 
+    @Provides
+    @Singleton
+    fun providePlayerSession(): PlayerSession = PlayerSession
 
     @Provides
     fun provideZipImporter(@ApplicationContext context: Context): ZipImporter =

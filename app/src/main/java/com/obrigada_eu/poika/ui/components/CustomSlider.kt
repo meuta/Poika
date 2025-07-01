@@ -24,6 +24,7 @@ fun CustomSlider(
     modifier: Modifier = Modifier,
     value: Float = 0f,
     onValueChange:(Float) -> Unit = {},
+    onValueChangeFinished: () -> Unit = {},
     valueRange: ClosedFloatingPointRange<Float> = 0f..100f,
 ) {
     Column(modifier = modifier) {
@@ -31,6 +32,7 @@ fun CustomSlider(
         Slider(
             value = value,
             onValueChange = onValueChange,
+            onValueChangeFinished = onValueChangeFinished,
             valueRange = valueRange,
             steps = steps,
             modifier = Modifier.fillMaxWidth(),

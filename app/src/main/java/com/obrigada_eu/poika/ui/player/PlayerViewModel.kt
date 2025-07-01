@@ -3,6 +3,7 @@ package com.obrigada_eu.poika.ui.player
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.obrigada_eu.poika.PlayerSession
 import com.obrigada_eu.poika.domain.SongMetaData
 import com.obrigada_eu.poika.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.domain.usecase.GetAllSongsUseCase
@@ -30,22 +31,20 @@ class PlayerViewModel @Inject constructor(
     private val importZipUseCase: ImportZipUseCase,
     private val getAllSongsUseCase: GetAllSongsUseCase,
     private val loadSongUseCase: LoadSongUseCase,
-    private val deleteSongUseCase: DeleteSongUseCase
+    private val deleteSongUseCase: DeleteSongUseCase,
+    playerSession: PlayerSession
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>(Channel.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private val _songTitleText = MutableStateFlow<String?>(null)
+    private val _songTitleText = MutableStateFlow<String?>(playerSession.currentSongTitle)
     val songTitleText: StateFlow<String?> = _songTitleText
 
-    val progressStateUi: StateFlow<ProgressStateUi> = progressTracker.map(progressUiMapper)
+    private val _initialVolumeList = MutableStateFlow<List<Float>>(playerSession.volumeList)
+    val initialVolumeList: StateFlow<List<Float>> = _initialVolumeList
 
-    fun refreshUiState() {
-        audioController.getCurrentSong()?.let {
-            setSongTitleText(songMetaDataMapper.mapToSongTitle(it))
-        }
-    }
+    val progressStateUi: StateFlow<ProgressStateUi> = progressTracker.map(progressUiMapper)
 
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
@@ -103,6 +102,10 @@ class PlayerViewModel @Inject constructor(
 
     fun setVolume(trackIndex: Int, progress: Int) {
         val volume = progress / 100f
+        audioController.setVolume(trackIndex, volume)
+    }
+
+    fun setVolume(trackIndex: Int, volume: Float) {
         audioController.setVolume(trackIndex, volume)
     }
 

@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun VoiceSlider(
+fun VolumeSlider(
     title: String,
     value: Float,
     onValueChange: (Float) -> Unit,
@@ -33,7 +33,7 @@ fun VoiceSlider(
         CustomSlider(
             value = value,
             onValueChange = onValueChange,
-            valueRange = 0f..100f,
+            valueRange = 0f..1f,
             modifier = Modifier
                 .weight(7f),
         )

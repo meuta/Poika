@@ -7,7 +7,9 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.obrigada_eu.poika.PlayerSession
 import com.obrigada_eu.poika.domain.SongMetaData
+import com.obrigada_eu.poika.ui.SongMetaDataMapper
 import com.obrigada_eu.poika.ui.player.ProgressTracker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -15,14 +17,14 @@ import javax.inject.Inject
 
 class AudioController @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val progressTracker: ProgressTracker
+    private val progressTracker: ProgressTracker,
+    private val playerSession: PlayerSession,
+    private val songMetaDataMapper: SongMetaDataMapper,
 ) {
 
     private val players: List<ExoPlayer> = List(3) { ExoPlayer.Builder(context).build() }
 
     private var playerIsReady = false
-
-    private var currentSongMetaData: SongMetaData? = null
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -37,7 +39,7 @@ class AudioController @Inject constructor(
     fun loadTracks(songMetaData: SongMetaData) {
 
         stop()
-        currentSongMetaData = songMetaData
+        playerSession.currentSongTitle = songMetaDataMapper.mapToSongTitle(songMetaData)
 
         val base = File(context.filesDir, "songs/${songMetaData.folderName}")
         val (uri1, uri2, uri3) = listOf("Soprano", "Alto", "Minus").map { part ->
@@ -71,8 +73,6 @@ class AudioController @Inject constructor(
     }
 
 
-    fun getCurrentSong(): SongMetaData? = currentSongMetaData
-
     fun play() {
         if (playerIsReady) {
             players.forEach {
@@ -101,7 +101,10 @@ class AudioController @Inject constructor(
 
     fun setVolume(trackIndex: Int, volume: Float) {
         if (trackIndex in players.indices) {
-            players[trackIndex].volume = volume.coerceIn(0f, 1f)
+            volume.coerceIn(0f, 1f).let {
+                players[trackIndex].volume = it
+                playerSession.volumeList[trackIndex] = it
+            }
         }
     }
 
