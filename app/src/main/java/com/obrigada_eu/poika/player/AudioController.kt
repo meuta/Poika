@@ -7,7 +7,7 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.obrigada_eu.poika.PlayerSession
+import com.obrigada_eu.poika.PlayerSessionWriter
 import com.obrigada_eu.poika.domain.SongMetaData
 import com.obrigada_eu.poika.ui.SongMetaDataMapper
 import com.obrigada_eu.poika.ui.player.ProgressTracker
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class AudioController @Inject constructor(
     @ApplicationContext private val context: Context,
     private val progressTracker: ProgressTracker,
-    private val playerSession: PlayerSession,
+    private val playerSession: PlayerSessionWriter,
     private val songMetaDataMapper: SongMetaDataMapper,
 ) {
 
@@ -39,7 +39,7 @@ class AudioController @Inject constructor(
     fun loadTracks(songMetaData: SongMetaData) {
 
         stop()
-        playerSession.currentSongTitle = songMetaDataMapper.mapToSongTitle(songMetaData)
+        playerSession.setCurrentSongTitle(songMetaDataMapper.mapToSongTitle(songMetaData))
 
         val base = File(context.filesDir, "songs/${songMetaData.folderName}")
         val (uri1, uri2, uri3) = listOf("Soprano", "Alto", "Minus").map { part ->
@@ -103,7 +103,7 @@ class AudioController @Inject constructor(
         if (trackIndex in players.indices) {
             volume.coerceIn(0f, 1f).let {
                 players[trackIndex].volume = it
-                playerSession.volumeList[trackIndex] = it
+                playerSession.setVolume(trackIndex, it)
             }
         }
     }

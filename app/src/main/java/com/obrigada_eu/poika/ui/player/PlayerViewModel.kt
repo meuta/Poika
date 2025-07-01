@@ -3,7 +3,7 @@ package com.obrigada_eu.poika.ui.player
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.obrigada_eu.poika.PlayerSession
+import com.obrigada_eu.poika.PlayerSessionReader
 import com.obrigada_eu.poika.domain.SongMetaData
 import com.obrigada_eu.poika.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.domain.usecase.GetAllSongsUseCase
@@ -32,16 +32,16 @@ class PlayerViewModel @Inject constructor(
     private val getAllSongsUseCase: GetAllSongsUseCase,
     private val loadSongUseCase: LoadSongUseCase,
     private val deleteSongUseCase: DeleteSongUseCase,
-    playerSession: PlayerSession
+    playerSession: PlayerSessionReader
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>(Channel.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private val _songTitleText = MutableStateFlow<String?>(playerSession.currentSongTitle)
+    private val _songTitleText = MutableStateFlow<String?>(playerSession.getCurrentSongTitle())
     val songTitleText: StateFlow<String?> = _songTitleText
 
-    private val _initialVolumeList = MutableStateFlow<List<Float>>(playerSession.volumeList)
+    private val _initialVolumeList = MutableStateFlow<List<Float>>(playerSession.getVolumeList())
     val initialVolumeList: StateFlow<List<Float>> = _initialVolumeList
 
     val progressStateUi: StateFlow<ProgressStateUi> = progressTracker.map(progressUiMapper)
