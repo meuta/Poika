@@ -1,8 +1,9 @@
 package com.obrigada_eu.poika.ui.components
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.ui.player.PlayerViewModel
@@ -12,27 +13,30 @@ fun VolumeSliderColumn(
     playerViewModel: PlayerViewModel,
 ) {
 
-    val volumeList by playerViewModel.initialVolumeList.collectAsState()
+    val volumeStates = remember { List(3) { mutableFloatStateOf(1f) } }
 
-    VolumeSlider(
-        title = stringResource(R.string.soprano),
-        value = volumeList[0],
-        onValueChange = {
-            playerViewModel.setVolume(0, it)
-        },
+    LaunchedEffect(Unit) {
+        playerViewModel.initialVolumeList.collect { list ->
+            list.forEachIndexed { i, volume ->
+                volumeStates[i].floatValue = volume
+            }
+        }
+    }
+
+    val titles = listOf(
+        stringResource(R.string.soprano),
+        stringResource(R.string.alto),
+        stringResource(R.string.minus)
     )
-    VolumeSlider(
-        title = stringResource(R.string.alto),
-        value = volumeList[1],
-        onValueChange = {
-            playerViewModel.setVolume(1, it)
-        },
-    )
-    VolumeSlider(
-        title = stringResource(R.string.minus),
-        value = volumeList[2],
-        onValueChange = {
-            playerViewModel.setVolume(2, it)
-        },
-    )
+
+    titles.forEachIndexed { i, title ->
+        VolumeSlider(
+            title = title,
+            value = volumeStates[i].floatValue,
+            onValueChange = {
+                playerViewModel.setVolume(i, it)
+                volumeStates[i].floatValue = it
+            }
+        )
+    }
 }
