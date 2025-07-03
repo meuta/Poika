@@ -149,6 +149,7 @@ fun ConfirmDeleteDialog(
         text = { Text(
             text = message,
             fontSize = 16.sp,
+            modifier = Modifier.verticalScroll(rememberScrollState()),
         ) },
         confirmButton = {
             DialogButton(

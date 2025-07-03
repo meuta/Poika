@@ -1,9 +1,12 @@
 package com.obrigada_eu.poika.ui.components
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -74,6 +77,7 @@ fun ComposableHelpDialog(
             Text(
                 text = annotated,
                 fontSize = 16.sp,
+                modifier = Modifier.verticalScroll(rememberScrollState()),
             )
         },
         confirmButton = {
