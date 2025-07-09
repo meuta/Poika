@@ -1,0 +1,112 @@
+package com.obrigada_eu.poika.player.ui
+
+import android.net.Uri
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
+import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.player.domain.usecase.DeleteSongUseCase
+import com.obrigada_eu.poika.player.domain.usecase.GetAllSongsUseCase
+import com.obrigada_eu.poika.player.domain.usecase.ImportZipUseCase
+import com.obrigada_eu.poika.player.domain.usecase.LoadSongUseCase
+import com.obrigada_eu.poika.player.data.infra.audio.AudioController
+import com.obrigada_eu.poika.player.ui.model.ProgressStateUi
+import com.obrigada_eu.poika.player.data.infra.audio.ProgressTracker
+import com.obrigada_eu.poika.common.formatters.StringFormatter
+import com.obrigada_eu.poika.common.formatters.toTitleString
+import com.obrigada_eu.poika.player.ui.model.UiEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class PlayerViewModel @Inject constructor(
+    private val audioController: AudioController,
+    private val importZipUseCase: ImportZipUseCase,
+    private val getAllSongsUseCase: GetAllSongsUseCase,
+    private val loadSongUseCase: LoadSongUseCase,
+    private val deleteSongUseCase: DeleteSongUseCase,
+    progressTracker: ProgressTracker,
+    playerSession: PlayerSessionReader
+) : ViewModel() {
+
+    private val _uiEvent = Channel<UiEvent>(Channel.Factory.BUFFERED)
+    val uiEvent = _uiEvent.receiveAsFlow()
+
+    private val _songTitleText = MutableStateFlow<String?>(playerSession.getCurrentSongTitle())
+    val songTitleText: StateFlow<String?> = _songTitleText
+
+    private val _initialVolumeList = MutableStateFlow<List<Float>>(playerSession.getVolumeList())
+    val initialVolumeList: StateFlow<List<Float>> = _initialVolumeList
+
+    val progressStateUi: StateFlow<ProgressStateUi> = progressTracker.map(StringFormatter)
+
+    fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
+    fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
+
+    fun showHelpDialog() {
+        viewModelScope.launch { _uiEvent.send(UiEvent.ShowHelpDialog) }
+    }
+
+    fun showListDialog(mode: UiEvent.Mode) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val songs = getAllSongsUseCase()
+            if (songs.isEmpty()) {
+                showMessage("The song list is empty.")
+            } else {
+                showListDialog(songs, mode)
+            }
+        }
+    }
+
+    fun showMessage(message: String) {
+        viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message)) }
+    }
+
+    private fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
+        viewModelScope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
+    }
+
+
+    fun setSongTitleText(title: String) {
+        _songTitleText.value = title
+    }
+
+    fun handleZipImport(uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = importZipUseCase(uri)
+            showMessage(result?.let { "New song is available" } ?: "Error importing a song")
+        }
+    }
+
+    fun loadSong(songMetaData: SongMetaData) {
+        loadSongUseCase(songMetaData)
+        setSongTitleText(songMetaData.toTitleString())
+    }
+
+    fun deleteSongs(songs: List<SongMetaData>) {
+        viewModelScope.launch {
+            val success = songs.map { deleteSongUseCase(it) }.contains(false).not()
+            showMessage(if (success) "Songs deleted" else "Deletion error")
+        }
+    }
+
+    fun play() = audioController.play()
+    fun pause() = audioController.pause()
+    fun stop() = audioController.stop()
+
+
+    fun setVolume(trackIndex: Int, volume: Float) {
+        audioController.setVolume(trackIndex, volume)
+    }
+
+    fun setSongProgress(progress: Int) {
+        val newPosition = (progress * 1000).toLong()
+        audioController.seekToAll(newPosition)
+    }
+}
