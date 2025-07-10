@@ -7,7 +7,6 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.obrigada_eu.poika.common.formatters.toTitleString
 import com.obrigada_eu.poika.player.domain.contracts.AudioService
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
@@ -39,7 +38,7 @@ class AudioController @Inject constructor(
     override fun loadTracks(songMetaData: SongMetaData) {
 
         stop()
-        playerSessionWriter.setCurrentSongTitle(songMetaData.toTitleString())
+        playerSessionWriter.setCurrentSong(songMetaData)
 
         val base = File(context.filesDir, "songs/${songMetaData.folderName}")
         val (uri1, uri2, uri3) = listOf("Soprano", "Alto", "Minus").map { part ->
