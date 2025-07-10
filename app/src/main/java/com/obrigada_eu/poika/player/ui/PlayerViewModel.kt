@@ -3,17 +3,19 @@ package com.obrigada_eu.poika.player.ui
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
+import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.common.formatters.toTitleString
+import com.obrigada_eu.poika.player.data.infra.audio.AudioController
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
+import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
 import com.obrigada_eu.poika.player.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.player.domain.usecase.GetAllSongsUseCase
 import com.obrigada_eu.poika.player.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.player.domain.usecase.LoadSongUseCase
-import com.obrigada_eu.poika.player.data.infra.audio.AudioController
+import com.obrigada_eu.poika.player.ui.mapper.toPlayerPosition
+import com.obrigada_eu.poika.player.ui.mapper.toUi
 import com.obrigada_eu.poika.player.ui.model.ProgressStateUi
-import com.obrigada_eu.poika.player.data.infra.audio.ProgressTracker
-import com.obrigada_eu.poika.common.formatters.StringFormatter
-import com.obrigada_eu.poika.common.formatters.toTitleString
 import com.obrigada_eu.poika.player.ui.model.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,20 +33,22 @@ class PlayerViewModel @Inject constructor(
     private val getAllSongsUseCase: GetAllSongsUseCase,
     private val loadSongUseCase: LoadSongUseCase,
     private val deleteSongUseCase: DeleteSongUseCase,
-    progressTracker: ProgressTracker,
-    playerSession: PlayerSessionReader
+    progressProvider: ProgressStateProvider,
+    playerSessionReader: PlayerSessionReader
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>(Channel.Factory.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private val _songTitleText = MutableStateFlow<String?>(playerSession.getCurrentSongTitle())
+    private val _songTitleText = MutableStateFlow<String?>(playerSessionReader.getCurrentSongTitle())
     val songTitleText: StateFlow<String?> = _songTitleText
 
-    private val _initialVolumeList = MutableStateFlow<List<Float>>(playerSession.getVolumeList())
+    private val _initialVolumeList = MutableStateFlow<List<Float>>(playerSessionReader.getVolumeList())
     val initialVolumeList: StateFlow<List<Float>> = _initialVolumeList
 
-    val progressStateUi: StateFlow<ProgressStateUi> = progressTracker.map(StringFormatter)
+    val progressStateUi: StateFlow<ProgressStateUi> = progressProvider.getState { state ->
+        state.toUi(TimeStringFormatter)
+    }
 
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
@@ -105,8 +109,8 @@ class PlayerViewModel @Inject constructor(
         audioController.setVolume(trackIndex, volume)
     }
 
-    fun setSongProgress(progress: Int) {
-        val newPosition = (progress * 1000).toLong()
+    fun setSongProgress(sliderPosition: Float) {
+        val newPosition = sliderPosition.toPlayerPosition()
         audioController.seekToAll(newPosition)
     }
 }

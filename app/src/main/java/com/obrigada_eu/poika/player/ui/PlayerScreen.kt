@@ -104,8 +104,6 @@ fun PlayerScreen(
                 }
                 is UiEvent.ShowToast -> {
                     if (event.message.isNotBlank()) {
-//                        Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-//                        Toaster(event.message).show(context)
                         Toaster.show(context, event.message)
                     }
                 }

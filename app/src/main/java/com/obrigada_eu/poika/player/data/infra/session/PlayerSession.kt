@@ -5,20 +5,20 @@ import com.obrigada_eu.poika.player.domain.session.PlayerSessionWriter
 
 object PlayerSession : PlayerSessionReader, PlayerSessionWriter {
 
-    private var _currentSongTitle: String? = null
-    private var _volumeList: MutableList<Float> = mutableListOf(1f, 1f, 1f)
+    private var currentSongTitle: String? = null
+    private var volumeList: MutableList<Float> = mutableListOf(1f, 1f, 1f)
 
-    override fun getCurrentSongTitle(): String? = _currentSongTitle
+    override fun getCurrentSongTitle(): String? = currentSongTitle
 
-    override fun getVolumeList(): List<Float> = _volumeList.toList()
+    override fun getVolumeList(): List<Float> = volumeList.toList()
 
     override fun setCurrentSongTitle(title: String?) {
-        _currentSongTitle = title
+        currentSongTitle = title
     }
 
     override fun setVolume(trackIndex: Int, volume: Float) {
-        if (trackIndex in _volumeList.indices) {
-            _volumeList[trackIndex] = volume
+        if (trackIndex in volumeList.indices) {
+            volumeList[trackIndex] = volume
         }
     }
 }

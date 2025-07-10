@@ -12,22 +12,21 @@ class MetaDataParser {
 
     fun parse(file: File): SongMetaData {
         val json = file.readText()
-        val gson = Gson()
-        return gson.fromJson(json, SongMetaData::class.java).let { meta ->
-            meta.copy(folderName = FolderNameGenerator.from(meta))
-        }
+        val metaData = Gson().fromJson(json, SongMetaData::class.java)
+        val folderName = FolderNameGenerator.from(metaData)
+        return metaData.copy(folderName = folderName)
     }
 }
 
 
 object FolderNameGenerator {
-    fun from(meta: SongMetaData): String {
-        val artist = toSafeName(meta.artist, 25)
-        val title = toSafeName(meta.title, 30)
-        val impl = meta.voiceInstrument?.let {
+    fun from(metaData: SongMetaData): String {
+        val artist = toSafeName(metaData.artist, 25)
+        val title = toSafeName(metaData.title, 30)
+        val voiceInstrument = metaData.voiceInstrument?.let {
             toSafeName(it, 17).plus("_version")
         }
-        val raw = listOfNotNull(artist, title, impl).joinToString("__")
+        val raw = listOfNotNull(artist, title, voiceInstrument).joinToString("__")
         return raw
     }
 

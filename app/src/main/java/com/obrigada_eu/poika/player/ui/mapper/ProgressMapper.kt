@@ -1,20 +1,21 @@
 package com.obrigada_eu.poika.player.ui.mapper
 
-import com.obrigada_eu.poika.common.formatters.StringFormatter
-import com.obrigada_eu.poika.player.domain.model.ProgressState
+import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.player.domain.progress.ProgressState
 import com.obrigada_eu.poika.player.ui.model.ProgressStateUi
 
-fun ProgressState.toUi(stringFormatter: StringFormatter): ProgressStateUi {
-    val currentPositionSec = currentPosition / 1000
+fun ProgressState.toUi(stringFormatter: TimeStringFormatter): ProgressStateUi {
+    val currentPositionSec = currentPosition / 1000f
     val currentPositionString = stringFormatter.formatMillisToString(currentPosition)
-    val durationSec = duration / 1000
+    val durationSec = duration / 1000f
     val durationString = stringFormatter.formatMillisToString(duration)
 
     return ProgressStateUi(
         currentPositionSec,
         currentPositionString,
-        isFinished,
         durationSec,
         durationString
     )
 }
+
+fun Float.toPlayerPosition() = (this * 1000).toLong()
