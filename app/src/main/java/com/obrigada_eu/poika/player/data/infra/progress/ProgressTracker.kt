@@ -1,6 +1,6 @@
 package com.obrigada_eu.poika.player.data.infra.progress
 
-import com.obrigada_eu.poika.player.domain.progress.ProgressState
+import com.obrigada_eu.poika.player.domain.model.ProgressState
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import kotlinx.coroutines.CoroutineScope

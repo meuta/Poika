@@ -8,6 +8,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.obrigada_eu.poika.common.formatters.toTitleString
+import com.obrigada_eu.poika.player.domain.contracts.AudioService
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.session.PlayerSessionWriter
@@ -19,7 +20,7 @@ class AudioController @Inject constructor(
     @ApplicationContext private val context: Context,
     private val progressTracker: ProgressStateUpdater,
     private val playerSessionWriter: PlayerSessionWriter,
-) {
+) : AudioService {
 
     private val players: List<ExoPlayer> = List(3) { ExoPlayer.Builder(context).build() }
 
@@ -35,7 +36,7 @@ class AudioController @Inject constructor(
     }
 
 
-    fun loadTracks(songMetaData: SongMetaData) {
+    override fun loadTracks(songMetaData: SongMetaData) {
 
         stop()
         playerSessionWriter.setCurrentSongTitle(songMetaData.toTitleString())
@@ -54,16 +55,17 @@ class AudioController @Inject constructor(
                 }
             }
         }
-        players.firstOrNull()?.apply {
-            addListener(object : Player.Listener {
+
+        players.firstOrNull()?.let { player ->
+            player.addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(state: Int) {
                     if (state == Player.STATE_READY) {
-                        val durationMs = duration
+                        val durationMs = player.duration
                         updateDuration(durationMs)
                         playerIsReady = true
                     }
                     if (state == Player.STATE_ENDED) {
-                        this@AudioController.stop()
+                        stop()
                     }
                 }
             })
@@ -71,7 +73,7 @@ class AudioController @Inject constructor(
     }
 
 
-    fun play() {
+    override fun play() {
         if (playerIsReady) {
             players.forEach {
                 if (it.playbackState == Player.STATE_IDLE) {
@@ -83,28 +85,28 @@ class AudioController @Inject constructor(
         }
     }
 
-    fun pause() {
+    override fun pause() {
         players.forEach { it.playWhenReady = false }
         runProgressTicker(false)
     }
 
-    fun stop() {
+    override fun stop() {
         players.forEach {
             it.stop()
             it.playWhenReady = false
         }
-        seekToAll(0)
+        seekTo(0)
         runProgressTicker(false)
     }
 
-    fun setVolume(trackIndex: Int, volume: Float) {
+    override fun setVolume(trackIndex: Int, volume: Float) {
         if (trackIndex in players.indices) {
             players[trackIndex].volume = volume
             playerSessionWriter.setVolume(trackIndex, volume)
         }
     }
 
-    fun seekToAll(positionMs: Long) {
+    override fun seekTo(positionMs: Long) {
         players.forEach { it.seekTo(positionMs) }
         updateProgressTracker(currentPosition = positionMs)
     }
@@ -128,7 +130,7 @@ class AudioController @Inject constructor(
     }
 
 
-    private fun updateDuration(duration: Long?) {
-        duration?.let { progressTracker.update(progressTracker.value().copy(duration = it)) }
+    private fun updateDuration(duration: Long) {
+        progressTracker.update(progressTracker.value().copy(duration = duration))
     }
 }

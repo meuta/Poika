@@ -11,6 +11,7 @@ import com.obrigada_eu.poika.player.data.repository.SongRepositoryImpl
 import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
 import com.obrigada_eu.poika.player.data.infra.audio.AudioController
 import com.obrigada_eu.poika.player.data.infra.progress.ProgressTracker
+import com.obrigada_eu.poika.player.domain.contracts.AudioService
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import dagger.Module
@@ -48,13 +49,14 @@ object PlayerModule {
 
     @Provides
     @Singleton
-    fun provideAudioController(
+    fun provideAudioService(
         @ApplicationContext context: Context,
         progressStateUpdater: ProgressStateUpdater,
         playerSessionWriter: PlayerSessionWriter,
-    ): AudioController {
+    ): AudioService {
         return AudioController(context, progressStateUpdater, playerSessionWriter)
     }
+
 
     @Provides
     @Singleton
