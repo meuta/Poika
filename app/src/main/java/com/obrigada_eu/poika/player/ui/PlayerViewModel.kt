@@ -60,7 +60,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch { _uiEvent.send(UiEvent.ShowHelpDialog) }
     }
 
-    fun showListDialog(mode: UiEvent.Mode) {
+    private fun showListDialog(mode: UiEvent.Mode) {
         viewModelScope.launch(Dispatchers.IO) {
             val songs = getAllSongsUseCase()
             if (songs.isEmpty()) {

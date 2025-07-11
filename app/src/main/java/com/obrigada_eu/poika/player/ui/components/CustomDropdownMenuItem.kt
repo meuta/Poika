@@ -11,15 +11,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.obrigada_eu.poika.ui.theme.Dimens
 
-class DropdownMenuItemTextProvider : PreviewParameterProvider<String> {
-    override val values = listOf("Choose song").asSequence()
-}
 
-@Preview(showBackground = true)
 @Composable
 fun CustomDropdownMenuItem(
-    @PreviewParameter(DropdownMenuItemTextProvider::class) text: String,
-    onClick: () -> Unit = {}
+    text: String,
+    onClick: () -> Unit
 ) {
     DropdownMenuItem(
         text = {
@@ -33,5 +29,20 @@ fun CustomDropdownMenuItem(
             )
         },
         onClick = onClick,
+    )
+}
+
+class DropdownMenuItemTextProvider : PreviewParameterProvider<String> {
+    override val values = sequenceOf("Choose song")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CustomDropdownMenuItemPreview(
+    @PreviewParameter(DropdownMenuItemTextProvider::class) text: String,
+) {
+    CustomDropdownMenuItem(
+        text = text,
+        onClick = {},
     )
 }

@@ -19,7 +19,7 @@ fun TimeText(time: String) {
 }
 
 class TimeTextProvider : PreviewParameterProvider<String> {
-    override val values = listOf("00:00").asSequence()
+    override val values = sequenceOf("00:00")
 }
 
 @Preview(showBackground = true)

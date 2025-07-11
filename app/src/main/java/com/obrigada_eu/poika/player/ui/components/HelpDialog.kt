@@ -12,6 +12,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.ui.theme.Dimens
 
@@ -87,4 +88,10 @@ fun HelpDialog(
             )
         }
     )
+}
+
+@Preview
+@Composable
+fun HelpDialogPreview() {
+    HelpDialog(onDismiss = {})
 }
