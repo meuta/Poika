@@ -12,8 +12,8 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.sp
 import com.obrigada_eu.poika.R
+import com.obrigada_eu.poika.ui.theme.Dimens
 
 @Composable
 fun HelpDialog(
@@ -51,7 +51,7 @@ fun HelpDialog(
                 withStyle(
                     SpanStyle(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
+                        fontSize = Dimens.MediumFontSize,
                         color = highlightColor
                     )
                 ) {
@@ -76,7 +76,7 @@ fun HelpDialog(
         text = {
             Text(
                 text = annotated,
-                fontSize = 16.sp,
+                fontSize = Dimens.MediumFontSize,
                 modifier = Modifier.verticalScroll(rememberScrollState()),
             )
         },

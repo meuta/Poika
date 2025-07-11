@@ -21,9 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
+import com.obrigada_eu.poika.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,8 +40,8 @@ fun PoikaTopAppBar(
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                offset = DpOffset(0.dp, (-48).dp),
-                modifier = Modifier.widthIn(min = 168.dp, max = 280.dp)
+                offset = DpOffset(Dimens.MenuOffsetX, Dimens.MenuOffsetY),
+                modifier = Modifier.widthIn(Dimens.MenuWidthMin, Dimens.MenuWidthMax)
             ) {
                 CustomDropdownMenuItem(
                     text = stringResource(R.string.choose_song),

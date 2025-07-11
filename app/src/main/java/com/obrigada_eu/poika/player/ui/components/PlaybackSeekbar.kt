@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,8 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
@@ -52,16 +48,8 @@ fun PlaybackSeekbar(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
-                text = currentPositionText,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(16.dp),
-            )
-            Text(
-                text = trackDurationText,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(16.dp),
-            )
+            TimeText(currentPositionText)
+            TimeText(trackDurationText)
         }
 
         CustomSlider(

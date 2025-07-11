@@ -29,13 +29,13 @@ fun VolumeSliderColumn(
         stringResource(R.string.minus)
     )
 
-    titles.forEachIndexed { i, title ->
+    titles.forEachIndexed { index, title ->
         VolumeSlider(
             title = title,
-            value = volumeStates[i].floatValue,
+            value = volumeStates[index].floatValue,
             onValueChange = {
-                playerViewModel.setVolume(i, it)
-                volumeStates[i].floatValue = it
+                playerViewModel.setVolume(index, it)
+                volumeStates[index].floatValue = it
             }
         )
     }
