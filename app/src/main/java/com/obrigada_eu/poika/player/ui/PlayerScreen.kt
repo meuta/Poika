@@ -6,86 +6,63 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.ui.utils.Toaster
-import com.obrigada_eu.poika.player.ui.model.UiEvent
+import com.obrigada_eu.poika.player.domain.model.TrackInfo
+import com.obrigada_eu.poika.player.ui.components.ConfirmDeleteDialog
 import com.obrigada_eu.poika.player.ui.components.HelpDialog
 import com.obrigada_eu.poika.player.ui.components.ListDialog
-import com.obrigada_eu.poika.player.ui.components.ConfirmDeleteDialog
 import com.obrigada_eu.poika.player.ui.components.PlaybackButtonsRow
 import com.obrigada_eu.poika.player.ui.components.PlaybackSeekbar
 import com.obrigada_eu.poika.player.ui.components.PoikaTopAppBar
 import com.obrigada_eu.poika.player.ui.components.VolumeSliderColumn
-import com.obrigada_eu.poika.player.ui.PlayerViewModel
 import com.obrigada_eu.poika.ui.theme.Dimens
-import kotlinx.coroutines.flow.firstOrNull
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun PlayerScreen(
-    playerViewModel: PlayerViewModel,
+    menuItems: Map<String, () -> Unit>,
+    menuExpanded: Boolean,
+    menuIconOnClick: () -> Unit,
+    onDismissMenuRequest: () -> Unit,
+    songTitle: String?,
+    currentPositionText: String,
+    trackDurationText: String,
+    playbackSeekbarPosition: Float,
+    playbackSeekbarMax: Float,
+    onSeekChanged: (Float) -> Unit,
+    onSeekReleased: () -> Unit,
+    playbackButtons: Map<String, () -> Unit>,
+    volumeStates: List<Float>,
+    onSetVolume: (Int, Float) -> Unit,
+    showChooseSongDialog: Boolean,
+    showDeleteSongDialog: Boolean,
+    showDeleteConfirmationDialog: Boolean,
+    showHelpDialog: Boolean,
+    songs: List<SongMetaData>,
+    selectedSongs: List<SongMetaData>,
+    onLoadSong: (SongMetaData) -> Unit,
+    onTryDeleteSongs: (List<SongMetaData>) -> Unit,
+    onConfirmDeleteSongs: () -> Unit,
+    onEmptySelection: () -> Unit,
+    onDismissChooseSongDialog: () -> Unit,
+    onDismissDeleteSongDialog: () -> Unit,
+    onDismissDeleteConfirmationDialog: () -> Unit,
+    onDismissHelpDialog: () -> Unit,
 ) {
-    val context = LocalContext.current
-
-    val emptySelectionText = stringResource(R.string.select_at_least_one)
-
-    var showChooseSongDialog by remember { mutableStateOf(false) }
-    var showDeleteSongDialog by remember { mutableStateOf(false) }
-    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
-    var showHelpDialog by remember { mutableStateOf(false) }
-
-    var songs by remember { mutableStateOf<List<SongMetaData>>(emptyList()) }
-    var selectedSongs by remember { mutableStateOf<List<SongMetaData>>(emptyList()) }
-
-    var menuExpanded by remember { mutableStateOf(false) }
-
-    val songTitle by playerViewModel.songTitleText.collectAsState()
-
-    val stringZeroZero = stringResource(R.string._00_00)
-
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
-    var isUserSeeking by remember { mutableStateOf(false) }
-    var currentPositionText by remember { mutableStateOf(stringZeroZero) }
-    var trackDurationText by remember { mutableStateOf(stringZeroZero) }
-    var playbackSeekbarMax by remember { mutableFloatStateOf(0f) }
-
-    val volumeStates = remember { List(3) { mutableFloatStateOf(1f) } }
-
-
     Scaffold(
         topBar = {
-            val menuItems: Map<String, () -> Unit> = mapOf(
-                R.string.choose_song to playerViewModel::showChooseDialog,
-                R.string.delete_song to playerViewModel::showDeleteDialog,
-                R.string.help to playerViewModel::showHelpDialog
-            )
-                .mapKeys { stringResource(it.key) }
-                .mapValues { (_, action) ->
-                    {
-                        menuExpanded = false
-                        action()
-                    }
-                }
-
             PoikaTopAppBar(
                 menuItems = menuItems,
-                menuIconOnclick = { menuExpanded = !menuExpanded },
-                onDismissRequest = { menuExpanded = false },
+                menuIconOnclick = menuIconOnClick,
+                onDismissRequest = onDismissMenuRequest,
                 expanded = menuExpanded
             )
         }
@@ -108,94 +85,34 @@ fun PlayerScreen(
                 modifier = Modifier.padding(Dimens.SongTitlePadding),
             )
 
-
+            // Playback Seekbar
             PlaybackSeekbar(
                 currentPositionText = currentPositionText,
                 trackDurationText = trackDurationText,
-                sliderPosition = sliderPosition,
+                sliderPosition = playbackSeekbarPosition,
                 playbackSeekbarMax = playbackSeekbarMax,
-                onValueChange = { newValue ->
-                    isUserSeeking = true
-                    sliderPosition = newValue
-                    currentPositionText = TimeStringFormatter.formatSecToString(newValue)
-                },
-                onValueChangeFinished = {
-                    playerViewModel.setSongProgress(sliderPosition)
-                    isUserSeeking = false
-                },
+                onValueChange = onSeekChanged,
+                onValueChangeFinished = onSeekReleased,
             )
 
             // Buttons row
-            val playbackButtons: Map<String, () -> Unit> = mapOf(
-                R.string.play to { playerViewModel.play() },
-                R.string.pause to { playerViewModel.pause() },
-                R.string.stop to { playerViewModel.stop() }
-            ).mapKeys { stringResource(it.key) }
-
             PlaybackButtonsRow(playbackButtons)
 
             // Volume sliders
             VolumeSliderColumn(
-                volumes = volumeStates.map { it.floatValue },
-                setVolume = { index, value ->
-                    playerViewModel.setVolume(index, value)
-                    volumeStates[index].floatValue = value
-                }
+                volumes = volumeStates,
+                setVolume = onSetVolume
             )
         }
     }
 
-    LaunchedEffect(Unit) {
-        playerViewModel.initialVolumeList.firstOrNull()?.let { list ->
-            list.forEachIndexed { i, volume ->
-                volumeStates[i].floatValue = volume
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        playerViewModel.progressStateUi.collect { progressState ->
-            if (!isUserSeeking) {
-                sliderPosition = progressState.currentPositionSec
-                currentPositionText = progressState.currentPositionString
-            }
-            trackDurationText = progressState.durationString
-            playbackSeekbarMax = progressState.durationSec
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        playerViewModel.uiEvent.collect { event ->
-            when (event) {
-                is UiEvent.ShowSongDialog -> {
-                    songs = event.songs
-                    when (event.mode) {
-                        UiEvent.Mode.CHOOSE -> {
-                            showChooseSongDialog = true
-                        }
-                        UiEvent.Mode.DELETE -> {
-                            showDeleteSongDialog = true
-                        }
-                    }
-                }
-                is UiEvent.ShowToast -> {
-                    if (event.message.isNotBlank()) {
-                        Toaster.show(context, event.message)
-                    }
-                }
-                is UiEvent.ShowHelpDialog -> {
-                    showHelpDialog = true
-                }
-            }
-        }
-    }
 
     if (showChooseSongDialog) {
         ListDialog(
             title = stringResource(R.string.choose_song),
             items = songs,
-            onConfirm = playerViewModel::loadSong,
-            onDismiss = { showChooseSongDialog = false },
+            onConfirm = onLoadSong,
+            onDismiss = onDismissChooseSongDialog,
         )
     }
 
@@ -204,41 +121,90 @@ fun PlayerScreen(
             title = stringResource(R.string.delete_song),
             items = songs,
             isMultiChoice = true,
-            onConfirmMultiChoice = { selected ->
-                selectedSongs = selected
-                showDeleteSongDialog = false
-                showDeleteConfirmationDialog = true
-            },
-            onEmptySelection = {
-                playerViewModel.showMessage(emptySelectionText)
-            },
-            onDismiss = {
-                showDeleteSongDialog = false
-                selectedSongs = emptyList()
-            },
+            onConfirmMultiChoice = onTryDeleteSongs,
+            onEmptySelection = onEmptySelection,
+            onDismiss = onDismissDeleteSongDialog,
         )
     }
 
     if (showDeleteConfirmationDialog) {
         ConfirmDeleteDialog(
             songs = selectedSongs,
-            onConfirm = {
-                playerViewModel.deleteSongs(selectedSongs)
-                showDeleteConfirmationDialog = false
-                selectedSongs = emptyList()
-            },
-            onDismiss = {
-                showDeleteConfirmationDialog = false
-                selectedSongs = emptyList()
-            },
+            onConfirm = onConfirmDeleteSongs,
+            onDismiss = onDismissDeleteConfirmationDialog,
         )
     }
 
     if (showHelpDialog) {
         HelpDialog(
-            onDismiss = {
-                showHelpDialog = false
-            },
+            onDismiss = onDismissHelpDialog,
         )
     }
+}
+
+@Preview
+@Composable
+fun PlayerScreenPreview() {
+    val currentPos = 34f
+    val duration = 228f
+    val songs = listOf(
+        SongMetaData(
+            "Natural Blues",
+            "Moby",
+            tracks = listOf(TrackInfo("", "")),
+            voiceInstrument = "voice",
+            folderName = ""
+        ),
+        SongMetaData(
+            "Uprising",
+            "Muse",
+            tracks = listOf(TrackInfo("", "")),
+            voiceInstrument = "piano",
+            folderName = ""
+        ),
+        SongMetaData(
+            "Creep",
+            "Radiohead",
+            tracks = listOf(TrackInfo("", "")),
+            voiceInstrument = "piano",
+            folderName = ""
+        )
+    )
+    PlayerScreen(
+        menuItems = mapOf(
+            R.string.choose_song to {},
+            R.string.delete_song to {},
+            R.string.help to {}
+        ).mapKeys { stringResource(it.key) },
+        menuExpanded = false,
+        menuIconOnClick = {},
+        onDismissMenuRequest = {},
+        songTitle = "Moby - Natural Blues (piano version)",
+        currentPositionText = TimeStringFormatter.formatSecToString(currentPos),
+        trackDurationText = TimeStringFormatter.formatSecToString(duration),
+        playbackSeekbarPosition = currentPos,
+        playbackSeekbarMax = duration,
+        onSeekChanged = {},
+        onSeekReleased = {},
+        playbackButtons = mapOf(
+            R.string.play to {},
+            R.string.pause to {},
+            R.string.stop to {}
+        ).mapKeys { stringResource(it.key) },
+        volumeStates = listOf(1f, 0.58f, 0.35f),
+        onSetVolume = { _, _ ->},
+        showChooseSongDialog = false,
+        showDeleteSongDialog = false,
+        showDeleteConfirmationDialog = false,
+        showHelpDialog = false,
+        songs = songs,
+        selectedSongs = songs,
+        onLoadSong = {},
+        onTryDeleteSongs = {},
+        onConfirmDeleteSongs = {},
+        onEmptySelection = {},
+        onDismissChooseSongDialog = {},
+        onDismissDeleteSongDialog = {},
+        onDismissDeleteConfirmationDialog = {}
+    ) {}
 }
