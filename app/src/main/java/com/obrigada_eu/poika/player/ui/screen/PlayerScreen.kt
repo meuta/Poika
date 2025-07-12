@@ -1,3 +1,4 @@
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -15,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.model.TrackInfo
 import com.obrigada_eu.poika.player.ui.components.ConfirmDeleteDialog
 import com.obrigada_eu.poika.player.ui.components.HelpDialog
 import com.obrigada_eu.poika.player.ui.components.ListDialog
@@ -23,7 +23,9 @@ import com.obrigada_eu.poika.player.ui.components.PlaybackButtonsRow
 import com.obrigada_eu.poika.player.ui.components.PlaybackSeekbar
 import com.obrigada_eu.poika.player.ui.components.PoikaTopAppBar
 import com.obrigada_eu.poika.player.ui.components.VolumeSliderColumn
+import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
+import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -142,69 +144,46 @@ fun PlayerScreen(
     }
 }
 
-@Preview
+@Preview(
+    name = "Light Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
 @Composable
 fun PlayerScreenPreview() {
-    val currentPos = 34f
-    val duration = 228f
-    val songs = listOf(
-        SongMetaData(
-            "Natural Blues",
-            "Moby",
-            tracks = listOf(TrackInfo("", "")),
-            voiceInstrument = "voice",
-            folderName = ""
-        ),
-        SongMetaData(
-            "Uprising",
-            "Muse",
-            tracks = listOf(TrackInfo("", "")),
-            voiceInstrument = "piano",
-            folderName = ""
-        ),
-        SongMetaData(
-            "Creep",
-            "Radiohead",
-            tracks = listOf(TrackInfo("", "")),
-            voiceInstrument = "piano",
-            folderName = ""
-        )
-    )
-    PlayerScreen(
-        menuItems = mapOf(
-            R.string.choose_song to {},
-            R.string.delete_song to {},
-            R.string.help to {}
-        ).mapKeys { stringResource(it.key) },
-        menuExpanded = false,
-        menuIconOnClick = {},
-        onDismissMenuRequest = {},
-        songTitle = "Moby - Natural Blues (piano version)",
-        currentPositionText = TimeStringFormatter.formatSecToString(currentPos),
-        trackDurationText = TimeStringFormatter.formatSecToString(duration),
-        playbackSeekbarPosition = currentPos,
-        playbackSeekbarMax = duration,
-        onSeekChanged = {},
-        onSeekReleased = {},
-        playbackButtons = mapOf(
-            R.string.play to {},
-            R.string.pause to {},
-            R.string.stop to {}
-        ).mapKeys { stringResource(it.key) },
-        volumeStates = listOf(1f, 0.58f, 0.35f),
-        onSetVolume = { _, _ ->},
-        showChooseSongDialog = false,
-        showDeleteSongDialog = false,
-        showDeleteConfirmationDialog = false,
-        showHelpDialog = false,
-        songs = songs,
-        selectedSongs = songs,
-        onLoadSong = {},
-        onTryDeleteSongs = {},
-        onConfirmDeleteSongs = {},
-        onEmptySelection = {},
-        onDismissChooseSongDialog = {},
-        onDismissDeleteSongDialog = {},
-        onDismissDeleteConfirmationDialog = {}
-    ) {}
+    PoikaTheme {
+        PlayerScreen(
+            menuItems = PreviewData.menuItems,
+            menuExpanded = false,
+            menuIconOnClick = {},
+            onDismissMenuRequest = {},
+            songTitle = PreviewData.songTitle,
+            currentPositionText = TimeStringFormatter.formatSecToString(PreviewData.currentPos),
+            trackDurationText = TimeStringFormatter.formatSecToString(PreviewData.duration),
+            playbackSeekbarPosition = PreviewData.currentPos,
+            playbackSeekbarMax = PreviewData.duration,
+            onSeekChanged = {},
+            onSeekReleased = {},
+            playbackButtons = PreviewData.playbackButtons,
+            volumeStates = PreviewData.volumes,
+            onSetVolume = { _, _ ->},
+            showChooseSongDialog = false,
+            showDeleteSongDialog = false,
+            showDeleteConfirmationDialog = false,
+            showHelpDialog = false,
+            songs = emptyList(),
+            selectedSongs = emptyList(),
+            onLoadSong = {},
+            onTryDeleteSongs = {},
+            onConfirmDeleteSongs = {},
+            onEmptySelection = {},
+            onDismissChooseSongDialog = {},
+            onDismissDeleteSongDialog = {},
+            onDismissDeleteConfirmationDialog = {}
+        ) {}
+    }
 }

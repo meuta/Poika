@@ -2,7 +2,7 @@ package com.obrigada_eu.poika.ui.root
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import com.obrigada_eu.poika.player.ui.PlayerScreenHost
+import com.obrigada_eu.poika.player.ui.screen.PlayerScreenHost
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
 

@@ -20,9 +20,9 @@ object Dimens {
 
     val TimeTextPadding = 16.dp
 
-    val PlayerButtonPaddingVertical = 32.dp
-    val PlayerButtonPaddingHorizontal = 8.dp
-    val PlayerButtonArrangement = 16.dp
+    val PlaybackButtonPaddingVertical = 32.dp
+    val PlaybackButtonPaddingHorizontal = 8.dp
+    val PlaybackButtonArrangement = 16.dp
 
     val VolumeTitlePaddingVertical = 16.dp
 

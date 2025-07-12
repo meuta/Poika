@@ -1,4 +1,4 @@
-package com.obrigada_eu.poika.player.ui
+package com.obrigada_eu.poika.player.ui.screen
 
 import PlayerScreen
 import androidx.compose.runtime.Composable
@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.player.ui.PlayerViewModel
 import com.obrigada_eu.poika.player.ui.model.UiEvent
 import com.obrigada_eu.poika.ui.utils.Toaster
 import kotlinx.coroutines.flow.firstOrNull

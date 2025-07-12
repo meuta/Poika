@@ -1,6 +1,7 @@
 package com.obrigada_eu.poika.player.ui.components
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -8,16 +9,18 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.window.PopupProperties
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.ui.theme.Dimens
 import kotlin.String
@@ -42,17 +45,18 @@ fun PoikaTopAppBar(
                 expanded = expanded,
                 onDismissRequest = onDismissRequest,
                 offset = DpOffset(Dimens.MenuOffsetX, Dimens.MenuOffsetY),
-                modifier = Modifier.widthIn(Dimens.MenuWidthMin, Dimens.MenuWidthMax)
+                modifier = Modifier.widthIn(Dimens.MenuWidthMin, Dimens.MenuWidthMax).background(MaterialTheme.colorScheme.surface),
+                properties = PopupProperties(focusable = true)
             ) {
 
                 val items: Map<String, () -> Unit> = menuItems
-
+                CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
                 items.forEach { (labelRes, action) ->
                     CustomDropdownMenuItem(
                         text = labelRes,
                         onClick = action,
                     )
-                }
+                }}
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -60,20 +64,5 @@ fun PoikaTopAppBar(
             titleContentColor = Color.White,
             actionIconContentColor = Color.White
         ),
-    )
-}
-
-@Preview
-@Composable
-fun PoikaTopAppBarPreview() {
-    PoikaTopAppBar(
-        menuItems = mapOf(
-            R.string.choose_song to {},
-            R.string.delete_song to {},
-            R.string.help to {}
-        ).mapKeys { stringResource(it.key) },
-        menuIconOnclick = {},
-        onDismissRequest = {},
-        expanded = true
     )
 }

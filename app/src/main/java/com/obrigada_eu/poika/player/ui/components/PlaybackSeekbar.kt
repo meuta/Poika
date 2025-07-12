@@ -1,5 +1,6 @@
 package com.obrigada_eu.poika.player.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.player.ui.preview.PreviewData
+import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 @Composable
 fun PlaybackSeekbar(
@@ -39,18 +42,29 @@ fun PlaybackSeekbar(
 }
 
 
-@Preview(showBackground = true)
+@Preview(
+    name = "Light Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
 @Composable
 fun PlaybackSeekbarPreview(
 ) {
-    val currentPos = 34f
-    val duration = 228f
-    PlaybackSeekbar(
-        currentPositionText = TimeStringFormatter.formatSecToString(currentPos),
-        trackDurationText = TimeStringFormatter.formatSecToString(duration),
-        sliderPosition = currentPos,
-        playbackSeekbarMax = duration,
-        onValueChange = {},
-        onValueChangeFinished = {},
-    )
+    val currentPos = PreviewData.currentPos
+    val duration = PreviewData.duration
+    PoikaTheme {
+        PlaybackSeekbar(
+            currentPositionText = TimeStringFormatter.formatSecToString(currentPos),
+            trackDurationText = TimeStringFormatter.formatSecToString(duration),
+            sliderPosition = currentPos,
+            playbackSeekbarMax = duration,
+            onValueChange = {},
+            onValueChangeFinished = {},
+        )
+    }
 }

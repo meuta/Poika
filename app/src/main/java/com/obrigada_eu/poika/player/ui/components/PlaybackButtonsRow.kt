@@ -1,15 +1,16 @@
 package com.obrigada_eu.poika.player.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.obrigada_eu.poika.R
+import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
+import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 private const val ButtonWeight = 1f
 
@@ -19,15 +20,13 @@ fun PlaybackButtonsRow(playbackButtons: Map<String, () -> Unit>) {
         modifier = Modifier.Companion
             .fillMaxWidth()
             .padding(
-                vertical = Dimens.PlayerButtonPaddingVertical,
-                horizontal = Dimens.PlayerButtonPaddingHorizontal
+                vertical = Dimens.PlaybackButtonPaddingVertical,
+                horizontal = Dimens.PlaybackButtonPaddingHorizontal
             ),
-        horizontalArrangement = Arrangement.spacedBy(Dimens.PlayerButtonArrangement),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.PlaybackButtonArrangement),
     ) {
-        val buttons: Map<String, () -> Unit> = playbackButtons
-
-        buttons.forEach {  (labelRes, action)  ->
-            PlayerButton(
+        playbackButtons.forEach {  (labelRes, action)  ->
+            PlaybackButton(
                 text = labelRes,
                 onClick = action,
                 modifier = Modifier.weight(ButtonWeight),
@@ -36,12 +35,19 @@ fun PlaybackButtonsRow(playbackButtons: Map<String, () -> Unit>) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    name = "Light Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
 @Composable
 fun PlaybackButtonsRowPreview() {
-    PlaybackButtonsRow(mapOf(
-        R.string.play to {},
-        R.string.pause to {},
-        R.string.stop to {}
-    ).mapKeys { stringResource(it.key) })
+    PoikaTheme {
+        PlaybackButtonsRow(PreviewData.playbackButtons)
+    }
 }
