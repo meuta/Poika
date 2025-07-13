@@ -60,11 +60,17 @@ object PlayerModule {
 
     @Provides
     @Singleton
-    fun providePlayerSessionReader(): PlayerSessionReader = PlayerSession
+    fun providePlayerSession(
+        @ApplicationScope scope: CoroutineScope
+    ): PlayerSession = PlayerSession(scope)
 
     @Provides
     @Singleton
-    fun providePlayerSessionWriter(): PlayerSessionWriter = PlayerSession
+    fun providePlayerSessionReader(session: PlayerSession): PlayerSessionReader = session
+
+    @Provides
+    @Singleton
+    fun providePlayerSessionWriter(session: PlayerSession): PlayerSessionWriter = session
 
     @Provides
     fun provideZipImporter(@ApplicationContext context: Context): ZipImporter =

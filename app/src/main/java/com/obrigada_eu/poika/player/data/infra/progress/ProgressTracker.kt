@@ -12,17 +12,17 @@ import kotlinx.coroutines.flow.stateIn
 
 class ProgressTracker(private val scope: CoroutineScope) : ProgressStateUpdater, ProgressStateProvider {
 
-    private val stateFlow: MutableStateFlow<ProgressState> = MutableStateFlow(ProgressState())
+    private val progressStateFlow: MutableStateFlow<ProgressState> = MutableStateFlow(ProgressState())
 
     override fun update(value: ProgressState) {
-        stateFlow.value = value
+        progressStateFlow.value = value
     }
 
-    override fun value(): ProgressState = stateFlow.value
+    override fun currentState(): ProgressState = progressStateFlow.value
 
-    override fun <T> getState(transform: (ProgressState) -> T): StateFlow<T> {
-        return stateFlow
+    override fun <T> mapState(transform: (ProgressState) -> T): StateFlow<T> {
+        return progressStateFlow
             .map(transform)
-            .stateIn(scope, SharingStarted.Companion.Lazily, transform(ProgressState()))
+            .stateIn(scope, SharingStarted.Lazily, transform(ProgressState()))
     }
 }

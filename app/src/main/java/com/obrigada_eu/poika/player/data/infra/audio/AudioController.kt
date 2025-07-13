@@ -34,6 +34,8 @@ class AudioController @Inject constructor(
         }
     }
 
+    private var isPlaying: Boolean = false
+
 
     override fun loadTracks(songMetaData: SongMetaData) {
 
@@ -71,8 +73,21 @@ class AudioController @Inject constructor(
         }
     }
 
+    override fun togglePlayPause() {
+        if (playerIsReady) {
+            if (isPlaying) {
+                pause()
+                playerSessionWriter.setIsPlaying(false)
+            } else {
+                play()
+                playerSessionWriter.setIsPlaying(true)
+            }
+            isPlaying = !isPlaying
+       }
+    }
 
-    override fun play() {
+
+    private fun play() {
         if (playerIsReady) {
             players.forEach {
                 if (it.playbackState == Player.STATE_IDLE) {
@@ -84,7 +99,7 @@ class AudioController @Inject constructor(
         }
     }
 
-    override fun pause() {
+    private fun pause() {
         players.forEach { it.playWhenReady = false }
         runProgressTicker(false)
     }
@@ -96,12 +111,14 @@ class AudioController @Inject constructor(
         }
         seekTo(0)
         runProgressTicker(false)
+        isPlaying = false
+        playerSessionWriter.setIsPlaying(false)
     }
 
     override fun setVolume(trackIndex: Int, volume: Float) {
         if (trackIndex in players.indices) {
             players[trackIndex].volume = volume
-            playerSessionWriter.setVolume(trackIndex, volume)
+            playerSessionWriter.setTrackVolume(trackIndex, volume)
         }
     }
 
@@ -125,11 +142,11 @@ class AudioController @Inject constructor(
     }
 
     private fun updateProgressTracker(currentPosition: Long) {
-        progressTracker.update(progressTracker.value().copy(currentPosition = currentPosition))
+        progressTracker.update(progressTracker.currentState().copy(currentPosition = currentPosition))
     }
 
 
     private fun updateDuration(duration: Long) {
-        progressTracker.update(progressTracker.value().copy(duration = duration))
+        progressTracker.update(progressTracker.currentState().copy(duration = duration))
     }
 }

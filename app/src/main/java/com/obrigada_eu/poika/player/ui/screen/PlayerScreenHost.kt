@@ -17,7 +17,6 @@ import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
 import com.obrigada_eu.poika.player.ui.model.UiEvent
 import com.obrigada_eu.poika.ui.utils.Toaster
-import kotlinx.coroutines.flow.firstOrNull
 import kotlin.collections.mapKeys
 import kotlin.collections.mapOf
 
@@ -50,15 +49,9 @@ fun PlayerScreenHost(
     var trackDurationText by remember { mutableStateOf(stringZeroZero) }
     var playbackSeekbarMax by remember { mutableFloatStateOf(0f) }
 
-    val volumeStates = remember { List(3) { mutableFloatStateOf(1f) } }
+    val isPlaying by playerViewModel.isPlaying.collectAsState()
 
-    LaunchedEffect(Unit) {
-        playerViewModel.initialVolumeList.firstOrNull()?.let { list ->
-            list.forEachIndexed { i, volume ->
-                volumeStates[i].floatValue = volume
-            }
-        }
-    }
+    val volumeStates by playerViewModel.volumeList.collectAsState()
 
     LaunchedEffect(Unit) {
         playerViewModel.progressStateUi.collect { progressState ->
@@ -97,6 +90,7 @@ fun PlayerScreenHost(
         }
     }
 
+
     PlayerScreen(
         menuItems = mapOf(
             R.string.choose_song to playerViewModel::showChooseDialog,
@@ -113,7 +107,7 @@ fun PlayerScreenHost(
         menuExpanded = menuExpanded,
         menuIconOnClick = { menuExpanded = !menuExpanded },
         onDismissMenuRequest = { menuExpanded = false },
-        songTitle = songTitle,
+        songTitle = songTitle ?: stringResource(R.string.to_start_singing_practice_),
         currentPositionText = currentPositionText,
         trackDurationText = trackDurationText,
         playbackSeekbarPosition = playbackSeekbarPosition,
@@ -128,14 +122,12 @@ fun PlayerScreenHost(
             isUserSeeking = false
         },
         playbackButtons = mapOf(
-            R.string.play to playerViewModel::play,
-            R.string.pause to playerViewModel::pause,
+            (if (isPlaying) R.string.pause else R.string.play) to playerViewModel::togglePlayPause,
             R.string.stop to playerViewModel::stop
         ).mapKeys { stringResource(it.key) },
-        volumeStates = volumeStates.map { it.floatValue },
+        volumeStates = volumeStates,
         onSetVolume = { index, value ->
             playerViewModel.setVolume(index, value)
-            volumeStates[index].floatValue = value
         },
         showChooseSongDialog = showChooseSongDialog,
         showDeleteSongDialog = showDeleteSongDialog,

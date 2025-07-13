@@ -20,7 +20,6 @@ import com.obrigada_eu.poika.player.ui.model.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -40,18 +39,19 @@ class PlayerViewModel @Inject constructor(
     private val _uiEvent = Channel<UiEvent>(Channel.Factory.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private val _songTitleText =
-        MutableStateFlow<String?>(playerSessionReader.getCurrentSongTitle { metaData ->
-            metaData.toTitleString()
-        })
+    private val _songTitleText = playerSessionReader.currentSongFlow { metaData ->
+        metaData.toTitleString()
+    }
     val songTitleText: StateFlow<String?> = _songTitleText
 
-    private val _initialVolumeList = MutableStateFlow<List<Float>>(playerSessionReader.getVolumeList())
-    val initialVolumeList: StateFlow<List<Float>> = _initialVolumeList
+    val volumeList: StateFlow<List<Float>> = playerSessionReader.volumeLevelsFlow()
 
-    val progressStateUi: StateFlow<ProgressStateUi> = progressProvider.getState { state ->
+    val progressStateUi: StateFlow<ProgressStateUi> = progressProvider.mapState { state ->
         state.toUi(TimeStringFormatter)
     }
+
+    val isPlaying = playerSessionReader.isPlayingFlow()
+
 
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
@@ -80,10 +80,6 @@ class PlayerViewModel @Inject constructor(
     }
 
 
-    fun setSongTitleText(title: String) {
-        _songTitleText.value = title
-    }
-
     fun handleZipImport(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = importZipUseCase(uri)
@@ -93,7 +89,6 @@ class PlayerViewModel @Inject constructor(
 
     fun loadSong(songMetaData: SongMetaData) {
         loadSongUseCase(songMetaData)
-        setSongTitleText(songMetaData.toTitleString())
     }
 
     fun deleteSongs(songs: List<SongMetaData>) {
@@ -103,10 +98,9 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun play() = audioService.play()
-    fun pause() = audioService.pause()
-    fun stop() = audioService.stop()
+    fun togglePlayPause() = audioService.togglePlayPause()
 
+    fun stop() = audioService.stop()
 
     fun setVolume(trackIndex: Int, volume: Float) {
         audioService.setVolume(trackIndex, volume)

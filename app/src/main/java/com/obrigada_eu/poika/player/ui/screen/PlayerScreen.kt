@@ -34,7 +34,7 @@ fun PlayerScreen(
     menuExpanded: Boolean,
     menuIconOnClick: () -> Unit,
     onDismissMenuRequest: () -> Unit,
-    songTitle: String?,
+    songTitle: String,
     currentPositionText: String,
     trackDurationText: String,
     playbackSeekbarPosition: Float,
@@ -78,7 +78,7 @@ fun PlayerScreen(
         ) {
             // Song title
             Text(
-                text = songTitle ?: stringResource(R.string.to_start_singing_practice_),
+                text = songTitle,
                 textAlign = TextAlign.Center,
                 fontSize = Dimens.MediumFontSize,
                 lineHeight = Dimens.SongTitleLineHeight,

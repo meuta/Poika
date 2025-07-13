@@ -48,7 +48,7 @@ object PreviewData {
 
     val dialogButtonLabels = listOf("OK", "Cancel")
 
-    val playbackButtonLabels = listOf("Play", "Pause", "Stop")
+    val playbackButtonLabels = listOf("Play", "Stop")
 
     val playbackButtons = playbackButtonLabels.associateWith { {} }
 
