@@ -1,10 +1,27 @@
+# IDE files
 *.iml
-.gradle
-/local.properties
 /.idea
-.DS_Store
-/build
+
+# Gradle
+.gradle
+**/build/
+
+# Local configuration
+/local.properties
+
+# Android captures
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+
+# OS files
+.DS_Store
+
+# Build outputs (добавляем для APK/AAB)
+*.apk
+*.aab
+*.dm
+output-metadata.json
+
+# Baseline profiles
+baselineProfiles/
