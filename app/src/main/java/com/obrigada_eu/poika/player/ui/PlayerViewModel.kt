@@ -3,6 +3,7 @@ package com.obrigada_eu.poika.player.ui
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.common.formatters.toTitleString
 import com.obrigada_eu.poika.player.domain.contracts.AudioService
@@ -33,7 +34,8 @@ class PlayerViewModel @Inject constructor(
     private val loadSongUseCase: LoadSongUseCase,
     private val deleteSongUseCase: DeleteSongUseCase,
     progressProvider: ProgressStateProvider,
-    playerSessionReader: PlayerSessionReader
+    playerSessionReader: PlayerSessionReader,
+    private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>(Channel.Factory.BUFFERED)
@@ -58,6 +60,7 @@ class PlayerViewModel @Inject constructor(
 
     fun showHelpDialog() {
         viewModelScope.launch { _uiEvent.send(UiEvent.ShowHelpDialog) }
+        firebaseAnalytics.logEvent("help_button_clicked", null)
     }
 
     private fun showListDialog(mode: UiEvent.Mode) {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "279110963953",
+    "project_id": "poika-a50ba",
+    "storage_bucket": "poika-a50ba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:279110963953:android:f97af11bf25664cfb84f50",
+        "android_client_info": {
+          "package_name": "com.obrigada_eu.poika"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbgeFQNxctJ61Ra0SByzcN9kbBSt8jNwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
