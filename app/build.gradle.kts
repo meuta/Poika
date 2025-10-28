@@ -61,11 +61,11 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.11.0")
 
     // ExoPlayer
-    implementation("androidx.media3:media3-exoplayer:1.7.1")
-    implementation("androidx.media3:media3-ui:1.7.1")
+    implementation("androidx.media3:media3-exoplayer:1.8.0")
+    implementation("androidx.media3:media3-ui:1.8.0")
 
     // Gson
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.code.gson:gson:2.13.2")
 
     // Jetpack Compose
     implementation("androidx.activity:activity-compose:1.11.0")
