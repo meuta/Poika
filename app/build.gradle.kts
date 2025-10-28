@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.obrigada_eu.poika"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.obrigada_eu.poika"
@@ -49,16 +49,16 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.57.2")
     ksp("com.google.dagger:hilt-compiler:2.57.2")
 
-    implementation("androidx.activity:activity-ktx:1.10.1")
+    implementation("androidx.activity:activity-ktx:1.11.0")
 
     // ExoPlayer
     implementation("androidx.media3:media3-exoplayer:1.7.1")
@@ -68,11 +68,12 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // Jetpack Compose
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.compose.ui:ui:1.8.3")
-    implementation("androidx.compose.material3:material3:1.3.2")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+    implementation("androidx.activity:activity-compose:1.11.0")
+    implementation("androidx.compose.ui:ui:1.9.4")
+    implementation("androidx.compose.material3:material3:1.4.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.9.4")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.9.4")
 
     testImplementation("junit:junit:4.13.2")
 
