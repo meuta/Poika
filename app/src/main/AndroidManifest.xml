@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_poika_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Poika"
-        tools:targetApi="35">
+        tools:targetApi="36">
 
         <activity
             android:name=".ui.PlayerActivity"
