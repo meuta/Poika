@@ -101,7 +101,7 @@ class AudioController @Inject constructor(
     override fun setVolume(trackIndex: Int, volume: Float) {
         if (trackIndex in players.indices) {
             players[trackIndex].volume = volume
-            playerSessionWriter.setVolume(trackIndex, volume)
+            playerSessionWriter.setTrackVolume(trackIndex, volume)
         }
     }
 
@@ -125,11 +125,11 @@ class AudioController @Inject constructor(
     }
 
     private fun updateProgressTracker(currentPosition: Long) {
-        progressTracker.update(progressTracker.value().copy(currentPosition = currentPosition))
+        progressTracker.update(progressTracker.currentState().copy(currentPosition = currentPosition))
     }
 
 
     private fun updateDuration(duration: Long) {
-        progressTracker.update(progressTracker.value().copy(duration = duration))
+        progressTracker.update(progressTracker.currentState().copy(duration = duration))
     }
 }
