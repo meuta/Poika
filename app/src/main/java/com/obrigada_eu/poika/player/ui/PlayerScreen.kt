@@ -20,8 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.ui.utils.Toaster
@@ -33,6 +31,7 @@ import com.obrigada_eu.poika.player.ui.components.PlaybackButtonsRow
 import com.obrigada_eu.poika.player.ui.components.PlaybackSeekbar
 import com.obrigada_eu.poika.player.ui.components.PoikaTopAppBar
 import com.obrigada_eu.poika.player.ui.components.VolumeSliderColumn
+import com.obrigada_eu.poika.ui.theme.Dimens
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,18 +61,18 @@ fun PlayerScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp),
+                .padding(Dimens.ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             // Song title
             Text(
                 text = songTitle ?: stringResource(R.string.to_start_singing_practice_),
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.sp,
+                fontSize = Dimens.MediumFontSize,
+                lineHeight = Dimens.SongTitleLineHeight,
+                letterSpacing = Dimens.SongTitleLetterSpacing,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(32.dp),
+                modifier = Modifier.padding(Dimens.SongTitlePadding),
             )
 
             // Playback seekbar

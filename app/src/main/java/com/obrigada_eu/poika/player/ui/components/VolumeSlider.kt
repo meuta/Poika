@@ -7,8 +7,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.obrigada_eu.poika.ui.theme.Dimens
+
+private const val TitleWeight = 2f
+private const val TrackWeight = 7f
 
 @Composable
 fun VolumeSlider(
@@ -23,19 +25,19 @@ fun VolumeSlider(
     ) {
         Text(
             text = title,
-            fontSize = 16.sp,
-            letterSpacing = 0.sp,
+            fontSize = Dimens.MediumFontSize,
+            letterSpacing = Dimens.VolumeTitleLetterSpacing,
             maxLines = 1,
             modifier = Modifier
-                .weight(2f)
-                .padding(vertical = 16.dp),
+                .weight(TitleWeight)
+                .padding(vertical = Dimens.VolumeTitlePaddingVertical),
         )
         CustomSlider(
             value = value,
             onValueChange = onValueChange,
             valueRange = 0f..1f,
             modifier = Modifier
-                .weight(7f),
+                .weight(TrackWeight),
         )
     }
 }

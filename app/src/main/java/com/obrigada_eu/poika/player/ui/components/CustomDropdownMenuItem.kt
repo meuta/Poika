@@ -9,8 +9,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.obrigada_eu.poika.ui.theme.Dimens
 
 class DropdownMenuItemTextProvider : PreviewParameterProvider<String> {
     override val values = listOf("Choose song").asSequence()
@@ -26,11 +25,11 @@ fun CustomDropdownMenuItem(
         text = {
             Text(
                 text,
-                fontSize = 16.sp,
-                letterSpacing = 0.5.sp,
+                fontSize = Dimens.MediumFontSize,
+                letterSpacing = Dimens.MenuItemLetterSpacing,
                 fontWeight = FontWeight.Normal,
                 modifier = Modifier
-                    .padding(horizontal = 4.dp),
+                    .padding(horizontal = Dimens.MenuItemPadding),
             )
         },
         onClick = onClick,

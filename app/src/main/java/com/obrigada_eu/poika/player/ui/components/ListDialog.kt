@@ -17,11 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.toTitleString
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.ui.theme.Dimens
 
 @Composable
 fun ListDialog(
@@ -58,7 +57,7 @@ fun ListDialog(
                                 .clickable {
                                     checkedStates[index] = !checkedStates[index]
                                 }
-                                .padding(vertical = 4.dp),
+                                .padding(vertical = Dimens.DialogMultipleChoicePadding),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Checkbox(
@@ -69,22 +68,22 @@ fun ListDialog(
                             )
                             Text(
                                 text = songTitles[index],
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(start = 8.dp),
+                                fontSize = Dimens.MediumFontSize,
+                                modifier = Modifier.padding(start = Dimens.DialogMultipleChoiceTextPadding),
                             )
                         }
                     } else {
                         // SingleChoice
                         Text(
                             text = songTitles[index],
-                            fontSize = 16.sp,
+                            fontSize = Dimens.MediumFontSize,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
                                     onConfirm(song)
                                     onDismiss()
                                 }
-                                .padding(vertical = 8.dp),
+                                .padding(vertical = Dimens.DialogSingleChoicePadding),
                         )
                     }
                 }
@@ -148,7 +147,7 @@ fun ConfirmDeleteDialog(
         title = { Text(stringResource(R.string.are_you_sure)) },
         text = { Text(
             text = message,
-            fontSize = 16.sp,
+            fontSize = Dimens.MediumFontSize,
             modifier = Modifier.verticalScroll(rememberScrollState()),
         ) },
         confirmButton = {
