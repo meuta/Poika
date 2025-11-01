@@ -1,9 +1,10 @@
 package com.obrigada_eu.poika.domain.usecase
 
 import android.net.Uri
-import com.obrigada_eu.poika.data.ZipImporter
-import com.obrigada_eu.poika.domain.SongMetaData
-import com.obrigada_eu.poika.domain.TrackInfo
+import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
+import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.player.domain.model.TrackInfo
+import com.obrigada_eu.poika.player.domain.usecase.ImportZipUseCase
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test

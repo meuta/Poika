@@ -1,10 +1,11 @@
 package com.obrigada_eu.poika.domain.usecase
 
 import android.content.Context
-import com.obrigada_eu.poika.data.DeletableFile
-import com.obrigada_eu.poika.data.FileResolver
-import com.obrigada_eu.poika.domain.SongMetaData
-import com.obrigada_eu.poika.domain.TrackInfo
+import com.obrigada_eu.poika.player.domain.contracts.DeletableFile
+import com.obrigada_eu.poika.player.data.infra.file.FileResolver
+import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.player.domain.model.TrackInfo
+import com.obrigada_eu.poika.player.domain.usecase.DeleteSongUseCase
 import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.assertFalse
 import org.junit.Before
