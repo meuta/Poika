@@ -40,7 +40,10 @@ class PlayerViewModel @Inject constructor(
     private val _uiEvent = Channel<UiEvent>(Channel.Factory.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private val _songTitleText = MutableStateFlow<String?>(playerSessionReader.getCurrentSongTitle())
+    private val _songTitleText =
+        MutableStateFlow<String?>(playerSessionReader.getCurrentSongTitle { metaData ->
+            metaData.toTitleString()
+        })
     val songTitleText: StateFlow<String?> = _songTitleText
 
     private val _initialVolumeList = MutableStateFlow<List<Float>>(playerSessionReader.getVolumeList())
