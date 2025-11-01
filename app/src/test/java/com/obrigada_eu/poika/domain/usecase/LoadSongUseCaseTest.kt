@@ -2,7 +2,7 @@ package com.obrigada_eu.poika.domain.usecase
 
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.model.TrackInfo
-import com.obrigada_eu.poika.player.data.infra.audio.AudioController
+import com.obrigada_eu.poika.player.domain.contracts.AudioService
 import com.obrigada_eu.poika.player.domain.usecase.LoadSongUseCase
 import org.junit.Before
 import org.junit.Test
@@ -11,13 +11,13 @@ import org.mockito.kotlin.verify
 
 class LoadSongUseCaseTest {
 
-    private lateinit var audioController: AudioController
+    private lateinit var audioService: AudioService
     private lateinit var useCase: LoadSongUseCase
 
     @Before
     fun setUp() {
-        audioController = mock()
-        useCase = LoadSongUseCase(audioController)
+        audioService = mock()
+        useCase = LoadSongUseCase(audioService)
     }
 
     @Test
@@ -26,6 +26,6 @@ class LoadSongUseCaseTest {
 
         useCase(song)
 
-        verify(audioController).loadTracks(song)
+        verify(audioService).loadTracks(song)
     }
 }

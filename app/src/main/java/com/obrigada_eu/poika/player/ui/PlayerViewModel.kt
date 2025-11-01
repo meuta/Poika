@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.common.formatters.toTitleString
-import com.obrigada_eu.poika.player.data.infra.audio.AudioController
+import com.obrigada_eu.poika.player.domain.contracts.AudioService
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
 import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
@@ -13,8 +13,8 @@ import com.obrigada_eu.poika.player.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.player.domain.usecase.GetAllSongsUseCase
 import com.obrigada_eu.poika.player.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.player.domain.usecase.LoadSongUseCase
-import com.obrigada_eu.poika.player.ui.mapper.toPlayerPosition
-import com.obrigada_eu.poika.player.ui.mapper.toUi
+import com.obrigada_eu.poika.player.ui.mappers.toPlayerPosition
+import com.obrigada_eu.poika.player.ui.mappers.toUi
 import com.obrigada_eu.poika.player.ui.model.ProgressStateUi
 import com.obrigada_eu.poika.player.ui.model.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val audioController: AudioController,
+    private val audioService: AudioService,
     private val importZipUseCase: ImportZipUseCase,
     private val getAllSongsUseCase: GetAllSongsUseCase,
     private val loadSongUseCase: LoadSongUseCase,
@@ -100,17 +100,17 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun play() = audioController.play()
-    fun pause() = audioController.pause()
-    fun stop() = audioController.stop()
+    fun play() = audioService.play()
+    fun pause() = audioService.pause()
+    fun stop() = audioService.stop()
 
 
     fun setVolume(trackIndex: Int, volume: Float) {
-        audioController.setVolume(trackIndex, volume)
+        audioService.setVolume(trackIndex, volume)
     }
 
     fun setSongProgress(sliderPosition: Float) {
         val newPosition = sliderPosition.toPlayerPosition()
-        audioController.seekToAll(newPosition)
+        audioService.seekTo(newPosition)
     }
 }
