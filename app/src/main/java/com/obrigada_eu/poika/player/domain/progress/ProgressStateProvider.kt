@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface ProgressStateProvider {
 
-    fun <T> getState(transform: (ProgressState) -> T): StateFlow<T>
+    fun <T> mapState(transform: (ProgressState) -> T): StateFlow<T>
 }

@@ -4,5 +4,5 @@ import com.obrigada_eu.poika.player.domain.model.SongMetaData
 
 interface PlayerSessionWriter {
     fun setCurrentSong(metaData: SongMetaData?)
-    fun setVolume(trackIndex: Int, volume: Float)
+    fun setTrackVolume(trackIndex: Int, volume: Float)
 }
