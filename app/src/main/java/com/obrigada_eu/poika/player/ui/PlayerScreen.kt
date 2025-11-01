@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.obrigada_eu.poika.R
+import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.ui.utils.Toaster
 import com.obrigada_eu.poika.player.ui.model.UiEvent
@@ -50,11 +52,41 @@ fun PlayerScreen(
     var songs by remember { mutableStateOf<List<SongMetaData>>(emptyList()) }
     var selectedSongs by remember { mutableStateOf<List<SongMetaData>>(emptyList()) }
 
+    var menuExpanded by remember { mutableStateOf(false) }
+
     val songTitle by playerViewModel.songTitleText.collectAsState()
+
+    val stringZeroZero = stringResource(R.string._00_00)
+
+    var sliderPosition by remember { mutableFloatStateOf(0f) }
+    var isUserSeeking by remember { mutableStateOf(false) }
+    var currentPositionText by remember { mutableStateOf(stringZeroZero) }
+    var trackDurationText by remember { mutableStateOf(stringZeroZero) }
+    var playbackSeekbarMax by remember { mutableFloatStateOf(0f) }
+
+    val volumeStates by playerViewModel.volumeList.collectAsState()
 
     Scaffold(
         topBar = {
-            PoikaTopAppBar(playerViewModel = playerViewModel)
+            val menuItems: Map<String, () -> Unit> = mapOf(
+                R.string.choose_song to playerViewModel::showChooseDialog,
+                R.string.delete_song to playerViewModel::showDeleteDialog,
+                R.string.help to playerViewModel::showHelpDialog
+            )
+                .mapKeys { stringResource(it.key) }
+                .mapValues { (_, action) ->
+                    {
+                        menuExpanded = false
+                        action()
+                    }
+                }
+
+            PoikaTopAppBar(
+                menuItems = menuItems,
+                menuIconOnclick = { menuExpanded = !menuExpanded },
+                onDismissRequest = { menuExpanded = false },
+                expanded = menuExpanded
+            )
         }
     ) { innerPadding ->
         Column(
@@ -76,17 +108,51 @@ fun PlayerScreen(
             )
 
             // Playback seekbar
-            PlaybackSeekbar(playerViewModel)
+            PlaybackSeekbar(
+                currentPositionText = currentPositionText,
+                trackDurationText = trackDurationText,
+                sliderPosition = sliderPosition,
+                playbackSeekbarMax = playbackSeekbarMax,
+                onValueChange = { newValue ->
+                    isUserSeeking = true
+                    sliderPosition = newValue
+                    currentPositionText = TimeStringFormatter.formatSecToString(newValue)
+                },
+                onValueChangeFinished = {
+                    playerViewModel.setSongProgress(sliderPosition)
+                    isUserSeeking = false
+                },
+            )
 
             // Buttons row
-            PlaybackButtonsRow(playerViewModel)
+            val playbackButtons: Map<String, () -> Unit> = mapOf(
+                R.string.play to { playerViewModel.play() },
+                R.string.pause to { playerViewModel.pause() },
+                R.string.stop to { playerViewModel.stop() }
+            ).mapKeys { stringResource(it.key) }
+            PlaybackButtonsRow(playbackButtons)
 
             // Volume sliders
-            VolumeSliderColumn(playerViewModel)
+            VolumeSliderColumn(
+                volumes = volumeStates,
+                setVolume = { index, value ->
+                    playerViewModel.setVolume(index, value)
+                }
+
+            )
         }
     }
 
-
+    LaunchedEffect(Unit) {
+        playerViewModel.progressStateUi.collect { progressState ->
+            if (!isUserSeeking) {
+                sliderPosition = progressState.currentPositionSec
+                currentPositionText = progressState.currentPositionString
+            }
+            trackDurationText = progressState.durationString
+            playbackSeekbarMax = progressState.durationSec
+        }
+    }
 
     LaunchedEffect(Unit) {
         playerViewModel.uiEvent.collect { event ->

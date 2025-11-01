@@ -7,6 +7,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.obrigada_eu.poika.ui.theme.Dimens
 
 private const val TitleWeight = 2f
@@ -40,4 +43,19 @@ fun VolumeSlider(
                 .weight(TrackWeight),
         )
     }
+}
+
+class VolumeSliderProvider : PreviewParameterProvider<String> {
+    override val values = sequenceOf("soprano", "alto", "minus")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun VolumeSliderPreview(
+    @PreviewParameter(VolumeSliderProvider::class) title: String
+) {
+    VolumeSlider(
+        title = title,
+        value = 0f
+    ) {}
 }

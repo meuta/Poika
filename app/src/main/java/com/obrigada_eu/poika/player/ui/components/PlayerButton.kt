@@ -8,16 +8,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
-class PlayerButtonTextProvider : PreviewParameterProvider<String> {
-    override val values = listOf("Play", "Pause", "Stop").asSequence()
-}
-
-@Preview(showBackground = true)
 @Composable
 fun PlayerButton(
-    @PreviewParameter(PlayerButtonTextProvider::class) text: String,
+    text: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
@@ -25,4 +20,20 @@ fun PlayerButton(
     ) {
         Text(text)
     }
+}
+
+class PlayerButtonTextProvider : PreviewParameterProvider<String> {
+    override val values = sequenceOf("Play", "Pause", "Stop")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PlayerButtonPreview(
+    @PreviewParameter(PlayerButtonTextProvider::class) text: String,
+) {
+    PlayerButton(
+        text = text,
+        onClick = {},
+        modifier = Modifier
+    )
 }

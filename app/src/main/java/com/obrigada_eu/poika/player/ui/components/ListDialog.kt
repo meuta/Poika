@@ -17,9 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.toTitleString
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.player.domain.model.TrackInfo
 import com.obrigada_eu.poika.ui.theme.Dimens
 
 @Composable
@@ -69,7 +73,9 @@ fun ListDialog(
                             Text(
                                 text = songTitles[index],
                                 fontSize = Dimens.MediumFontSize,
-                                modifier = Modifier.padding(start = Dimens.DialogMultipleChoiceTextPadding),
+                                modifier = Modifier.padding(
+                                    start = Dimens.DialogMultipleChoiceTextPadding
+                                ),
                             )
                         }
                     } else {
@@ -166,5 +172,59 @@ fun ConfirmDeleteDialog(
                 text = stringResource(R.string.cancel),
             )
         },
+    )
+}
+
+class ListDialogIsMultiChoiceProvider : PreviewParameterProvider<Boolean> {
+    override val values = sequenceOf(true, false)
+}
+
+private val songs = listOf(
+    SongMetaData(
+        "Natural Blues",
+        "Moby",
+        tracks = listOf(TrackInfo("", "")),
+        voiceInstrument = "voice",
+        folderName = ""
+    ),
+    SongMetaData(
+        "Uprising",
+        "Muse",
+        tracks = listOf(TrackInfo("", "")),
+        voiceInstrument = "piano",
+        folderName = ""
+    ),
+    SongMetaData(
+        "Creep",
+        "Radiohead",
+        tracks = listOf(TrackInfo("", "")),
+        voiceInstrument = "piano",
+        folderName = ""
+    )
+)
+
+@Preview
+@Composable
+fun ListDialogPreview(
+    @PreviewParameter(ListDialogIsMultiChoiceProvider::class) isMultiChoice: Boolean,
+) {
+    ListDialog(
+        title = "Choose Song",
+        items = songs,
+        isMultiChoice = isMultiChoice,
+        onConfirm = {},
+        onConfirmMultiChoice = {},
+        onEmptySelection = {},
+        onDismiss = {}
+    )
+}
+
+@Preview
+@Composable
+fun ConfirmDeleteDialogPreview() {
+    ConfirmDeleteDialog(
+        songs = songs,
+        onConfirm = {},
+        onDismiss = {}
     )
 }

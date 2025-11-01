@@ -7,14 +7,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.player.ui.PlayerViewModel
 import com.obrigada_eu.poika.ui.theme.Dimens
 
 private const val ButtonWeight = 1f
 
 @Composable
-fun PlaybackButtonsRow(playerViewModel: PlayerViewModel) {
+fun PlaybackButtonsRow(playbackButtons: Map<String, () -> Unit>) {
     Row(
         modifier = Modifier.Companion
             .fillMaxWidth()
@@ -25,11 +25,7 @@ fun PlaybackButtonsRow(playerViewModel: PlayerViewModel) {
         horizontalArrangement = Arrangement.spacedBy(Dimens.PlayerButtonArrangement),
     ) {
 
-        val buttons: Map<String, () -> Unit> = mapOf(
-            R.string.play to { playerViewModel.play() },
-            R.string.pause to { playerViewModel.pause() },
-            R.string.stop to { playerViewModel.stop() }
-        ).mapKeys { stringResource(it.key) }
+        val buttons: Map<String, () -> Unit> = playbackButtons
 
         buttons.forEach {  (labelRes, action)  ->
             PlayerButton(
@@ -39,4 +35,15 @@ fun PlaybackButtonsRow(playerViewModel: PlayerViewModel) {
             )
         }
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun PlaybackButtonsRowPreview() {
+    PlaybackButtonsRow(mapOf(
+        R.string.play to {},
+        R.string.pause to {},
+        R.string.stop to {}
+    ).mapKeys { stringResource(it.key) })
 }
