@@ -8,6 +8,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.obrigada_eu.poika.common.formatters.toTitleString
+import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.session.PlayerSessionWriter
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -16,8 +17,8 @@ import javax.inject.Inject
 
 class AudioController @Inject constructor(
     @param:ApplicationContext private val context: Context,
-    private val progressTracker: ProgressTracker,
-    private val playerSession: PlayerSessionWriter,
+    private val progressTracker: ProgressStateUpdater,
+    private val playerSessionWriter: PlayerSessionWriter,
 ) {
 
     private val players: List<ExoPlayer> = List(3) { ExoPlayer.Builder(context).build() }
@@ -26,9 +27,9 @@ class AudioController @Inject constructor(
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val progressUpdater: Runnable = object : Runnable {
+    private val progressTicker: Runnable = object : Runnable {
         override fun run() {
-            updateProgress(currentPosition = minOf(getCurrentPosition(), getDuration()))
+            updateProgressTracker(currentPosition = minOf(getCurrentPosition(), getDuration()))
             handler.postDelayed(this, 100)
         }
     }
@@ -37,7 +38,7 @@ class AudioController @Inject constructor(
     fun loadTracks(songMetaData: SongMetaData) {
 
         stop()
-        playerSession.setCurrentSongTitle(songMetaData.toTitleString())
+        playerSessionWriter.setCurrentSongTitle(songMetaData.toTitleString())
 
         val base = File(context.filesDir, "songs/${songMetaData.folderName}")
         val (uri1, uri2, uri3) = listOf("Soprano", "Alto", "Minus").map { part ->
@@ -63,7 +64,6 @@ class AudioController @Inject constructor(
                     }
                     if (state == Player.STATE_ENDED) {
                         this@AudioController.stop()
-                        updateProgressFinish()
                     }
                 }
             })
@@ -79,13 +79,13 @@ class AudioController @Inject constructor(
                 }
                 it.playWhenReady = true
             }
-            runProgress(true)
+            runProgressTicker(true)
         }
     }
 
     fun pause() {
         players.forEach { it.playWhenReady = false }
-        runProgress(false)
+        runProgressTicker(false)
     }
 
     fun stop() {
@@ -94,21 +94,19 @@ class AudioController @Inject constructor(
             it.playWhenReady = false
         }
         seekToAll(0)
-        runProgress(false)
+        runProgressTicker(false)
     }
 
     fun setVolume(trackIndex: Int, volume: Float) {
         if (trackIndex in players.indices) {
-            volume.coerceIn(0f, 1f).let {
-                players[trackIndex].volume = it
-                playerSession.setVolume(trackIndex, it)
-            }
+            players[trackIndex].volume = volume
+            playerSessionWriter.setVolume(trackIndex, volume)
         }
     }
 
     fun seekToAll(positionMs: Long) {
         players.forEach { it.seekTo(positionMs) }
-        updateProgress(currentPosition = positionMs)
+        updateProgressTracker(currentPosition = positionMs)
     }
 
 
@@ -121,20 +119,16 @@ class AudioController @Inject constructor(
     }
 
 
-    private fun runProgress(run: Boolean) {
-        if (run) progressUpdater.run() else handler.removeCallbacks(progressUpdater)
+    private fun runProgressTicker(run: Boolean) {
+        if (run) progressTicker.run() else handler.removeCallbacks(progressTicker)
     }
 
-    private fun updateProgress(currentPosition: Long = 0) {
+    private fun updateProgressTracker(currentPosition: Long) {
         progressTracker.update(progressTracker.value().copy(currentPosition = currentPosition))
     }
 
 
     private fun updateDuration(duration: Long?) {
         duration?.let { progressTracker.update(progressTracker.value().copy(duration = it)) }
-    }
-
-    private fun updateProgressFinish() {
-        progressTracker.update(progressTracker.value().copy(isFinished = true))
     }
 }

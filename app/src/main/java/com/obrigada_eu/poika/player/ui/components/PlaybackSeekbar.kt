@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.common.formatters.StringFormatter
+import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
 
 @Composable
@@ -26,7 +26,7 @@ fun PlaybackSeekbar(
     playerViewModel: PlayerViewModel,
 ) {
 
-    val stringFormatter = StringFormatter
+    val stringFormatter = TimeStringFormatter
 
     val stringZeroZero = stringResource(R.string._00_00)
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -38,11 +38,11 @@ fun PlaybackSeekbar(
     LaunchedEffect(Unit) {
         playerViewModel.progressStateUi.collect { progressState ->
             if (!isUserSeeking) {
-                sliderPosition = progressState.currentPositionSec.toFloat()
+                sliderPosition = progressState.currentPositionSec
                 currentPositionText = progressState.currentPositionString
             }
             trackDurationText = progressState.durationString
-            playbackSeekbarMax = progressState.durationSec.toFloat()
+            playbackSeekbarMax = progressState.durationSec
         }
     }
 
@@ -69,10 +69,10 @@ fun PlaybackSeekbar(
             onValueChange = { newValue ->
                 isUserSeeking = true
                 sliderPosition = newValue
-                currentPositionText = stringFormatter.formatSecToString(newValue.toInt())
+                currentPositionText = stringFormatter.formatSecToString(newValue)
             },
             onValueChangeFinished = {
-                playerViewModel.setSongProgress(sliderPosition.toInt())
+                playerViewModel.setSongProgress(sliderPosition)
                 isUserSeeking = false
             },
             valueRange = 0f..playbackSeekbarMax,

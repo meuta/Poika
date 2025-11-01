@@ -10,12 +10,17 @@ import com.obrigada_eu.poika.player.domain.repository.SongRepository
 import com.obrigada_eu.poika.player.data.repository.SongRepositoryImpl
 import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
 import com.obrigada_eu.poika.player.data.infra.audio.AudioController
-import com.obrigada_eu.poika.player.data.infra.audio.ProgressTracker
+import com.obrigada_eu.poika.player.data.infra.progress.ProgressTracker
+import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
+import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 @Module
@@ -23,18 +28,32 @@ import javax.inject.Singleton
 object PlayerModule {
 
     @Provides
+    @ApplicationScope
     @Singleton
-    fun provideProgressTracker(): ProgressTracker = ProgressTracker()
+    fun provideApplicationScope() = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+
+    @Provides
+    @Singleton
+    fun provideProgressTracker(
+        @ApplicationScope scope: CoroutineScope
+    ): ProgressTracker = ProgressTracker(scope)
+
+    @Provides
+    fun provideProgressUpdater(tracker: ProgressTracker): ProgressStateUpdater = tracker
+
+    @Provides
+    fun provideProgressStateProvider(tracker: ProgressTracker): ProgressStateProvider = tracker
 
 
     @Provides
     @Singleton
     fun provideAudioController(
         @ApplicationContext context: Context,
-        progressTracker: ProgressTracker,
+        progressStateUpdater: ProgressStateUpdater,
         playerSessionWriter: PlayerSessionWriter,
     ): AudioController {
-        return AudioController(context, progressTracker, playerSessionWriter)
+        return AudioController(context, progressStateUpdater, playerSessionWriter)
     }
 
     @Provides
