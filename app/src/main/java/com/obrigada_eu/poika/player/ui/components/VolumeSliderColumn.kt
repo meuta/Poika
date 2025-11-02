@@ -1,18 +1,19 @@
 package com.obrigada_eu.poika.player.ui.components
 
+import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.player.ui.PlayerViewModel
+import com.obrigada_eu.poika.player.ui.preview.PreviewData
+import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 @Composable
 fun VolumeSliderColumn(
-    playerViewModel: PlayerViewModel,
+    volumes: List<Float>,
+    setVolume: (Int, Float) -> Unit
 ) {
-
-    val volumeStates by playerViewModel.volumeList.collectAsState()
 
     val titles = listOf(
         stringResource(R.string.soprano),
@@ -20,13 +21,36 @@ fun VolumeSliderColumn(
         stringResource(R.string.minus)
     )
 
-    titles.forEachIndexed { index, title ->
-        VolumeSlider(
-            title = title,
-            value = volumeStates[index],
-            onValueChange = {
-                playerViewModel.setVolume(index, it)
-            }
+    Column {
+        titles.forEachIndexed { index, title ->
+            VolumeSlider(
+                title = title,
+                value = volumes[index],
+                onValueChange = {
+                    setVolume(index, it)
+                }
+            )
+        }
+    }
+}
+
+
+@Preview(
+    name = "Light Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
+@Composable
+fun VolumeSliderColumnPreview() {
+    PoikaTheme {
+        VolumeSliderColumn(
+            volumes = PreviewData.volumes,
+            setVolume = { _, _ -> }
         )
     }
 }

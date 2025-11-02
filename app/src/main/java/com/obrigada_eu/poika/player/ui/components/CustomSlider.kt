@@ -1,5 +1,6 @@
 package com.obrigada_eu.poika.player.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,14 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.obrigada_eu.poika.ui.theme.Dimens
+import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun CustomSlider(
     modifier: Modifier = Modifier,
     value: Float = 0f,
-    onValueChange:(Float) -> Unit = {},
+    onValueChange:(Float) -> Unit,
     onValueChangeFinished: () -> Unit = {},
     valueRange: ClosedFloatingPointRange<Float> = 0f..100f,
 ) {
@@ -50,6 +51,25 @@ fun CustomSlider(
                     drawStopIndicator = null,
                 )
             },
+        )
+    }
+}
+
+
+@Preview(
+    name = "Light Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
+@Composable
+fun CustomSliderPreview() {
+    PoikaTheme {
+        CustomSlider(
+            onValueChange = {},
         )
     }
 }
