@@ -1,5 +1,6 @@
 package com.obrigada_eu.poika.player.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +24,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.toTitleString
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.model.TrackInfo
+import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
+import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 @Composable
 fun ListDialog(
@@ -179,52 +181,49 @@ class ListDialogIsMultiChoiceProvider : PreviewParameterProvider<Boolean> {
     override val values = sequenceOf(true, false)
 }
 
-private val songs = listOf(
-    SongMetaData(
-        "Natural Blues",
-        "Moby",
-        tracks = listOf(TrackInfo("", "")),
-        voiceInstrument = "voice",
-        folderName = ""
-    ),
-    SongMetaData(
-        "Uprising",
-        "Muse",
-        tracks = listOf(TrackInfo("", "")),
-        voiceInstrument = "piano",
-        folderName = ""
-    ),
-    SongMetaData(
-        "Creep",
-        "Radiohead",
-        tracks = listOf(TrackInfo("", "")),
-        voiceInstrument = "piano",
-        folderName = ""
-    )
-)
 
-@Preview
+@Preview(
+    name = "Light Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
 @Composable
 fun ListDialogPreview(
     @PreviewParameter(ListDialogIsMultiChoiceProvider::class) isMultiChoice: Boolean,
 ) {
-    ListDialog(
-        title = "Choose Song",
-        items = songs,
-        isMultiChoice = isMultiChoice,
-        onConfirm = {},
-        onConfirmMultiChoice = {},
-        onEmptySelection = {},
-        onDismiss = {}
-    )
+    PoikaTheme {
+        ListDialog(
+            title = stringResource(R.string.choose_song),
+            items = PreviewData.songs,
+            isMultiChoice = isMultiChoice,
+            onConfirm = {},
+            onConfirmMultiChoice = {},
+            onEmptySelection = {},
+            onDismiss = {}
+        )
+    }
 }
 
-@Preview
+@Preview(
+    name = "Light Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
 @Composable
 fun ConfirmDeleteDialogPreview() {
-    ConfirmDeleteDialog(
-        songs = songs,
-        onConfirm = {},
-        onDismiss = {}
-    )
+    PoikaTheme {
+        ConfirmDeleteDialog(
+            songs = PreviewData.songs,
+            onConfirm = {},
+            onDismiss = {}
+        )
+    }
 }
