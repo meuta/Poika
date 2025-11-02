@@ -17,6 +17,8 @@ class PlayerSession(private val scope: CoroutineScope) : PlayerSessionWriter, Pl
     private val defaultVolumes = listOf(1f, 1f, 1f)
     private val volumeLevels = MutableStateFlow(defaultVolumes)
 
+    private val isPlaying = MutableStateFlow(false)
+
     override fun setCurrentSong(metaData: SongMetaData?) {
         currentSong.value = metaData
     }
@@ -29,6 +31,10 @@ class PlayerSession(private val scope: CoroutineScope) : PlayerSessionWriter, Pl
         }
     }
 
+    override fun setIsPlaying(isPlaying: Boolean) {
+        this.isPlaying.value = isPlaying
+    }
+
     override fun <T> currentSongFlow(transform: (SongMetaData) -> T?): StateFlow<T?> {
         return currentSong
             .map { data -> data?.let(transform) }
@@ -36,4 +42,6 @@ class PlayerSession(private val scope: CoroutineScope) : PlayerSessionWriter, Pl
     }
 
     override fun volumeLevelsFlow(): StateFlow<List<Float>> = volumeLevels
+
+    override fun isPlayingFlow(): StateFlow<Boolean> = isPlaying
 }

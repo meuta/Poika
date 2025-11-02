@@ -50,6 +50,8 @@ class PlayerViewModel @Inject constructor(
         state.toUi(TimeStringFormatter)
     }
 
+    val isPlaying = playerSessionReader.isPlayingFlow()
+
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
 
@@ -95,8 +97,8 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun play() = audioService.play()
-    fun pause() = audioService.pause()
+
+    fun togglePlayPause() = audioService.togglePlayPause()
     fun stop() = audioService.stop()
 
 
