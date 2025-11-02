@@ -50,6 +50,7 @@ fun PlayerScreenHost(
 
     val volumeStates by playerViewModel.volumeList.collectAsState()
 
+    val isPlaying by playerViewModel.isPlaying.collectAsState()
 
     LaunchedEffect(Unit) {
         playerViewModel.progressStateUi.collect { progressState ->
@@ -119,8 +120,7 @@ fun PlayerScreenHost(
             isUserSeeking = false
         },
         playbackButtons = mapOf(
-            R.string.play to playerViewModel::play,
-            R.string.pause to playerViewModel::pause,
+            (if (isPlaying) R.string.pause else R.string.play) to playerViewModel::togglePlayPause,
             R.string.stop to playerViewModel::stop
         ).mapKeys { stringResource(it.key) },
         volumeStates = volumeStates,

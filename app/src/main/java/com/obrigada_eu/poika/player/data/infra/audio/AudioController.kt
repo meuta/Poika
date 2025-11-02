@@ -34,6 +34,7 @@ class AudioController @Inject constructor(
         }
     }
 
+    private var isPlaying: Boolean = false
 
     override fun loadTracks(songMetaData: SongMetaData) {
 
@@ -72,7 +73,20 @@ class AudioController @Inject constructor(
     }
 
 
-    override fun play() {
+    override fun togglePlayPause() {
+        if (playerIsReady) {
+            if (isPlaying) {
+                pause()
+                playerSessionWriter.setIsPlaying(false)
+            } else {
+                play()
+                playerSessionWriter.setIsPlaying(true)
+            }
+            isPlaying = !isPlaying
+        }
+    }
+
+    private fun play() {
         if (playerIsReady) {
             players.forEach {
                 if (it.playbackState == Player.STATE_IDLE) {
@@ -84,7 +98,7 @@ class AudioController @Inject constructor(
         }
     }
 
-    override fun pause() {
+    private fun pause() {
         players.forEach { it.playWhenReady = false }
         runProgressTicker(false)
     }
@@ -96,6 +110,8 @@ class AudioController @Inject constructor(
         }
         seekTo(0)
         runProgressTicker(false)
+        isPlaying = false
+        playerSessionWriter.setIsPlaying(false)
     }
 
     override fun setVolume(trackIndex: Int, volume: Float) {
