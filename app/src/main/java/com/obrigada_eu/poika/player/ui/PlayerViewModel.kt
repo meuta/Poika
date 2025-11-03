@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.common.formatters.toTitleString
+import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
 import com.obrigada_eu.poika.player.domain.contracts.AudioService
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
@@ -100,6 +101,10 @@ class PlayerViewModel @Inject constructor(
 
     fun togglePlayPause() = audioService.togglePlayPause()
     fun stop() = audioService.stop()
+
+    fun rewind(direction: RewindDirection) = audioService.rewind(
+        if (direction == RewindDirection.BACK) - 5000L else +5000L
+    )
 
 
     fun setVolume(part: String, volume: Float) {

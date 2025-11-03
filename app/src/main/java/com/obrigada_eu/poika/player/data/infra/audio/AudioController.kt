@@ -73,7 +73,7 @@ class AudioController @Inject constructor(
                             playerIsReady = true
                         }
                         Player.STATE_ENDED -> {
-                            stop()
+                            this@AudioController.stop()
                         }
                         Player.STATE_BUFFERING -> {}
                         Player.STATE_IDLE -> {}
@@ -139,6 +139,15 @@ class AudioController @Inject constructor(
         updateProgressTracker(currentPosition = positionMs)
     }
 
+    override fun rewind(durationMs: Long) {
+        (getCurrentPosition() + durationMs)
+            .coerceIn(0L..getDuration())
+            .let { position ->
+                playersMap.values.forEach { player -> player.seekTo(position) }
+                updateProgressTracker(currentPosition = position)
+            }
+    }
+
 
     private fun getCurrentPosition(): Long {
         return playersMap.values.firstOrNull()?.currentPosition ?: 0L
@@ -166,4 +175,8 @@ class AudioController @Inject constructor(
         private const val INITIAL_VOLUME = 1f
         private const val TAG = "AudioController"
     }
+}
+
+enum class RewindDirection {
+    BACK, FORWARD
 }

@@ -1,6 +1,7 @@
 package com.obrigada_eu.poika.player.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
+import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 @Composable
@@ -19,9 +21,13 @@ fun PlaybackButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = Dimens.PlaybackButtonPaddingHorizontal),
     ) {
-        Text(text)
+        Text(
+            text = text,
+            maxLines = 1,
+        )
     }
 }
 

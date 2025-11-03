@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import coil3.request.ImageRequest
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
 import com.obrigada_eu.poika.player.ui.model.UiEvent
@@ -125,8 +126,10 @@ fun PlayerScreenHost(
             isUserSeeking = false
         },
         playbackButtons = mapOf(
+            R.string.minus_5_sec to { playerViewModel.rewind(RewindDirection.BACK) },
             (if (isPlaying) R.string.pause else R.string.play) to playerViewModel::togglePlayPause,
-            R.string.stop to playerViewModel::stop
+            R.string.stop to playerViewModel::stop,
+            R.string.plus_5_sec to { playerViewModel.rewind(RewindDirection.FORWARD) },
         ).mapKeys { stringResource(it.key) },
         volumeStates = volumeStates,
         setVolume = playerViewModel::setVolume,

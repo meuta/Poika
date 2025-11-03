@@ -12,7 +12,8 @@ import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
-private const val ButtonWeight = 1f
+private const val WeightSmall = 1f
+private const val WeightBig = 2f
 
 @Composable
 fun PlaybackButtonsRow(playbackButtons: Map<String, () -> Unit>) {
@@ -25,11 +26,11 @@ fun PlaybackButtonsRow(playbackButtons: Map<String, () -> Unit>) {
             ),
         horizontalArrangement = Arrangement.spacedBy(Dimens.PlaybackButtonArrangement),
     ) {
-        playbackButtons.forEach {  (labelRes, action)  ->
+        playbackButtons.forEach { (labelRes, action)  ->
             PlaybackButton(
                 text = labelRes,
                 onClick = action,
-                modifier = Modifier.weight(ButtonWeight),
+                modifier = Modifier.weight(if (labelRes.length < 4) WeightSmall else WeightBig),
             )
         }
     }

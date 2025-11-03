@@ -48,8 +48,8 @@ object PreviewData {
 
     val dialogButtonLabels = listOf("OK", "Cancel")
 
-    val playbackButtonLabels = listOf("Play", "Pause", "Stop")
-    val playbackButtons = listOf("Play", "Stop").associateWith { {} }
+    val playbackButtonLabels = listOf("Play", "Pause", "Stop", "-5s", "+5s")
+    val playbackButtons = listOf("-5s", "Play", "Stop", "+5s").associateWith { {} }
 
     val volumeSliderTitles = listOf("soprano", "alto", "minus")
 
