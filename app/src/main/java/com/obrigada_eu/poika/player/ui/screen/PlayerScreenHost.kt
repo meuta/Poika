@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import coil3.request.ImageRequest
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
@@ -48,9 +49,10 @@ fun PlayerScreenHost(
     var trackDurationText by remember { mutableStateOf(stringZeroZero) }
     var playbackSeekbarMax by remember { mutableFloatStateOf(0f) }
 
-    val volumeStates by playerViewModel.volumeList.collectAsState()
-
     val isPlaying by playerViewModel.isPlaying.collectAsState()
+
+    val volumeStates by playerViewModel.volumeMap.collectAsState()
+
 
     LaunchedEffect(Unit) {
         playerViewModel.progressStateUi.collect { progressState ->
@@ -106,6 +108,9 @@ fun PlayerScreenHost(
         menuIconOnClick = { menuExpanded = !menuExpanded },
         onDismissMenuRequest = { menuExpanded = false },
         songTitle = songTitle,
+        imageRequest = ImageRequest.Builder(context)
+            .data("android.resource://${context.packageName}/${R.raw.logo_pink_512_512}")
+            .build(),
         currentPositionText = currentPositionText,
         trackDurationText = trackDurationText,
         playbackSeekbarPosition = playbackSeekbarPosition,
@@ -124,9 +129,7 @@ fun PlayerScreenHost(
             R.string.stop to playerViewModel::stop
         ).mapKeys { stringResource(it.key) },
         volumeStates = volumeStates,
-        onSetVolume = { index, value ->
-            playerViewModel.setVolume(index, value)
-        },
+        setVolume = playerViewModel::setVolume,
         showChooseSongDialog = showChooseSongDialog,
         showDeleteSongDialog = showDeleteSongDialog,
         showDeleteConfirmationDialog = showDeleteConfirmationDialog,
@@ -151,3 +154,5 @@ fun PlayerScreenHost(
         onDismissHelpDialog = { showHelpDialog = false },
     )
 }
+
+private const val TAG = "PlayerScreenHost"

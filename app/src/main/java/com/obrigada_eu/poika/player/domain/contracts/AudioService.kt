@@ -6,6 +6,6 @@ interface AudioService {
     fun loadTracks(songMetaData: SongMetaData)
     fun togglePlayPause()
     fun stop()
-    fun setVolume(trackIndex: Int, volume: Float)
+    fun setVolume(part: String, volume: Float)
     fun seekTo(positionMs: Long)
 }

@@ -33,7 +33,7 @@ object PreviewData {
 
     val songTitle = "Moby - Natural Blues (piano version)"
 
-    val volumes = listOf(1f, 0.58f, 0.35f)
+    val volumes = mapOf("Soprano" to 1f, "Alto" to 0.58f, "Bass" to 0.78f, "Minus" to 0.35f)
 
     val currentPos = 34f
     val duration = 228f

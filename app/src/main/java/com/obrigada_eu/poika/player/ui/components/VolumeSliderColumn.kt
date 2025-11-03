@@ -3,32 +3,22 @@ package com.obrigada_eu.poika.player.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 @Composable
 fun VolumeSliderColumn(
-    volumes: List<Float>,
-    setVolume: (Int, Float) -> Unit
+    volumeStates: Map<String,Float>,
+    setVolume: (String, Float) -> Unit,
 ) {
-
-    val titles = listOf(
-        stringResource(R.string.soprano),
-        stringResource(R.string.alto),
-        stringResource(R.string.minus)
-    )
-
+    
     Column {
-        titles.forEachIndexed { index, title ->
+        volumeStates.forEach { (part, volume) ->
             VolumeSlider(
-                title = title,
-                value = volumes[index],
-                onValueChange = {
-                    setVolume(index, it)
-                }
+                title = part,
+                value = volume,
+                onValueChange = { newValue -> setVolume(part, newValue) }
             )
         }
     }
@@ -49,8 +39,10 @@ fun VolumeSliderColumn(
 fun VolumeSliderColumnPreview() {
     PoikaTheme {
         VolumeSliderColumn(
-            volumes = PreviewData.volumes,
+            volumeStates = PreviewData.volumes,
             setVolume = { _, _ -> }
         )
     }
 }
+
+private const val TAG = "VolumeSliderColumn"

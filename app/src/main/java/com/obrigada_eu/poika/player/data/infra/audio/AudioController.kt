@@ -7,6 +7,7 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.obrigada_eu.poika.common.formatters.toTrackInfoList
 import com.obrigada_eu.poika.player.domain.contracts.AudioService
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
@@ -21,8 +22,7 @@ class AudioController @Inject constructor(
     private val playerSessionWriter: PlayerSessionWriter,
 ) : AudioService {
 
-    private val players: List<ExoPlayer> = List(3) { ExoPlayer.Builder(context).build() }
-
+    private var playersMap: Map<String, ExoPlayer> = mapOf()
     private var playerIsReady = false
 
     private val handler = Handler(Looper.getMainLooper())
@@ -39,37 +39,57 @@ class AudioController @Inject constructor(
     override fun loadTracks(songMetaData: SongMetaData) {
 
         stop()
-        playerSessionWriter.setCurrentSong(songMetaData)
 
-        val base = File(context.filesDir, "songs/${songMetaData.folderName}")
-        val (uri1, uri2, uri3) = listOf("Soprano", "Alto", "Minus").map { part ->
-            songMetaData.tracks.find { it.name == part }?.file?.let { File(base, it).toUri() }
+        val tracks = songMetaData.toTrackInfoList()
+
+        // release extra players
+        playersMap
+            .filterKeys { part -> part !in tracks.map { it.name } }
+            .values.forEach { player -> player.release() }
+
+        // add players if need
+        playersMap = tracks.map { it.name }.associateWith { part ->
+            playersMap[part] ?: ExoPlayer.Builder(context).build()
         }
 
-        val uris = listOf(uri1, uri2, uri3)
-        for (i in uris.indices) {
-            players[i].apply {
-                uris[i]?.let {
-                    setMediaItem(MediaItem.fromUri(it))
-                    prepare()
-                }
+        // set initial volumes
+        playersMap.keys.forEach { part ->
+            playersMap[part]?.volume = INITIAL_VOLUME
+        }
+
+        // load tracks from files into players
+        val base = File(context.filesDir, "songs/${songMetaData.folderName}")
+        tracks.forEach { track ->
+            val uri = File(base, track.file).toUri()
+            playersMap[track.name]?.apply {
+                setMediaItem(MediaItem.fromUri(uri))
+                prepare()
             }
         }
 
-        players.firstOrNull()?.let { player ->
-            player.addListener(object : Player.Listener {
+        // add listener
+        playersMap.values.firstOrNull()?.apply {
+            addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(state: Int) {
-                    if (state == Player.STATE_READY) {
-                        val durationMs = player.duration
-                        updateDuration(durationMs)
-                        playerIsReady = true
-                    }
-                    if (state == Player.STATE_ENDED) {
-                        stop()
+                    when (state) {
+                        Player.STATE_READY -> {
+                            val durationMs = duration
+                            updateDuration(durationMs)
+                            playerIsReady = true
+                        }
+                        Player.STATE_ENDED -> {
+                            stop()
+                        }
+                        Player.STATE_BUFFERING -> {}
+                        Player.STATE_IDLE -> {}
                     }
                 }
             })
         }
+
+        // set song title and parts in playerSession
+        playerSessionWriter.setCurrentSong(songMetaData)
+        playerSessionWriter.updateParts(playersMap.mapValues { (_, player) -> player.volume })
     }
 
 
@@ -88,25 +108,25 @@ class AudioController @Inject constructor(
 
     private fun play() {
         if (playerIsReady) {
-            players.forEach {
-                if (it.playbackState == Player.STATE_IDLE) {
-                    it.prepare()
+            playersMap.values.forEach { player ->
+                if (player.playbackState == Player.STATE_IDLE) {
+                    player.prepare()
                 }
-                it.playWhenReady = true
+                player.playWhenReady = true
             }
             runProgressTicker(true)
         }
     }
 
     private fun pause() {
-        players.forEach { it.playWhenReady = false }
+        playersMap.values.forEach { player -> player.playWhenReady = false }
         runProgressTicker(false)
     }
 
     override fun stop() {
-        players.forEach {
-            it.stop()
-            it.playWhenReady = false
+        playersMap.values.forEach { player ->
+            player.stop()
+            player.playWhenReady = false
         }
         seekTo(0)
         runProgressTicker(false)
@@ -114,25 +134,23 @@ class AudioController @Inject constructor(
         playerSessionWriter.setIsPlaying(false)
     }
 
-    override fun setVolume(trackIndex: Int, volume: Float) {
-        if (trackIndex in players.indices) {
-            players[trackIndex].volume = volume
-            playerSessionWriter.setTrackVolume(trackIndex, volume)
-        }
+    override fun setVolume(part: String, volume: Float) {
+        playersMap[part]?.volume = volume
+        playerSessionWriter.setTrackVolume(part, volume)
     }
 
     override fun seekTo(positionMs: Long) {
-        players.forEach { it.seekTo(positionMs) }
+        playersMap.values.forEach { player -> player.seekTo(positionMs) }
         updateProgressTracker(currentPosition = positionMs)
     }
 
 
     private fun getCurrentPosition(): Long {
-        return players.firstOrNull()?.currentPosition ?: 0L
+        return playersMap.values.firstOrNull()?.currentPosition ?: 0L
     }
 
     private fun getDuration(): Long {
-        return players.firstOrNull()?.duration ?: 0L
+        return playersMap.values.firstOrNull()?.duration ?: 0L
     }
 
 
@@ -144,8 +162,13 @@ class AudioController @Inject constructor(
         progressTracker.update(progressTracker.currentState().copy(currentPosition = currentPosition))
     }
 
-
     private fun updateDuration(duration: Long) {
         progressTracker.update(progressTracker.currentState().copy(duration = duration))
+    }
+
+    companion object {
+
+        private const val INITIAL_VOLUME = 1f
+        private const val TAG = "AudioController"
     }
 }

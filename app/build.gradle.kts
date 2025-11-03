@@ -77,6 +77,9 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
 
+    // Coil
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+
     // Mockito
     testImplementation("org.mockito:mockito-core:5.20.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.1.0")
