@@ -11,20 +11,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.components.ConfirmDeleteDialog
 import com.obrigada_eu.poika.player.ui.components.HelpDialog
 import com.obrigada_eu.poika.player.ui.components.ListDialog
-import com.obrigada_eu.poika.player.ui.components.PlaybackButtonsRow
-import com.obrigada_eu.poika.player.ui.components.PlaybackSeekbar
+import com.obrigada_eu.poika.player.ui.components.PlayerPane
 import com.obrigada_eu.poika.player.ui.components.PoikaTopAppBar
-import com.obrigada_eu.poika.player.ui.components.VolumeSliderColumn
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
@@ -37,6 +38,7 @@ fun PlayerScreen(
     menuIconOnClick: () -> Unit,
     onDismissMenuRequest: () -> Unit,
     songTitle: String?,
+    imageRequest: ImageRequest,
     currentPositionText: String,
     trackDurationText: String,
     playbackSeekbarPosition: Float,
@@ -44,8 +46,8 @@ fun PlayerScreen(
     onSeekChanged: (Float) -> Unit,
     onSeekReleased: () -> Unit,
     playbackButtons: Map<String, () -> Unit>,
-    volumeStates: List<Float>,
-    onSetVolume: (Int, Float) -> Unit,
+    volumeStates: Map<String, Float>,
+    setVolume: (String, Float) -> Unit,
     showChooseSongDialog: Boolean,
     showDeleteSongDialog: Boolean,
     showDeleteConfirmationDialog: Boolean,
@@ -89,24 +91,26 @@ fun PlayerScreen(
                 modifier = Modifier.padding(Dimens.SongTitlePadding),
             )
 
-            // Playback Seekbar
-            PlaybackSeekbar(
-                currentPositionText = currentPositionText,
-                trackDurationText = trackDurationText,
-                sliderPosition = playbackSeekbarPosition,
-                playbackSeekbarMax = playbackSeekbarMax,
-                onValueChange = onSeekChanged,
-                onValueChangeFinished = onSeekReleased,
-            )
-
-            // Buttons row
-            PlaybackButtonsRow(playbackButtons)
-
-            // Volume sliders
-            VolumeSliderColumn(
-                volumes = volumeStates,
-                setVolume = onSetVolume
-            )
+            // Player Pane
+            if (songTitle != null) {
+                PlayerPane(
+                    currentPositionText = currentPositionText,
+                    trackDurationText = trackDurationText,
+                    playbackSeekbarPosition = playbackSeekbarPosition,
+                    playbackSeekbarMax = playbackSeekbarMax,
+                    onSeekChanged = onSeekChanged,
+                    onSeekReleased = onSeekReleased,
+                    playbackButtons = playbackButtons,
+                    volumeStates = volumeStates,
+                    setVolume = setVolume,
+                )
+            } else {
+                AsyncImage(
+                    model = imageRequest,
+                    contentDescription = "logo",
+                    alignment = Alignment.Center,
+                )
+            }
         }
     }
 
@@ -157,6 +161,8 @@ fun PlayerScreen(
 )
 @Composable
 fun PlayerScreenPreview() {
+    val context = LocalContext.current
+
     PoikaTheme {
         PlayerScreen(
             menuItems = PreviewData.menuItems,
@@ -164,6 +170,9 @@ fun PlayerScreenPreview() {
             menuIconOnClick = {},
             onDismissMenuRequest = {},
             songTitle = PreviewData.songTitle,
+            imageRequest = ImageRequest.Builder(context)
+                .data("android.resource://${context.packageName}/${R.raw.logo_pink_512_512}")
+                .build(),
             currentPositionText = TimeStringFormatter.formatSecToString(PreviewData.currentPos),
             trackDurationText = TimeStringFormatter.formatSecToString(PreviewData.duration),
             playbackSeekbarPosition = PreviewData.currentPos,
@@ -172,7 +181,7 @@ fun PlayerScreenPreview() {
             onSeekReleased = {},
             playbackButtons = PreviewData.playbackButtons,
             volumeStates = PreviewData.volumes,
-            onSetVolume = { _, _ ->},
+            setVolume = { _, _ ->},
             showChooseSongDialog = false,
             showDeleteSongDialog = false,
             showDeleteConfirmationDialog = false,

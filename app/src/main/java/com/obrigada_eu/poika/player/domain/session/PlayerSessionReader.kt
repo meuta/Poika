@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface PlayerSessionReader {
     fun <T> currentSongFlow(transform: (SongMetaData) -> T?): StateFlow<T?>
-    fun volumeLevelsFlow(): StateFlow<List<Float>>
+    fun volumeLevelsFlow(): StateFlow<Map<String, Float>>
     fun isPlayingFlow(): StateFlow<Boolean>
 }

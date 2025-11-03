@@ -40,17 +40,17 @@ class PlayerViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
 
-    val songTitleText = playerSessionReader.currentSongFlow { metaData ->
+    val songTitleText: StateFlow<String?> = playerSessionReader.currentSongFlow { metaData ->
         metaData.toTitleString()
     }
 
-    val volumeList: StateFlow<List<Float>> = playerSessionReader.volumeLevelsFlow()
+    val volumeMap: StateFlow<Map<String, Float>> = playerSessionReader.volumeLevelsFlow()
 
     val progressStateUi: StateFlow<ProgressStateUi> = progressProvider.mapState { state ->
         state.toUi(TimeStringFormatter)
     }
 
-    val isPlaying = playerSessionReader.isPlayingFlow()
+    val isPlaying: StateFlow<Boolean> = playerSessionReader.isPlayingFlow()
 
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
@@ -102,12 +102,16 @@ class PlayerViewModel @Inject constructor(
     fun stop() = audioService.stop()
 
 
-    fun setVolume(trackIndex: Int, volume: Float) {
-        audioService.setVolume(trackIndex, volume)
+    fun setVolume(part: String, volume: Float) {
+        audioService.setVolume(part, volume)
     }
 
     fun setSongProgress(sliderPosition: Float) {
         val newPosition = sliderPosition.toPlayerPosition()
         audioService.seekTo(newPosition)
+    }
+
+    companion object {
+        private const val TAG = "PlayerViewModel"
     }
 }
