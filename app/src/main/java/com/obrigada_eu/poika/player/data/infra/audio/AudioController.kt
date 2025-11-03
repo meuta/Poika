@@ -49,12 +49,7 @@ class AudioController @Inject constructor(
 
         // add players if need
         playersMap = tracks.map { it.name }.associateWith { part ->
-            playersMap[part] ?: ExoPlayer.Builder(context).build()
-        }
-
-        // set initial volumes
-        playersMap.keys.forEach { part ->
-            playersMap[part]?.volume = INITIAL_VOLUME
+            playersMap[part] ?: ExoPlayer.Builder(context).build().apply { volume = INITIAL_VOLUME }
         }
 
         // load tracks from files into players
