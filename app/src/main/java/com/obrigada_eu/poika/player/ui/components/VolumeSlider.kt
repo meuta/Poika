@@ -16,7 +16,7 @@ import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
-private const val TitleWeight = 2f
+private const val TitleWeight = 3f
 private const val TrackWeight = 7f
 
 @Composable

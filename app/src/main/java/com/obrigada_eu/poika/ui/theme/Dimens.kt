@@ -18,12 +18,13 @@ object Dimens {
     val SeekbarTrackHeight = 2.dp
     val SeekbarGapSize = 0.dp
 
-    val TimeTextPadding = 16.dp
+    val TimeTextPaddingHorizontal = 12.dp
 
-    val PlaybackButtonPaddingVertical = 32.dp
+    val PlaybackButtonPaddingTop = 16.dp
+    val PlaybackButtonPaddingBottom = 24.dp
     val PlaybackButtonPaddingHorizontal = 8.dp
     val PlaybackButtonArrangement = 16.dp
-    val VolumeTitlePaddingVertical = 16.dp
+    val VolumeTitlePaddingVertical = 12.dp
 
     val DialogSingleChoicePadding = 8.dp
     val DialogMultipleChoicePadding = 4.dp

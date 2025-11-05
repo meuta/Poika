@@ -16,7 +16,7 @@ fun TimeText(time: String) {
     Text(
         text = time,
         fontSize = Dimens.MediumFontSize,
-        modifier = Modifier.padding(Dimens.TimeTextPadding),
+        modifier = Modifier.padding(horizontal = Dimens.TimeTextPaddingHorizontal),
         color = MaterialTheme.colorScheme.onBackground,
     )
 }

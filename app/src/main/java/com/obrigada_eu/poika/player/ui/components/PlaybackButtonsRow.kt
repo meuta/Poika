@@ -21,8 +21,10 @@ fun PlaybackButtonsRow(playbackButtons: Map<String, () -> Unit>) {
         modifier = Modifier.Companion
             .fillMaxWidth()
             .padding(
-                vertical = Dimens.PlaybackButtonPaddingVertical,
-                horizontal = Dimens.PlaybackButtonPaddingHorizontal
+                top = Dimens.PlaybackButtonPaddingTop,
+                bottom = Dimens.PlaybackButtonPaddingBottom,
+                start = Dimens.PlaybackButtonPaddingHorizontal,
+                end = Dimens.PlaybackButtonPaddingHorizontal
             ),
         horizontalArrangement = Arrangement.spacedBy(Dimens.PlaybackButtonArrangement),
     ) {
