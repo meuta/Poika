@@ -25,3 +25,6 @@ output-metadata.json
 
 # Baseline profiles
 baselineProfiles/
+
+# Release build artifacts
+app/release/
