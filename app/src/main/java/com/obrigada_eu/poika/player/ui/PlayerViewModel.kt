@@ -1,6 +1,10 @@
 package com.obrigada_eu.poika.player.ui
 
+import android.graphics.Typeface
 import android.net.Uri
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
@@ -71,8 +75,12 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun showMessage(message: String) {
-        viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message)) }
+    fun showMessage(message: Spannable, shortDuration: Boolean = true) {
+        viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message, shortDuration)) }
+    }
+
+    fun showMessage(message: String, shortDuration: Boolean = true) {
+        showMessage(SpannableString(message), shortDuration)
     }
 
     private fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
@@ -83,7 +91,21 @@ class PlayerViewModel @Inject constructor(
     fun handleZipImport(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = importZipUseCase(uri)
-            showMessage(result?.let { "New song is available" } ?: "Error importing a song")
+            if (result != null) {
+
+                val text = "Song ${result.toTitleString()} is available in your list"
+                val spannable = SpannableString(text).apply {
+                    setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        5,
+                        text.length - 26,
+                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                    )
+                }
+                showMessage(spannable, false)
+            } else {
+                showMessage("Error importing a song")
+            }
         }
     }
 

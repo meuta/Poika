@@ -82,7 +82,7 @@ fun PlayerScreenHost(
                 }
                 is UiEvent.ShowToast -> {
                     if (event.message.isNotBlank()) {
-                        Toaster.show(context, event.message)
+                        Toaster.show(context, event.message, event.shortDuration)
                     }
                 }
                 is UiEvent.ShowHelpDialog -> {

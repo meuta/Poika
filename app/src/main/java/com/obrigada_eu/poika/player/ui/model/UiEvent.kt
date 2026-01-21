@@ -1,10 +1,11 @@
 package com.obrigada_eu.poika.player.ui.model
 
+import android.text.Spannable
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 
 sealed class UiEvent {
 
-    data class ShowToast(val message: String) : UiEvent()
+    data class ShowToast(val message: Spannable, val shortDuration: Boolean) : UiEvent()
 
     data class ShowSongDialog(
         val songs: List<SongMetaData>,
