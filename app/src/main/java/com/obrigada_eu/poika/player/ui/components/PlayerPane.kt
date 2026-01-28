@@ -10,6 +10,8 @@ fun PlayerPane(
     playbackSeekbarMax: Float,
     onSeekChanged: (Float) -> Unit,
     onSeekReleased: () -> Unit,
+    changeSpeedButtons: Map<String, () -> Unit>,
+    currentSpeed: String,
     playbackButtons: Map<String, () -> Unit>,
     volumeStates: Map<String, Float>,
     setVolume: (String, Float) -> Unit,
@@ -23,6 +25,8 @@ fun PlayerPane(
         playbackSeekbarMax = playbackSeekbarMax,
         onValueChange = onSeekChanged,
         onValueChangeFinished = onSeekReleased,
+        changeSpeedButtons = changeSpeedButtons,
+        currentSpeedText = currentSpeed,
     )
 
     // Buttons row

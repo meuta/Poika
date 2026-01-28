@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import coil3.request.ImageRequest
 import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
@@ -49,6 +50,8 @@ fun PlayerScreenHost(
     var currentPositionText by remember { mutableStateOf(stringZeroZero) }
     var trackDurationText by remember { mutableStateOf(stringZeroZero) }
     var playbackSeekbarMax by remember { mutableFloatStateOf(0f) }
+
+    val currentSpeedText by playerViewModel.currentSpeedUi.collectAsState()
 
     val isPlaying by playerViewModel.isPlaying.collectAsState()
 
@@ -125,6 +128,12 @@ fun PlayerScreenHost(
             playerViewModel.setSongProgress(playbackSeekbarPosition)
             isUserSeeking = false
         },
+        changeSpeedButtons = mapOf(
+            R.string.minus_speed to { playerViewModel.changeSpeed(ChangeSpeedDirection.BACK) },
+            R.string.plus_speed to { playerViewModel.changeSpeed(ChangeSpeedDirection.FORWARD) },
+        ).mapKeys { stringResource(it.key) },
+        currentSpeed = currentSpeedText,
+
         playbackButtons = mapOf(
             R.string.minus_5_sec to { playerViewModel.rewind(RewindDirection.BACK) },
             (if (isPlaying) R.string.pause else R.string.play) to playerViewModel::togglePlayPause,

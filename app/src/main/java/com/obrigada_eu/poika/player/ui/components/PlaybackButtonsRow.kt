@@ -18,7 +18,7 @@ private const val WeightBig = 2f
 @Composable
 fun PlaybackButtonsRow(playbackButtons: Map<String, () -> Unit>) {
     Row(
-        modifier = Modifier.Companion
+        modifier = Modifier
             .fillMaxWidth()
             .padding(
                 top = Dimens.PlaybackButtonPaddingTop,

@@ -45,6 +45,8 @@ fun PlayerScreen(
     playbackSeekbarMax: Float,
     onSeekChanged: (Float) -> Unit,
     onSeekReleased: () -> Unit,
+    changeSpeedButtons: Map<String, () -> Unit>,
+    currentSpeed: String,
     playbackButtons: Map<String, () -> Unit>,
     volumeStates: Map<String, Float>,
     setVolume: (String, Float) -> Unit,
@@ -100,6 +102,8 @@ fun PlayerScreen(
                     playbackSeekbarMax = playbackSeekbarMax,
                     onSeekChanged = onSeekChanged,
                     onSeekReleased = onSeekReleased,
+                    changeSpeedButtons = changeSpeedButtons,
+                    currentSpeed = currentSpeed,
                     playbackButtons = playbackButtons,
                     volumeStates = volumeStates,
                     setVolume = setVolume,
@@ -181,7 +185,7 @@ fun PlayerScreenPreview() {
             onSeekReleased = {},
             playbackButtons = PreviewData.playbackButtons,
             volumeStates = PreviewData.volumes,
-            setVolume = { _, _ ->},
+            setVolume = { _, _ -> },
             showChooseSongDialog = false,
             showDeleteSongDialog = false,
             showDeleteConfirmationDialog = false,
@@ -194,7 +198,9 @@ fun PlayerScreenPreview() {
             onEmptySelection = {},
             onDismissChooseSongDialog = {},
             onDismissDeleteSongDialog = {},
-            onDismissDeleteConfirmationDialog = {}
+            onDismissDeleteConfirmationDialog = {},
+            changeSpeedButtons = PreviewData.changeSpeedButtons,
+            currentSpeed = PreviewData.currentSpeed
         ) {}
     }
 }

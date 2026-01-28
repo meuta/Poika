@@ -50,6 +50,9 @@ object PreviewData {
 
     val playbackButtonLabels = listOf("Play", "Pause", "Stop", "-5s", "+5s")
     val playbackButtons = listOf("-5s", "Play", "Stop", "+5s").associateWith { {} }
+    val changeSpeedButtons = listOf("-", "+").associateWith { {} }
+
+    val currentSpeed = "x0.8"
 
     val volumeSliderTitles = listOf("soprano", "alto", "minus")
 

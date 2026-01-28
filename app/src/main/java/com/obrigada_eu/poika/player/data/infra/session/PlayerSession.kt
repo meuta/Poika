@@ -18,6 +18,8 @@ class PlayerSession(private val scope: CoroutineScope) : PlayerSessionWriter, Pl
 
     private val isPlaying = MutableStateFlow(false)
 
+    private val currentSpeed = MutableStateFlow(1f)
+
     override fun setCurrentSong(metaData: SongMetaData?) {
         currentSong.value = metaData
     }
@@ -30,6 +32,10 @@ class PlayerSession(private val scope: CoroutineScope) : PlayerSessionWriter, Pl
 
     override fun setIsPlaying(isPlaying: Boolean) {
         this.isPlaying.value = isPlaying
+    }
+
+    override fun setSpeed(speed: Float) {
+        this.currentSpeed.value = speed
     }
 
     override fun updateParts(parts: Map<String, Float>) {
@@ -45,6 +51,15 @@ class PlayerSession(private val scope: CoroutineScope) : PlayerSessionWriter, Pl
     override fun volumeLevelsFlow(): StateFlow<Map<String, Float>> = volumeLevels
 
     override fun isPlayingFlow(): StateFlow<Boolean> = isPlaying
+
+    override fun currentSpeedFlow(): StateFlow<Float> = this.currentSpeed
+
+    override fun <T> mapSpeed(transform: (Float) -> T): StateFlow<T> {
+        return currentSpeed
+            .map(transform)
+            .stateIn(scope, SharingStarted.Lazily, transform(1f))
+
+    }
 
     companion object {
         private const val TAG = "PlayerSession"

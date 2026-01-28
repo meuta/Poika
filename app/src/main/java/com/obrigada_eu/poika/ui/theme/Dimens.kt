@@ -20,6 +20,15 @@ object Dimens {
 
     val TimeTextPaddingHorizontal = 12.dp
 
+
+    val SpeedControllerBorderWidth = 1.dp
+    val SpeedControllerPaddingHorizontal = 4.dp
+    val SpeedControllerButtonHeight = 36.dp
+    val SpeedControllerButtonWidth = 28.dp
+    val SpeedControllerButtonRoundRadius = 6f
+
+    val SpeedControllerButtonPaddingHorizontal = 6.dp
+
     val PlaybackButtonPaddingTop = 16.dp
     val PlaybackButtonPaddingBottom = 24.dp
     val PlaybackButtonPaddingHorizontal = 8.dp
@@ -34,6 +43,8 @@ object Dimens {
     val LargeFontSize = 20.sp
 
     val MediumFontSize = 16.sp
+
+    val SmallFontSize = 12.sp
     val MenuItemLetterSpacing = 0.5.sp
 
     val SongTitleLineHeight = 20.sp
