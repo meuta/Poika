@@ -26,6 +26,7 @@ object Dimens {
     val SpeedControllerButtonHeight = 36.dp
     val SpeedControllerButtonWidth = 28.dp
     val SpeedControllerButtonRoundRadius = 8f
+    val SpeedControllerButtonIconSize = 20.dp
 
     val SpeedControllerButtonPaddingHorizontal = 6.dp
 

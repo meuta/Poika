@@ -27,6 +27,7 @@ import com.obrigada_eu.poika.player.ui.components.ListDialog
 import com.obrigada_eu.poika.player.ui.components.PlayerPane
 import com.obrigada_eu.poika.player.ui.components.PoikaTopAppBar
 import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
+import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
@@ -46,7 +47,7 @@ fun PlayerScreen(
     playbackSeekbarMax: Float,
     onSeekChanged: (Float) -> Unit,
     onSeekReleased: () -> Unit,
-    changeSpeedButtons: Map<String, () -> Unit>,
+    changeSpeedButtons: Pair<TriangleButtonItem, TriangleButtonItem>,
     currentSpeed: String,
     playbackButtons: List<ImageButtonItem>,
     volumeStates: Map<String, Float>,

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
@@ -29,7 +30,7 @@ fun PlaybackSeekbar(
     playbackSeekbarMax: Float,
     onValueChange: (Float) -> Unit,
     onValueChangeFinished: () -> Unit,
-    changeSpeedButtons: Map<String, () -> Unit>,
+    changeSpeedButtons: Pair<TriangleButtonItem, TriangleButtonItem>,
     currentSpeedText: String,
 ) {
     Column {
@@ -61,7 +62,7 @@ fun PlaybackSeekbar(
 
 @Composable
 fun SpeedController(
-    changeSpeedButtons: Map<String, () -> Unit>,
+    changeSpeedButtons: Pair<TriangleButtonItem, TriangleButtonItem>,
     currentSpeedText: String,
 ) {
     Row(
@@ -76,9 +77,11 @@ fun SpeedController(
         horizontalArrangement = Arrangement.spacedBy(Dimens.SpeedControllerButtonPaddingHorizontal),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        SpeedControllerMinusButton(
-            text = changeSpeedButtons.keys.first(),
-            onClick = changeSpeedButtons.values.first(),
+        SpeedControllerButton(
+            type = changeSpeedButtons.first.type,
+            label = changeSpeedButtons.first.label,
+            icon = changeSpeedButtons.first.icon,
+            onClick = changeSpeedButtons.first.onClick,
         )
 
         Text(
@@ -88,9 +91,11 @@ fun SpeedController(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        SpeedControllerPlusButton(
-            text = changeSpeedButtons.keys.last(),
-            onClick = changeSpeedButtons.values.last(),
+        SpeedControllerButton(
+            type = changeSpeedButtons.second.type,
+            label = changeSpeedButtons.second.label,
+            icon = changeSpeedButtons.second.icon,
+            onClick = changeSpeedButtons.second.onClick,
         )
     }
 }

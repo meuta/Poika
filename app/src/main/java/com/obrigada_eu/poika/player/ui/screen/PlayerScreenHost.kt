@@ -2,6 +2,7 @@ package com.obrigada_eu.poika.player.ui.screen
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,7 +20,9 @@ import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
+import com.obrigada_eu.poika.player.ui.components.SpeedControllerButtonType
 import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
+import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 import com.obrigada_eu.poika.player.ui.model.UiEvent
 import com.obrigada_eu.poika.ui.utils.Toaster
 import kotlin.collections.mapKeys
@@ -131,10 +134,19 @@ fun PlayerScreenHost(
             playerViewModel.setSongProgress(playbackSeekbarPosition)
             isUserSeeking = false
         },
-        changeSpeedButtons = mapOf(
-            R.string.minus_speed to { playerViewModel.changeSpeed(ChangeSpeedDirection.BACK) },
-            R.string.plus_speed to { playerViewModel.changeSpeed(ChangeSpeedDirection.FORWARD) },
-        ).mapKeys { stringResource(it.key) },
+        changeSpeedButtons = Pair(
+            TriangleButtonItem(
+                type = SpeedControllerButtonType.BACKWARD,
+                label = stringResource(R.string.minus_speed),
+                icon = Icons.Filled.Remove,
+                onClick = { playerViewModel.changeSpeed(ChangeSpeedDirection.BACK) }),
+            TriangleButtonItem(
+                type = SpeedControllerButtonType.FORWARD,
+                label = stringResource(R.string.plus_speed),
+                icon = Icons.Filled.Add,
+                onClick = { playerViewModel.changeSpeed(ChangeSpeedDirection.FORWARD) }
+            ),
+        ),
         currentSpeed = currentSpeedText,
 
         playbackButtons = listOf(

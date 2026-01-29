@@ -4,80 +4,52 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.obrigada_eu.poika.player.ui.components.SpeedControllerButtonType.*
+import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
-@Composable
-fun SpeedControllerMinusButton(
-    text: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    SpeedControllerButton(
-        type = BACKWARD,
-        text = text,
-        modifier = modifier,
-        onClick = onClick
-    )
-}
-
-@Composable
-fun SpeedControllerPlusButton(
-    text: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    SpeedControllerButton(
-        type = FORWARD,
-        text = text,
-        modifier = modifier,
-        onClick = onClick
-    )
-}
-
-
-class SpeedControllerButtonTextProvider : PreviewParameterProvider<String> {
-    override val values = PreviewData.changeSpeedButtons.keys.asSequence()
-}
 
 @Composable
 fun SpeedControllerButton(
     type: SpeedControllerButtonType,
-    text: String,
+    label: String,
+    icon: ImageVector,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
+    val radius = Dimens.SpeedControllerButtonRoundRadius
+    val (shape, direction) = when (type) {
+        BACKWARD -> listOf(TriangleBackwardShape(radius), 1)
+        FORWARD -> listOf(TriangleForwardShape(radius), -1)
+    }
+
     Button(
-        shape = when (type) {
-            BACKWARD -> TriangleBackwardShape(Dimens.SpeedControllerButtonRoundRadius)
-            FORWARD -> TriangleForwardShape(Dimens.SpeedControllerButtonRoundRadius)
-        },
+        shape = shape as Shape,
         onClick = onClick,
         modifier = modifier
             .width(Dimens.SpeedControllerButtonWidth)
             .height(Dimens.SpeedControllerButtonHeight),
         contentPadding = PaddingValues(),
     ) {
-        Text(
-            text = text,
-            fontSize = Dimens.LargeFontSize,
-            modifier = Modifier.offset(
-                x = (Dimens.SpeedControllerButtonWidth / 7) * when (type) {
-                    BACKWARD -> 1
-                    FORWARD -> -1
-                }
-            ),
-            maxLines = 1,
+        Icon(
+            imageVector = icon,
+            modifier = Modifier
+                .size(Dimens.SpeedControllerButtonIconSize)
+                .offset(x = (Dimens.SpeedControllerButtonWidth / 7) * direction as Int),
+            contentDescription = label
         )
     }
 }
@@ -86,29 +58,10 @@ enum class SpeedControllerButtonType {
     BACKWARD, FORWARD
 }
 
-@Preview(
-    name = "Light Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showBackground = true
-)
-@Preview(
-    name = "Dark Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-)
-@Composable
-fun SpeedControllerButtonMinusPreview(
-    @PreviewParameter(SpeedControllerButtonTextProvider::class) text: String,
-) {
-    PoikaTheme {
-        SpeedControllerMinusButton(
-            text = text,
-            onClick = {},
-        )
-    }
+
+class SpeedControllerButtonItemProvider : PreviewParameterProvider<TriangleButtonItem> {
+    override val values = PreviewData.changeSpeedButtons.toList().asSequence()
 }
-
-
 
 @Preview(
     name = "Light Mode",
@@ -121,14 +74,18 @@ fun SpeedControllerButtonMinusPreview(
     showBackground = true,
 )
 @Composable
-fun SpeedControllerButtonPlusPreview(
-    @PreviewParameter(SpeedControllerButtonTextProvider::class) text: String,
+fun SpeedControllerButtonsPreview(
+    @PreviewParameter(SpeedControllerButtonItemProvider::class) button: TriangleButtonItem,
 ) {
     PoikaTheme {
-        SpeedControllerPlusButton(
-            text = text,
-            onClick = {},
+        SpeedControllerButton(
+            type = button.type,
+            label = button.label,
+            icon = button.icon,
+            onClick = {}
         )
     }
 }
+
+
 
