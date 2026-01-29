@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -77,45 +78,47 @@ fun PlayerScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(Dimens.ScreenPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            // Song title
-            Text(
-                text = songTitle ?: stringResource(R.string.to_start_singing_practice_),
-                textAlign = TextAlign.Center,
-                fontSize = Dimens.MediumFontSize,
-                lineHeight = Dimens.SongTitleLineHeight,
-                letterSpacing = Dimens.SongTitleLetterSpacing,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(Dimens.SongTitlePadding),
-            )
+        SelectionContainer {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(Dimens.ScreenPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                // Song title
+                Text(
+                    text = songTitle ?: stringResource(R.string.to_start_singing_practice_),
+                    textAlign = TextAlign.Center,
+                    fontSize = Dimens.MediumFontSize,
+                    lineHeight = Dimens.SongTitleLineHeight,
+                    letterSpacing = Dimens.SongTitleLetterSpacing,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(Dimens.SongTitlePadding),
+                )
 
-            // Player Pane
-            if (songTitle != null) {
-                PlayerPane(
-                    currentPositionText = currentPositionText,
-                    trackDurationText = trackDurationText,
-                    playbackSeekbarPosition = playbackSeekbarPosition,
-                    playbackSeekbarMax = playbackSeekbarMax,
-                    onSeekChanged = onSeekChanged,
-                    onSeekReleased = onSeekReleased,
-                    changeSpeedButtons = changeSpeedButtons,
-                    currentSpeed = currentSpeed,
-                    playbackButtons = playbackButtons,
-                    volumeStates = volumeStates,
-                    setVolume = setVolume,
-                )
-            } else {
-                AsyncImage(
-                    model = imageRequest,
-                    contentDescription = "logo",
-                    alignment = Alignment.Center,
-                )
+                // Player Pane
+                if (songTitle != null) {
+                    PlayerPane(
+                        currentPositionText = currentPositionText,
+                        trackDurationText = trackDurationText,
+                        playbackSeekbarPosition = playbackSeekbarPosition,
+                        playbackSeekbarMax = playbackSeekbarMax,
+                        onSeekChanged = onSeekChanged,
+                        onSeekReleased = onSeekReleased,
+                        changeSpeedButtons = changeSpeedButtons,
+                        currentSpeed = currentSpeed,
+                        playbackButtons = playbackButtons,
+                        volumeStates = volumeStates,
+                        setVolume = setVolume,
+                    )
+                } else {
+                    AsyncImage(
+                        model = imageRequest,
+                        contentDescription = "logo",
+                        alignment = Alignment.Center,
+                    )
+                }
             }
         }
     }
