@@ -142,8 +142,8 @@ fun ConfirmDeleteDialog(
     val message = buildString {
         append(stringResource(R.string.do_you_really_want_to_delete_these_songs))
         append(songTitles.joinToString(
-            separator = "\n\t",
-            prefix = "\n\t",
+            separator = "\n•\t\t",
+            prefix = "\n•\t\t",
             postfix = "\n",
             limit = 5,
             truncated = " ... ",
