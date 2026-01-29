@@ -1,5 +1,7 @@
 package com.obrigada_eu.poika.player.ui.screen
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -17,6 +19,7 @@ import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
+import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.player.ui.model.UiEvent
 import com.obrigada_eu.poika.ui.utils.Toaster
 import kotlin.collections.mapKeys
@@ -134,12 +137,32 @@ fun PlayerScreenHost(
         ).mapKeys { stringResource(it.key) },
         currentSpeed = currentSpeedText,
 
-        playbackButtons = mapOf(
-            R.string.minus_5_sec to { playerViewModel.rewind(RewindDirection.BACK) },
-            (if (isPlaying) R.string.pause else R.string.play) to playerViewModel::togglePlayPause,
-            R.string.stop to playerViewModel::stop,
-            R.string.plus_5_sec to { playerViewModel.rewind(RewindDirection.FORWARD) },
-        ).mapKeys { stringResource(it.key) },
+        playbackButtons = listOf(
+            ImageButtonItem(
+                label = stringResource(R.string.minus_5_sec),
+                icon = Icons.Filled.Replay5,
+                weight = 2f,
+                onClick = { playerViewModel.rewind(RewindDirection.BACK) }
+            ),
+            ImageButtonItem(
+                label = stringResource(if (isPlaying) R.string.pause else R.string.play),
+                icon = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                weight = 4f,
+                onClick = playerViewModel::togglePlayPause
+            ),
+            ImageButtonItem(
+                label = stringResource(R.string.stop),
+                icon = Icons.Filled.Stop,
+                weight = 3f,
+                onClick = playerViewModel::stop
+            ),
+            ImageButtonItem(
+                label = stringResource(R.string.plus_5_sec),
+                icon = Icons.Filled.Forward5,
+                weight = 2f,
+                onClick = { playerViewModel.rewind(RewindDirection.FORWARD) }
+            ),
+        ),
         volumeStates = volumeStates,
         setVolume = playerViewModel::setVolume,
         showChooseSongDialog = showChooseSongDialog,

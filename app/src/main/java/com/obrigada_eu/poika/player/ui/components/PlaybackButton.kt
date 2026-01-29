@@ -2,37 +2,44 @@ package com.obrigada_eu.poika.player.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
 
 @Composable
 fun PlaybackButton(
-    text: String,
+    label: String,
+    icon: ImageVector,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Button(
+        shape = RoundedCornerShape(Dimens.PlaybackButtonRoundedCornerShapePercent),
         onClick = onClick,
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = Dimens.PlaybackButtonPaddingHorizontal),
     ) {
-        Text(
-            text = text,
-            maxLines = 1,
+        Icon(
+            imageVector = icon,
+            modifier = Modifier.size(Dimens.PlaybackButtonIconSize),
+            contentDescription = label
         )
     }
 }
 
-class PlaybackButtonTextProvider : PreviewParameterProvider<String> {
-    override val values = PreviewData.playbackButtonLabels.asSequence()
+class PlaybackButtonItemProvider : PreviewParameterProvider<ImageButtonItem> {
+    override val values = PreviewData.playbackButtons.asSequence()
 }
 
 @Preview(
@@ -47,12 +54,14 @@ class PlaybackButtonTextProvider : PreviewParameterProvider<String> {
 )
 @Composable
 fun PlaybackButtonPreview(
-    @PreviewParameter(PlaybackButtonTextProvider::class) text: String,
+    @PreviewParameter(PlaybackButtonItemProvider::class) buttonItem: ImageButtonItem,
 ) {
     PoikaTheme {
         PlaybackButton(
-            text = text,
+            label = buttonItem.label,
             onClick = {},
+            icon = buttonItem.icon,
+            modifier = Modifier,
         )
     }
 }

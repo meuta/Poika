@@ -25,13 +25,16 @@ object Dimens {
     val SpeedControllerPaddingHorizontal = 4.dp
     val SpeedControllerButtonHeight = 36.dp
     val SpeedControllerButtonWidth = 28.dp
-    val SpeedControllerButtonRoundRadius = 6f
+    val SpeedControllerButtonRoundRadius = 8f
 
     val SpeedControllerButtonPaddingHorizontal = 6.dp
 
+
+    val PlaybackButtonIconSize = 30.dp
+    val PlaybackButtonRoundedCornerShapePercent = 16.dp
     val PlaybackButtonPaddingTop = 16.dp
     val PlaybackButtonPaddingBottom = 24.dp
-    val PlaybackButtonPaddingHorizontal = 8.dp
+    val PlaybackButtonPaddingHorizontal = 4.dp
     val PlaybackButtonArrangement = 16.dp
     val VolumeTitlePaddingVertical = 12.dp
 
