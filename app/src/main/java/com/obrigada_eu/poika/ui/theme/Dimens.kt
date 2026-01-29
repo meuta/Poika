@@ -11,7 +11,7 @@ object Dimens {
     val MenuWidthMax = 280.dp
     val MenuItemPadding = 4.dp
 
-    val ScreenPadding = 24.dp
+    val ScreenPadding = 16.dp
     val SongTitlePadding = 32.dp
 
     val SeekbarThumbSize = 20.dp
@@ -23,6 +23,7 @@ object Dimens {
 
     val SpeedControllerBorderWidth = 1.dp
     val SpeedControllerPaddingHorizontal = 4.dp
+    val SpeedControllerTextLineHeight = 20.sp
     val SpeedControllerButtonHeight = 36.dp
     val SpeedControllerButtonWidth = 28.dp
     val SpeedControllerButtonRoundRadius = 8f
@@ -38,6 +39,7 @@ object Dimens {
     val PlaybackButtonPaddingHorizontal = 4.dp
     val PlaybackButtonArrangement = 16.dp
     val VolumeTitlePaddingVertical = 12.dp
+    val VolumeUpIconPaddingStart = 4.dp
 
     val DialogSingleChoicePadding = 8.dp
     val DialogMultipleChoicePadding = 4.dp

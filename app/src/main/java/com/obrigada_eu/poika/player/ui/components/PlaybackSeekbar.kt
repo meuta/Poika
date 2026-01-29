@@ -88,6 +88,7 @@ fun SpeedController(
             text = "speed\n$currentSpeedText",
             fontSize = Dimens.SmallFontSize,
             textAlign = TextAlign.Center,
+            lineHeight = Dimens.SpeedControllerTextLineHeight,
             color = MaterialTheme.colorScheme.onBackground,
         )
 
