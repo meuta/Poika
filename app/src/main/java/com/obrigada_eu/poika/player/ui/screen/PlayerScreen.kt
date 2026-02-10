@@ -2,6 +2,7 @@ package com.obrigada_eu.poika.player.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -83,7 +84,8 @@ fun PlayerScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(Dimens.ScreenPadding),
+                    .padding(Dimens.ScreenPadding)
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 // Song title
