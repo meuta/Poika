@@ -7,8 +7,10 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.obrigada_eu.poika.common.formatters.SpeedStringFormatter
 import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.common.formatters.toTitleString
+import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
 import com.obrigada_eu.poika.player.domain.contracts.AudioService
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
@@ -56,6 +58,10 @@ class PlayerViewModel @Inject constructor(
     }
 
     val isPlaying: StateFlow<Boolean> = playerSessionReader.isPlayingFlow()
+
+    val currentSpeedUi: StateFlow<String> = playerSessionReader.mapSpeed { speed ->
+        speed.toUi(SpeedStringFormatter)
+    }
 
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
@@ -125,7 +131,11 @@ class PlayerViewModel @Inject constructor(
     fun stop() = audioService.stop()
 
     fun rewind(direction: RewindDirection) = audioService.rewind(
-        if (direction == RewindDirection.BACK) - 5000L else +5000L
+        if (direction == RewindDirection.BACK) - 5000L else + 5000L
+    )
+
+    fun changeSpeed(direction: ChangeSpeedDirection) = audioService.changeSpeed(
+        if (direction == ChangeSpeedDirection.BACK) - 0.1f else + 0.1f
     )
 
 

@@ -4,6 +4,10 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeDown
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,12 +44,23 @@ fun VolumeSlider(
                 .padding(vertical = Dimens.VolumeTitlePaddingVertical),
             color = MaterialTheme.colorScheme.onBackground,
         )
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.VolumeDown,
+            contentDescription = "volume down",
+            tint = MaterialTheme.colorScheme.surfaceVariant
+        )
         CustomSlider(
             value = value,
             onValueChange = onValueChange,
             valueRange = 0f..1f,
             modifier = Modifier
                 .weight(TrackWeight),
+        )
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.VolumeUp,
+            contentDescription = "volume down",
+            modifier = Modifier.padding(start = Dimens.VolumeUpIconPaddingStart),
+            tint = MaterialTheme.colorScheme.surfaceVariant
         )
     }
 }

@@ -1,7 +1,12 @@
 package com.obrigada_eu.poika.player.ui.preview
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.model.TrackInfo
+import com.obrigada_eu.poika.player.ui.components.SpeedControllerButtonType
+import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
+import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 
 object PreviewData {
 
@@ -48,8 +53,21 @@ object PreviewData {
 
     val dialogButtonLabels = listOf("OK", "Cancel")
 
-    val playbackButtonLabels = listOf("Play", "Pause", "Stop", "-5s", "+5s")
-    val playbackButtons = listOf("-5s", "Play", "Stop", "+5s").associateWith { {} }
+    val playbackButtons = listOf(
+        ImageButtonItem("-5s", Icons.Filled.Replay5, 2f, {}),
+        ImageButtonItem("Play", Icons.Filled.PlayArrow, 4f, {}),
+        ImageButtonItem("Pause", Icons.Filled.Pause, 4f, {}),
+        ImageButtonItem("Stop", Icons.Filled.Stop, 3f, {}),
+        ImageButtonItem("+5s", Icons.Filled.Forward5, 2f, {}),
+    )
+
+    val playbackButtonsRow = playbackButtons.filterNot { it.label == "Pause" }
+
+    val reduceSpeedButton = TriangleButtonItem(SpeedControllerButtonType.BACKWARD, "-", Icons.Filled.Remove, {})
+    val increaseSpeedButton = TriangleButtonItem(SpeedControllerButtonType.FORWARD, "+", Icons.Filled.Add, {})
+    val changeSpeedButtons = reduceSpeedButton to increaseSpeedButton
+
+    val currentSpeed = "x0.8"
 
     val volumeSliderTitles = listOf("soprano", "alto", "minus")
 

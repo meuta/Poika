@@ -1,6 +1,8 @@
 package com.obrigada_eu.poika.player.ui.components
 
 import androidx.compose.runtime.Composable
+import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
+import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 
 @Composable
 fun PlayerPane(
@@ -10,7 +12,9 @@ fun PlayerPane(
     playbackSeekbarMax: Float,
     onSeekChanged: (Float) -> Unit,
     onSeekReleased: () -> Unit,
-    playbackButtons: Map<String, () -> Unit>,
+    changeSpeedButtons: Pair<TriangleButtonItem, TriangleButtonItem>,
+    currentSpeed: String,
+    playbackButtons: List<ImageButtonItem>,
     volumeStates: Map<String, Float>,
     setVolume: (String, Float) -> Unit,
 ) {
@@ -23,6 +27,8 @@ fun PlayerPane(
         playbackSeekbarMax = playbackSeekbarMax,
         onValueChange = onSeekChanged,
         onValueChangeFinished = onSeekReleased,
+        changeSpeedButtons = changeSpeedButtons,
+        currentSpeedText = currentSpeed,
     )
 
     // Buttons row

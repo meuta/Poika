@@ -2,8 +2,10 @@ package com.obrigada_eu.poika.player.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -26,6 +28,8 @@ import com.obrigada_eu.poika.player.ui.components.HelpDialog
 import com.obrigada_eu.poika.player.ui.components.ListDialog
 import com.obrigada_eu.poika.player.ui.components.PlayerPane
 import com.obrigada_eu.poika.player.ui.components.PoikaTopAppBar
+import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
+import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
@@ -45,7 +49,9 @@ fun PlayerScreen(
     playbackSeekbarMax: Float,
     onSeekChanged: (Float) -> Unit,
     onSeekReleased: () -> Unit,
-    playbackButtons: Map<String, () -> Unit>,
+    changeSpeedButtons: Pair<TriangleButtonItem, TriangleButtonItem>,
+    currentSpeed: String,
+    playbackButtons: List<ImageButtonItem>,
     volumeStates: Map<String, Float>,
     setVolume: (String, Float) -> Unit,
     showChooseSongDialog: Boolean,
@@ -73,43 +79,48 @@ fun PlayerScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(Dimens.ScreenPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            // Song title
-            Text(
-                text = songTitle ?: stringResource(R.string.to_start_singing_practice_),
-                textAlign = TextAlign.Center,
-                fontSize = Dimens.MediumFontSize,
-                lineHeight = Dimens.SongTitleLineHeight,
-                letterSpacing = Dimens.SongTitleLetterSpacing,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(Dimens.SongTitlePadding),
-            )
+        SelectionContainer {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(Dimens.ScreenPadding)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                // Song title
+                Text(
+                    text = songTitle ?: stringResource(R.string.to_start_singing_practice_),
+                    textAlign = TextAlign.Center,
+                    fontSize = Dimens.MediumFontSize,
+                    lineHeight = Dimens.SongTitleLineHeight,
+                    letterSpacing = Dimens.SongTitleLetterSpacing,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(Dimens.SongTitlePadding),
+                )
 
-            // Player Pane
-            if (songTitle != null) {
-                PlayerPane(
-                    currentPositionText = currentPositionText,
-                    trackDurationText = trackDurationText,
-                    playbackSeekbarPosition = playbackSeekbarPosition,
-                    playbackSeekbarMax = playbackSeekbarMax,
-                    onSeekChanged = onSeekChanged,
-                    onSeekReleased = onSeekReleased,
-                    playbackButtons = playbackButtons,
-                    volumeStates = volumeStates,
-                    setVolume = setVolume,
-                )
-            } else {
-                AsyncImage(
-                    model = imageRequest,
-                    contentDescription = "logo",
-                    alignment = Alignment.Center,
-                )
+                // Player Pane
+                if (songTitle != null) {
+                    PlayerPane(
+                        currentPositionText = currentPositionText,
+                        trackDurationText = trackDurationText,
+                        playbackSeekbarPosition = playbackSeekbarPosition,
+                        playbackSeekbarMax = playbackSeekbarMax,
+                        onSeekChanged = onSeekChanged,
+                        onSeekReleased = onSeekReleased,
+                        changeSpeedButtons = changeSpeedButtons,
+                        currentSpeed = currentSpeed,
+                        playbackButtons = playbackButtons,
+                        volumeStates = volumeStates,
+                        setVolume = setVolume,
+                    )
+                } else {
+                    AsyncImage(
+                        model = imageRequest,
+                        contentDescription = "logo",
+                        alignment = Alignment.Center,
+                    )
+                }
             }
         }
     }
@@ -179,9 +190,9 @@ fun PlayerScreenPreview() {
             playbackSeekbarMax = PreviewData.duration,
             onSeekChanged = {},
             onSeekReleased = {},
-            playbackButtons = PreviewData.playbackButtons,
+            playbackButtons = PreviewData.playbackButtonsRow,
             volumeStates = PreviewData.volumes,
-            setVolume = { _, _ ->},
+            setVolume = { _, _ -> },
             showChooseSongDialog = false,
             showDeleteSongDialog = false,
             showDeleteConfirmationDialog = false,
@@ -194,7 +205,9 @@ fun PlayerScreenPreview() {
             onEmptySelection = {},
             onDismissChooseSongDialog = {},
             onDismissDeleteSongDialog = {},
-            onDismissDeleteConfirmationDialog = {}
+            onDismissDeleteConfirmationDialog = {},
+            changeSpeedButtons = PreviewData.changeSpeedButtons,
+            currentSpeed = PreviewData.currentSpeed
         ) {}
     }
 }

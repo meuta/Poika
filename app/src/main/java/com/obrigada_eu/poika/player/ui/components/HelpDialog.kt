@@ -2,6 +2,7 @@ package com.obrigada_eu.poika.player.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -77,11 +78,13 @@ fun HelpDialog(
             style = MaterialTheme.typography.titleLarge
         ) },
         text = {
-            Text(
-                text = annotated,
-                fontSize = Dimens.MediumFontSize,
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-            )
+            SelectionContainer {
+                Text(
+                    text = annotated,
+                    fontSize = Dimens.MediumFontSize,
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                )
+            }
         },
         confirmButton = {
             DialogButton(

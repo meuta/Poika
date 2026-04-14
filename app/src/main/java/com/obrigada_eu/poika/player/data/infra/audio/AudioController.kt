@@ -52,6 +52,9 @@ class AudioController @Inject constructor(
             playersMap[part] ?: ExoPlayer.Builder(context).build().apply { volume = INITIAL_VOLUME }
         }
 
+        // reset speed
+        resetSpeed()
+
         // load tracks from files into players
         val base = File(context.filesDir, "songs/${songMetaData.folderName}")
         tracks.forEach { track ->
@@ -148,6 +151,19 @@ class AudioController @Inject constructor(
             }
     }
 
+    override fun changeSpeed(speedDif: Float) {
+        val speed = (getSpeed() + speedDif).coerceIn(0.5f..2f)
+        setSpeed(speed)
+    }
+
+    private fun resetSpeed() = setSpeed(1f)
+
+    private fun setSpeed(speed: Float) {
+        playersMap.values.forEach { player ->
+            player.setPlaybackSpeed(speed)
+        }
+        playerSessionWriter.setSpeed(speed)
+    }
 
     private fun getCurrentPosition(): Long {
         return playersMap.values.firstOrNull()?.currentPosition ?: 0L
@@ -155,6 +171,10 @@ class AudioController @Inject constructor(
 
     private fun getDuration(): Long {
         return playersMap.values.firstOrNull()?.duration ?: 0L
+    }
+
+    private fun getSpeed(): Float {
+        return playersMap.values.firstOrNull()?.playbackParameters?.speed ?: 1f
     }
 
 
@@ -178,5 +198,9 @@ class AudioController @Inject constructor(
 }
 
 enum class RewindDirection {
+    BACK, FORWARD
+}
+
+enum class ChangeSpeedDirection {
     BACK, FORWARD
 }
