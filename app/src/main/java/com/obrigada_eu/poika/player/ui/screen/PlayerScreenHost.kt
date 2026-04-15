@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import coil3.request.ImageRequest
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.player.ui.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
 import com.obrigada_eu.poika.player.domain.model.SongMetaData

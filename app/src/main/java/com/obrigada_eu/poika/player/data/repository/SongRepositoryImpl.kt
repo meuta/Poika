@@ -1,7 +1,10 @@
 package com.obrigada_eu.poika.player.data.repository
 
 import android.content.Context
+import android.net.Uri
+import com.obrigada_eu.poika.player.data.infra.file.FileResolver
 import com.obrigada_eu.poika.player.data.infra.file.MetaDataParser
+import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
 import com.obrigada_eu.poika.player.domain.repository.SongRepository
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.utils.Logger
@@ -9,11 +12,16 @@ import java.io.File
 
 class SongRepositoryImpl(
     private val context: Context,
-    private val metadataParser: MetaDataParser
+    private val zipImporter: ZipImporter,
+    private val metaDataParser: MetaDataParser,
 ) : SongRepository {
 
+    override fun importSong(uri: Uri): SongMetaData? {
+        return zipImporter.importDataFromUri(uri)
+    }
+
     override fun getAllSongsMetadata(): List<SongMetaData> {
-        val songsDir = File(context.filesDir, "songs")
+        val songsDir = FileResolver(context).getSongsFolder()
         if (!songsDir.exists()) return emptyList()
 
         return songsDir.listFiles()
@@ -21,12 +29,17 @@ class SongRepositoryImpl(
                 val metaFile = File(folder, "metadata.json")
                 if (metaFile.exists()) {
                     try {
-                        metadataParser.parse(metaFile)
+                        metaDataParser.parse(metaFile)
                     } catch (e: Exception) {
                         Logger.e("Repository", "Can't parse ${folder.name}", e)
                         null
                     }
                 } else null
             } ?: emptyList()
+    }
+
+    override fun deleteSong(song: SongMetaData): Boolean {
+        val folder = FileResolver(context).getSongFolder(song.folderName)
+        return folder.deleteRecursively()
     }
 }

@@ -7,21 +7,22 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.obrigada_eu.poika.common.formatters.SpeedStringFormatter
-import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
-import com.obrigada_eu.poika.common.formatters.toTitleString
+import com.obrigada_eu.poika.player.ui.formatters.SpeedStringFormatter
+import com.obrigada_eu.poika.player.ui.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.player.ui.mappers.toTitleString
 import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
-import com.obrigada_eu.poika.player.domain.contracts.AudioService
+import com.obrigada_eu.poika.player.domain.audio.AudioService
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
 import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
+import com.obrigada_eu.poika.player.domain.time.toPlaybackPositionMs
 import com.obrigada_eu.poika.player.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.player.domain.usecase.GetAllSongsUseCase
 import com.obrigada_eu.poika.player.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.player.domain.usecase.LoadSongUseCase
-import com.obrigada_eu.poika.player.ui.mappers.toPlayerPosition
 import com.obrigada_eu.poika.player.ui.mappers.toUi
+import com.obrigada_eu.poika.player.ui.mappers.toSpeedString
 import com.obrigada_eu.poika.player.ui.model.ProgressStateUi
 import com.obrigada_eu.poika.player.ui.model.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayerViewModel @Inject constructor(
+class   PlayerViewModel @Inject constructor(
     private val audioService: AudioService,
     private val importZipUseCase: ImportZipUseCase,
     private val getAllSongsUseCase: GetAllSongsUseCase,
@@ -60,7 +61,7 @@ class PlayerViewModel @Inject constructor(
     val isPlaying: StateFlow<Boolean> = playerSessionReader.isPlayingFlow()
 
     val currentSpeedUi: StateFlow<String> = playerSessionReader.mapSpeed { speed ->
-        speed.toUi(SpeedStringFormatter)
+        speed.toSpeedString(SpeedStringFormatter)
     }
 
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
@@ -89,11 +90,6 @@ class PlayerViewModel @Inject constructor(
         showMessage(SpannableString(message), shortDuration)
     }
 
-    private fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
-        viewModelScope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
-    }
-
-
     fun handleZipImport(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = importZipUseCase(uri)
@@ -115,6 +111,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+
     fun loadSong(songMetaData: SongMetaData) {
         loadSongUseCase(songMetaData)
     }
@@ -126,10 +123,10 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-
     fun togglePlayPause() = audioService.togglePlayPause()
-    fun stop() = audioService.stop()
 
+
+    fun stop() = audioService.stop()
     fun rewind(direction: RewindDirection) = audioService.rewind(
         if (direction == RewindDirection.BACK) - 5000L else + 5000L
     )
@@ -138,14 +135,18 @@ class PlayerViewModel @Inject constructor(
         if (direction == ChangeSpeedDirection.BACK) - 0.1f else + 0.1f
     )
 
-
     fun setVolume(part: String, volume: Float) {
         audioService.setVolume(part, volume)
     }
 
+
     fun setSongProgress(sliderPosition: Float) {
-        val newPosition = sliderPosition.toPlayerPosition()
+        val newPosition = sliderPosition.toPlaybackPositionMs()
         audioService.seekTo(newPosition)
+    }
+
+    private fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
+        viewModelScope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
     }
 
     companion object {

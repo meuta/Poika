@@ -1,4 +1,4 @@
-package com.obrigada_eu.poika.player.domain.contracts
+package com.obrigada_eu.poika.player.domain.audio
 
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 
