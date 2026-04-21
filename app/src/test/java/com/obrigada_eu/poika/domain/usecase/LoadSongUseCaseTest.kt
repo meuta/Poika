@@ -2,7 +2,7 @@ package com.obrigada_eu.poika.domain.usecase
 
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.model.TrackInfo
-import com.obrigada_eu.poika.player.domain.contracts.AudioService
+import com.obrigada_eu.poika.player.domain.audio.AudioService
 import com.obrigada_eu.poika.player.domain.usecase.LoadSongUseCase
 import org.junit.Before
 import org.junit.Test

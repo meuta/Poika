@@ -1,7 +1,7 @@
 package com.obrigada_eu.poika.player.domain.usecase
 
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.contracts.AudioService
+import com.obrigada_eu.poika.player.domain.audio.AudioService
 import javax.inject.Inject
 
 class LoadSongUseCase @Inject constructor(private val audioService: AudioService) {

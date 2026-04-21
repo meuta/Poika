@@ -1,4 +1,4 @@
-package com.obrigada_eu.poika.player.di
+package com.obrigada_eu.poika.di
 
 import javax.inject.Qualifier
 

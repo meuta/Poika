@@ -1,17 +1,18 @@
 package com.obrigada_eu.poika.player.di
 
 import android.content.Context
+import com.obrigada_eu.poika.di.ApplicationScope
 import com.obrigada_eu.poika.player.data.infra.session.PlayerSession
 import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
 import com.obrigada_eu.poika.player.domain.session.PlayerSessionWriter
-import com.obrigada_eu.poika.player.data.infra.file.FileResolver
 import com.obrigada_eu.poika.player.data.infra.file.MetaDataParser
 import com.obrigada_eu.poika.player.domain.repository.SongRepository
 import com.obrigada_eu.poika.player.data.repository.SongRepositoryImpl
 import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
 import com.obrigada_eu.poika.player.data.infra.audio.AudioController
+import com.obrigada_eu.poika.player.data.infra.file.FileResolver
 import com.obrigada_eu.poika.player.data.infra.progress.ProgressTracker
-import com.obrigada_eu.poika.player.domain.contracts.AudioService
+import com.obrigada_eu.poika.player.domain.audio.AudioService
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import dagger.Module
@@ -37,7 +38,7 @@ object PlayerModule {
     @Provides
     @Singleton
     fun provideProgressTracker(
-        @ApplicationScope scope: CoroutineScope
+        @ApplicationScope scope: CoroutineScope,
     ): ProgressTracker = ProgressTracker(scope)
 
     @Provides
@@ -53,15 +54,13 @@ object PlayerModule {
         @ApplicationContext context: Context,
         progressStateUpdater: ProgressStateUpdater,
         playerSessionWriter: PlayerSessionWriter,
-    ): AudioService {
-        return AudioController(context, progressStateUpdater, playerSessionWriter)
-    }
+    ): AudioService = AudioController(context, progressStateUpdater, playerSessionWriter)
 
 
     @Provides
     @Singleton
     fun providePlayerSession(
-        @ApplicationScope scope: CoroutineScope
+        @ApplicationScope scope: CoroutineScope,
     ): PlayerSession = PlayerSession(scope)
 
     @Provides
@@ -79,9 +78,13 @@ object PlayerModule {
 
     @Provides
     @Singleton
-    fun provideSongRepository(@ApplicationContext context: Context): SongRepository =
-        SongRepositoryImpl(context, MetaDataParser())
+    fun provideSongRepository(
+        @ApplicationContext context: Context,
+        zipImporter: ZipImporter,
+    ): SongRepository =
+        SongRepositoryImpl(context, zipImporter, MetaDataParser())
 
     @Provides
-    fun provideFileResolver(): FileResolver = FileResolver()
+    fun provideFileResolver(@ApplicationContext context: Context): FileResolver =
+        FileResolver(context)
 }

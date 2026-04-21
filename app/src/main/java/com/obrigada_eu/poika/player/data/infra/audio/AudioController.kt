@@ -7,8 +7,8 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.obrigada_eu.poika.common.formatters.toTrackInfoList
-import com.obrigada_eu.poika.player.domain.contracts.AudioService
+import com.obrigada_eu.poika.player.data.infra.file.FileResolver
+import com.obrigada_eu.poika.player.domain.audio.AudioService
 import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.domain.session.PlayerSessionWriter
@@ -40,7 +40,7 @@ class AudioController @Inject constructor(
 
         stop()
 
-        val tracks = songMetaData.toTrackInfoList()
+        val tracks = songMetaData.tracks
 
         // release extra players
         playersMap
@@ -52,11 +52,8 @@ class AudioController @Inject constructor(
             playersMap[part] ?: ExoPlayer.Builder(context).build().apply { volume = INITIAL_VOLUME }
         }
 
-        // reset speed
-        resetSpeed()
-
         // load tracks from files into players
-        val base = File(context.filesDir, "songs/${songMetaData.folderName}")
+        val base = FileResolver(context).getSongFolder(songMetaData.folderName)
         tracks.forEach { track ->
             val uri = File(base, track.file).toUri()
             playersMap[track.name]?.apply {
@@ -165,6 +162,7 @@ class AudioController @Inject constructor(
         playerSessionWriter.setSpeed(speed)
     }
 
+
     private fun getCurrentPosition(): Long {
         return playersMap.values.firstOrNull()?.currentPosition ?: 0L
     }
@@ -176,7 +174,6 @@ class AudioController @Inject constructor(
     private fun getSpeed(): Float {
         return playersMap.values.firstOrNull()?.playbackParameters?.speed ?: 1f
     }
-
 
     private fun runProgressTicker(run: Boolean) {
         if (run) progressTicker.run() else handler.removeCallbacks(progressTicker)
@@ -200,6 +197,7 @@ class AudioController @Inject constructor(
 enum class RewindDirection {
     BACK, FORWARD
 }
+
 
 enum class ChangeSpeedDirection {
     BACK, FORWARD

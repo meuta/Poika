@@ -23,8 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.common.formatters.toTitleString
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.player.ui.mappers.toTitleString
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens
 import com.obrigada_eu.poika.ui.theme.PoikaTheme
@@ -142,8 +142,8 @@ fun ConfirmDeleteDialog(
     val message = buildString {
         append(stringResource(R.string.do_you_really_want_to_delete_these_songs))
         append(songTitles.joinToString(
-            separator = "\n•\t\t",
-            prefix = "\n•\t\t",
+            separator = "\n\t",
+            prefix = "\n\t",
             postfix = "\n",
             limit = 5,
             truncated = " ... ",

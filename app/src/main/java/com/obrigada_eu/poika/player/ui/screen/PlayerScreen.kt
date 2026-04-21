@@ -21,13 +21,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.common.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.components.ConfirmDeleteDialog
 import com.obrigada_eu.poika.player.ui.components.HelpDialog
 import com.obrigada_eu.poika.player.ui.components.ListDialog
 import com.obrigada_eu.poika.player.ui.components.PlayerPane
 import com.obrigada_eu.poika.player.ui.components.PoikaTopAppBar
+import com.obrigada_eu.poika.player.ui.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 import com.obrigada_eu.poika.player.ui.preview.PreviewData

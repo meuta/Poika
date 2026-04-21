@@ -25,8 +25,7 @@ class ZipImporter(
 
         return try {
             val songMetaData = metadataParser.parse(metaFile)
-            val folderName = songMetaData.folderName
-            val targetDir = File(context.filesDir, "songs/$folderName")
+            val targetDir = FileResolver(context).getSongFolder(songMetaData.folderName)
 
             copyFiles(tempDir, targetDir)
             songMetaData
@@ -43,7 +42,7 @@ class ZipImporter(
         val inputStream = context.contentResolver.openInputStream(uri) ?: return null
         val zipInputStream = ZipInputStream(inputStream)
 
-        val outputDir = File(context.filesDir, "temp_import")
+        val outputDir = FileResolver(context).getTempImportFolder()
         outputDir.mkdirs()
 
         zipInputStream.use { zis ->
