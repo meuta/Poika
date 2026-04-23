@@ -1,22 +1,20 @@
-package com.obrigada_eu.poika.domain.usecase
+package com.obrigada_eu.poika.shared.domain.usecase
 
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.shared.domain.model.TrackInfo
-import com.obrigada_eu.poika.shared.domain.audio.AudioService
-import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
+import com.obrigada_eu.poika.shared.fake.FakeAudioController
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.verify
+import kotlin.test.assertEquals
 
 class LoadSongUseCaseTest {
 
-    private lateinit var audioService: AudioService
+    private lateinit var audioService: FakeAudioController
     private lateinit var useCase: LoadSongUseCase
 
     @Before
     fun setUp() {
-        audioService = mock()
+        audioService = FakeAudioController()
         useCase = LoadSongUseCase(audioService)
     }
 
@@ -26,6 +24,7 @@ class LoadSongUseCaseTest {
 
         useCase(song)
 
-        verify(audioService).loadTracks(song)
+        assertEquals(1, audioService.loadTracksCallCount)
+        assertEquals(song, audioService.lastLoadedSong)
     }
 }

@@ -1,24 +1,22 @@
-package com.obrigada_eu.poika.domain.usecase
+package com.obrigada_eu.poika.shared.domain.usecase
 
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.shared.domain.model.TrackInfo
-import com.obrigada_eu.poika.shared.domain.repository.SongRepository
-import com.obrigada_eu.poika.shared.domain.usecase.DeleteSongUseCase
+import com.obrigada_eu.poika.shared.fake.FakeSongRepository
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
+import kotlin.test.assertEquals
 
 class DeleteSongUseCaseTest {
 
-    private lateinit var repository: SongRepository
+    private lateinit var repository: FakeSongRepository
     private lateinit var useCase: DeleteSongUseCase
 
     @Before
     fun setup() {
-        repository = mock()
+        repository = FakeSongRepository()
         useCase = DeleteSongUseCase(repository)
     }
 
@@ -28,20 +26,22 @@ class DeleteSongUseCaseTest {
         // Given
         val song = someSong()
 
-        whenever(repository.deleteSong(song)).thenReturn(true)
+        repository.shouldDeleteSucceed = true
 
         // When
         val result = useCase(song)
 
         // Then
         assertTrue(result)
+        assertEquals(song, repository.lastDeletedSong)
+
     }
 
     @Test
     fun `should return false if deletion fails`() {
         val song = someSong()
 
-        whenever(repository.deleteSong(song)).thenReturn(false)
+        repository.shouldDeleteSucceed = false
         val result = useCase(song)
 
         assertFalse(result)
@@ -49,5 +49,4 @@ class DeleteSongUseCaseTest {
 
     private fun someSong() =
         SongMetaData("Artist1", "Title1", null, listOf(TrackInfo("123", "456")), "artist1_title1")
-
 }
