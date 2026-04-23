@@ -1,9 +1,9 @@
 package com.obrigada_eu.poika.domain.usecase
 
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.model.TrackInfo
-import com.obrigada_eu.poika.player.domain.repository.SongRepository
-import com.obrigada_eu.poika.player.domain.usecase.DeleteSongUseCase
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.TrackInfo
+import com.obrigada_eu.poika.shared.domain.repository.SongRepository
+import com.obrigada_eu.poika.shared.domain.usecase.DeleteSongUseCase
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Before

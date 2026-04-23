@@ -1,9 +1,9 @@
 package com.obrigada_eu.poika.domain.usecase
 
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.model.TrackInfo
-import com.obrigada_eu.poika.player.domain.audio.AudioService
-import com.obrigada_eu.poika.player.domain.usecase.LoadSongUseCase
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.TrackInfo
+import com.obrigada_eu.poika.shared.domain.audio.AudioService
+import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock

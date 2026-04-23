@@ -1,8 +1,8 @@
 package com.obrigada_eu.poika.player.data.infra.session
 
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
-import com.obrigada_eu.poika.player.domain.session.PlayerSessionWriter
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.session.PlayerSessionReader
+import com.obrigada_eu.poika.shared.domain.session.PlayerSessionWriter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

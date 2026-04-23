@@ -19,4 +19,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Poika"
 include(":app")
- 
+include(":shared")

@@ -2,8 +2,8 @@ package com.obrigada_eu.poika.player.ui.preview
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.model.TrackInfo
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.TrackInfo
 import com.obrigada_eu.poika.player.ui.components.SpeedControllerButtonType
 import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem

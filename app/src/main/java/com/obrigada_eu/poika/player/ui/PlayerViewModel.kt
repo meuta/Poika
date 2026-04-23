@@ -1,7 +1,6 @@
 package com.obrigada_eu.poika.player.ui
 
 import android.graphics.Typeface
-import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
@@ -12,15 +11,15 @@ import com.obrigada_eu.poika.player.ui.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.ui.mappers.toTitleString
 import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
-import com.obrigada_eu.poika.player.domain.audio.AudioService
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
-import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
-import com.obrigada_eu.poika.player.domain.time.toPlaybackPositionMs
-import com.obrigada_eu.poika.player.domain.usecase.DeleteSongUseCase
-import com.obrigada_eu.poika.player.domain.usecase.GetAllSongsUseCase
-import com.obrigada_eu.poika.player.domain.usecase.ImportZipUseCase
-import com.obrigada_eu.poika.player.domain.usecase.LoadSongUseCase
+import com.obrigada_eu.poika.shared.domain.audio.AudioService
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.progress.ProgressStateProvider
+import com.obrigada_eu.poika.shared.domain.session.PlayerSessionReader
+import com.obrigada_eu.poika.shared.domain.time.toPlaybackPositionMs
+import com.obrigada_eu.poika.shared.domain.usecase.DeleteSongUseCase
+import com.obrigada_eu.poika.shared.domain.usecase.GetAllSongsUseCase
+import com.obrigada_eu.poika.shared.domain.usecase.ImportZipUseCase
+import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
 import com.obrigada_eu.poika.player.ui.mappers.toUi
 import com.obrigada_eu.poika.player.ui.mappers.toSpeedString
 import com.obrigada_eu.poika.player.ui.model.ProgressStateUi
@@ -90,9 +89,9 @@ class   PlayerViewModel @Inject constructor(
         showMessage(SpannableString(message), shortDuration)
     }
 
-    fun handleZipImport(uri: Uri) {
+    fun handleZipImport(uriString: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = importZipUseCase(uri)
+            val result = importZipUseCase(uriString)
             if (result != null) {
 
                 val text = "Song ${result.toTitleString()} is available in your list"

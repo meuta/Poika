@@ -3,18 +3,22 @@ package com.obrigada_eu.poika.player.di
 import android.content.Context
 import com.obrigada_eu.poika.di.ApplicationScope
 import com.obrigada_eu.poika.player.data.infra.session.PlayerSession
-import com.obrigada_eu.poika.player.domain.session.PlayerSessionReader
-import com.obrigada_eu.poika.player.domain.session.PlayerSessionWriter
+import com.obrigada_eu.poika.shared.domain.session.PlayerSessionReader
+import com.obrigada_eu.poika.shared.domain.session.PlayerSessionWriter
 import com.obrigada_eu.poika.player.data.infra.file.MetaDataParser
-import com.obrigada_eu.poika.player.domain.repository.SongRepository
+import com.obrigada_eu.poika.shared.domain.repository.SongRepository
 import com.obrigada_eu.poika.player.data.repository.SongRepositoryImpl
 import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
 import com.obrigada_eu.poika.player.data.infra.audio.AudioController
 import com.obrigada_eu.poika.player.data.infra.file.FileResolver
 import com.obrigada_eu.poika.player.data.infra.progress.ProgressTracker
-import com.obrigada_eu.poika.player.domain.audio.AudioService
-import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
-import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
+import com.obrigada_eu.poika.shared.domain.audio.AudioService
+import com.obrigada_eu.poika.shared.domain.progress.ProgressStateProvider
+import com.obrigada_eu.poika.shared.domain.progress.ProgressStateUpdater
+import com.obrigada_eu.poika.shared.domain.usecase.DeleteSongUseCase
+import com.obrigada_eu.poika.shared.domain.usecase.GetAllSongsUseCase
+import com.obrigada_eu.poika.shared.domain.usecase.ImportZipUseCase
+import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -87,4 +91,24 @@ object PlayerModule {
     @Provides
     fun provideFileResolver(@ApplicationContext context: Context): FileResolver =
         FileResolver(context)
+
+
+    @Provides
+    fun provideGetAllSongsUseCase(repository: SongRepository): GetAllSongsUseCase =
+        GetAllSongsUseCase(repository)
+
+    @Provides
+    fun provideDeleteSongUseCase(repository: SongRepository): DeleteSongUseCase =
+        DeleteSongUseCase(repository)
+
+    @Provides
+    fun provideImportZipUseCase(repository: SongRepository): ImportZipUseCase =
+        ImportZipUseCase(repository)
+
+    @Provides
+    fun provideLoadSongUseCase(audioService: AudioService): LoadSongUseCase =
+        LoadSongUseCase(audioService)
+
+
+
 }

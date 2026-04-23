@@ -80,10 +80,13 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.10.1")
     debugImplementation("androidx.compose.ui:ui-tooling:1.10.1")
 
-    testImplementation("junit:junit:4.13.2")
-
     // Coil
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+
+    // shared
+    implementation(project(":shared"))
+
+    testImplementation("junit:junit:4.13.2")
 
     // Mockito
     testImplementation("org.mockito:mockito-core:5.21.0")

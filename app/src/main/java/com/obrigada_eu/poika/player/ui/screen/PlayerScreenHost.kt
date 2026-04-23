@@ -18,7 +18,7 @@ import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.player.ui.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.PlayerViewModel
 import com.obrigada_eu.poika.player.ui.components.SpeedControllerButtonType
 import com.obrigada_eu.poika.player.ui.model.ImageButtonItem

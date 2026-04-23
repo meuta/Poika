@@ -1,12 +1,12 @@
 package com.obrigada_eu.poika.player.data.repository
 
 import android.content.Context
-import android.net.Uri
+import androidx.core.net.toUri
 import com.obrigada_eu.poika.player.data.infra.file.FileResolver
 import com.obrigada_eu.poika.player.data.infra.file.MetaDataParser
 import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
-import com.obrigada_eu.poika.player.domain.repository.SongRepository
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.repository.SongRepository
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.utils.Logger
 import java.io.File
 
@@ -16,8 +16,8 @@ class SongRepositoryImpl(
     private val metaDataParser: MetaDataParser,
 ) : SongRepository {
 
-    override fun importSong(uri: Uri): SongMetaData? {
-        return zipImporter.importDataFromUri(uri)
+    override fun importSong(uriString: String): SongMetaData? {
+        return zipImporter.importDataFromUri(uriString.toUri())
     }
 
     override fun getAllSongsMetadata(): List<SongMetaData> {

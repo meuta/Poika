@@ -6,6 +6,9 @@
 .gradle
 **/build/
 
+# Kotlin (KMP caches)
+.kotlin/
+
 # Local configuration
 /local.properties
 

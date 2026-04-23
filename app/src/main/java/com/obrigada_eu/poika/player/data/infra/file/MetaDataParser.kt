@@ -1,7 +1,7 @@
 package com.obrigada_eu.poika.player.data.infra.file
 
 import com.google.gson.Gson
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import java.io.File
 import java.text.Normalizer
 import java.util.Locale

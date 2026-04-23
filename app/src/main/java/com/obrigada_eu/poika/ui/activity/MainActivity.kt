@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleIncomingZip(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
             intent.data?.let { uri ->
-                playerViewModel.handleZipImport(uri)
+                playerViewModel.handleZipImport(uri.toString())
             } ?: { Logger.e(getString(R.string.app_name), "URI is null") }
         }
     }

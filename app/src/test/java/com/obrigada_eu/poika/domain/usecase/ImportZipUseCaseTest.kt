@@ -1,10 +1,9 @@
 package com.obrigada_eu.poika.domain.usecase
 
-import android.net.Uri
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.model.TrackInfo
-import com.obrigada_eu.poika.player.domain.repository.SongRepository
-import com.obrigada_eu.poika.player.domain.usecase.ImportZipUseCase
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.TrackInfo
+import com.obrigada_eu.poika.shared.domain.repository.SongRepository
+import com.obrigada_eu.poika.shared.domain.usecase.ImportZipUseCase
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +23,7 @@ class ImportZipUseCaseTest {
 
     @Test
     fun `invoke should return SongMetaData from importer`() {
-        val uri = mock<Uri>()
+        val uri = "content://test/song.zip"
         val expected = SongMetaData("U2", "One", "piano", listOf(TrackInfo("123", "456")), "u2_one")
 
         whenever(repository.importSong(uri)).thenReturn(expected)

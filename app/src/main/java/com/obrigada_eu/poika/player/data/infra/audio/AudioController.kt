@@ -8,10 +8,10 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.obrigada_eu.poika.player.data.infra.file.FileResolver
-import com.obrigada_eu.poika.player.domain.audio.AudioService
-import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.session.PlayerSessionWriter
+import com.obrigada_eu.poika.shared.domain.audio.AudioService
+import com.obrigada_eu.poika.shared.domain.progress.ProgressStateUpdater
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.session.PlayerSessionWriter
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject

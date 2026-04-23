@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.components.ConfirmDeleteDialog
 import com.obrigada_eu.poika.player.ui.components.HelpDialog
 import com.obrigada_eu.poika.player.ui.components.ListDialog

@@ -1,8 +1,8 @@
 package com.obrigada_eu.poika.player.data.infra.progress
 
-import com.obrigada_eu.poika.player.domain.model.ProgressState
-import com.obrigada_eu.poika.player.domain.progress.ProgressStateProvider
-import com.obrigada_eu.poika.player.domain.progress.ProgressStateUpdater
+import com.obrigada_eu.poika.shared.domain.model.ProgressState
+import com.obrigada_eu.poika.shared.domain.progress.ProgressStateProvider
+import com.obrigada_eu.poika.shared.domain.progress.ProgressStateUpdater
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

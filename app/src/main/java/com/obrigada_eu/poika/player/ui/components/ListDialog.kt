@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.player.ui.mappers.toTitleString
 import com.obrigada_eu.poika.player.ui.preview.PreviewData
 import com.obrigada_eu.poika.ui.theme.Dimens

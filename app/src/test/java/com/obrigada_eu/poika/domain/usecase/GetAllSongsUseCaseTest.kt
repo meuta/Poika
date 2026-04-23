@@ -1,9 +1,9 @@
 package com.obrigada_eu.poika.domain.usecase
 
-import com.obrigada_eu.poika.player.domain.repository.SongRepository
-import com.obrigada_eu.poika.player.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.domain.model.TrackInfo
-import com.obrigada_eu.poika.player.domain.usecase.GetAllSongsUseCase
+import com.obrigada_eu.poika.shared.domain.repository.SongRepository
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.domain.model.TrackInfo
+import com.obrigada_eu.poika.shared.domain.usecase.GetAllSongsUseCase
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
