@@ -1,4 +1,4 @@
-package com.obrigada_eu.poika.player.ui.formatters
+package com.obrigada_eu.poika.shared.presentation.player.formatters
 
 object TimeStringFormatter {
 

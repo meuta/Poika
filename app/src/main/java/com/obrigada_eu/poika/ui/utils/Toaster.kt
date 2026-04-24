@@ -7,7 +7,7 @@ import android.text.Spanned
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.widget.Toast
-import com.obrigada_eu.poika.player.ui.model.UiTextPart
+import com.obrigada_eu.poika.shared.presentation.player.model.UiTextPart
 
 object Toaster {
 

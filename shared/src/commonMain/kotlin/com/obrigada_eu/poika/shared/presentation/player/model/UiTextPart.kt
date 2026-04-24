@@ -1,4 +1,4 @@
-package com.obrigada_eu.poika.player.ui.model
+package com.obrigada_eu.poika.shared.presentation.player.model
 
 data class UiTextPart(
     val text: String,

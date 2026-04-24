@@ -15,22 +15,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import coil3.request.ImageRequest
 import com.obrigada_eu.poika.R
-import com.obrigada_eu.poika.player.ui.formatters.TimeStringFormatter
-import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
-import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
+import com.obrigada_eu.poika.shared.presentation.player.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.shared.domain.audio.ChangeSpeedDirection
+import com.obrigada_eu.poika.shared.domain.audio.RewindDirection
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.ui.PlayerViewModel
 import com.obrigada_eu.poika.player.ui.components.SpeedControllerButtonType
 import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
-import com.obrigada_eu.poika.player.ui.model.UiEvent
+import com.obrigada_eu.poika.shared.presentation.player.PlayerPresenter
+import com.obrigada_eu.poika.shared.presentation.player.model.UiEvent
 import com.obrigada_eu.poika.ui.utils.Toaster
 import kotlin.collections.mapKeys
 import kotlin.collections.mapOf
 
 @Composable
 fun PlayerScreenHost(
-    playerViewModel: PlayerViewModel,
+    playerPresenter: PlayerPresenter,
 ) {
 
     val context = LocalContext.current
@@ -48,7 +48,7 @@ fun PlayerScreenHost(
 
     var menuExpanded by remember { mutableStateOf(false) }
 
-    val songTitle by playerViewModel.songTitleText.collectAsState()
+    val songTitle by playerPresenter.songTitleText.collectAsState()
 
 
     var playbackSeekbarPosition by remember { mutableFloatStateOf(0f) }
@@ -57,15 +57,15 @@ fun PlayerScreenHost(
     var trackDurationText by remember { mutableStateOf(stringZeroZero) }
     var playbackSeekbarMax by remember { mutableFloatStateOf(0f) }
 
-    val currentSpeedText by playerViewModel.currentSpeedUi.collectAsState()
+    val currentSpeedText by playerPresenter.currentSpeedUi.collectAsState()
 
-    val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val isPlaying by playerPresenter.isPlaying.collectAsState()
 
-    val volumeStates by playerViewModel.volumeMap.collectAsState()
+    val volumeStates by playerPresenter.volumeMap.collectAsState()
 
 
     LaunchedEffect(Unit) {
-        playerViewModel.progressStateUi.collect { progressState ->
+        playerPresenter.progressStateUi.collect { progressState ->
             if (!isUserSeeking) {
                 playbackSeekbarPosition = progressState.currentPositionSec
                 currentPositionText = progressState.currentPositionString
@@ -76,7 +76,7 @@ fun PlayerScreenHost(
     }
 
     LaunchedEffect(Unit) {
-        playerViewModel.uiEvent.collect { event ->
+        playerPresenter.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.ShowSongDialog -> {
                     songs = event.songs
@@ -103,9 +103,9 @@ fun PlayerScreenHost(
 
     PlayerScreen(
         menuItems = mapOf(
-            R.string.choose_song to playerViewModel::showChooseDialog,
-            R.string.delete_song to playerViewModel::showDeleteDialog,
-            R.string.help to playerViewModel::showHelpDialog
+            R.string.choose_song to playerPresenter::showChooseDialog,
+            R.string.delete_song to playerPresenter::showDeleteDialog,
+            R.string.help to playerPresenter::showHelpDialog
         )
             .mapKeys { stringResource(it.key) }
             .mapValues { (_, action) ->
@@ -131,7 +131,7 @@ fun PlayerScreenHost(
             currentPositionText = TimeStringFormatter.formatSecToString(newValue)
         },
         onSeekReleased = {
-            playerViewModel.setSongProgress(playbackSeekbarPosition)
+            playerPresenter.setSongProgress(playbackSeekbarPosition)
             isUserSeeking = false
         },
         changeSpeedButtons = Pair(
@@ -139,12 +139,12 @@ fun PlayerScreenHost(
                 type = SpeedControllerButtonType.BACKWARD,
                 label = stringResource(R.string.minus_speed),
                 icon = Icons.Filled.Remove,
-                onClick = { playerViewModel.changeSpeed(ChangeSpeedDirection.BACK) }),
+                onClick = { playerPresenter.changeSpeed(ChangeSpeedDirection.BACK) }),
             TriangleButtonItem(
                 type = SpeedControllerButtonType.FORWARD,
                 label = stringResource(R.string.plus_speed),
                 icon = Icons.Filled.Add,
-                onClick = { playerViewModel.changeSpeed(ChangeSpeedDirection.FORWARD) }
+                onClick = { playerPresenter.changeSpeed(ChangeSpeedDirection.FORWARD) }
             ),
         ),
         currentSpeed = currentSpeedText,
@@ -154,47 +154,47 @@ fun PlayerScreenHost(
                 label = stringResource(R.string.minus_5_sec),
                 icon = Icons.Filled.Replay5,
                 weight = 2f,
-                onClick = { playerViewModel.rewind(RewindDirection.BACK) }
+                onClick = { playerPresenter.rewind(RewindDirection.BACK) }
             ),
             ImageButtonItem(
                 label = stringResource(if (isPlaying) R.string.pause else R.string.play),
                 icon = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 weight = 4f,
-                onClick = playerViewModel::togglePlayPause
+                onClick = playerPresenter::togglePlayPause
             ),
             ImageButtonItem(
                 label = stringResource(R.string.stop),
                 icon = Icons.Filled.Stop,
                 weight = 3f,
-                onClick = playerViewModel::stop
+                onClick = playerPresenter::stop
             ),
             ImageButtonItem(
                 label = stringResource(R.string.plus_5_sec),
                 icon = Icons.Filled.Forward5,
                 weight = 2f,
-                onClick = { playerViewModel.rewind(RewindDirection.FORWARD) }
+                onClick = { playerPresenter.rewind(RewindDirection.FORWARD) }
             ),
         ),
         volumeStates = volumeStates,
-        setVolume = playerViewModel::setVolume,
+        setVolume = playerPresenter::setVolume,
         showChooseSongDialog = showChooseSongDialog,
         showDeleteSongDialog = showDeleteSongDialog,
         showDeleteConfirmationDialog = showDeleteConfirmationDialog,
         showHelpDialog = showHelpDialog,
         songs = songs,
         selectedSongs = selectedSongs,
-        onLoadSong = playerViewModel::loadSong,
+        onLoadSong = playerPresenter::loadSong,
         onTryDeleteSongs = { selected ->
             selectedSongs = selected
             showDeleteSongDialog = false
             showDeleteConfirmationDialog = true
         },
         onConfirmDeleteSongs = {
-            playerViewModel.deleteSongs(selectedSongs)
+            playerPresenter.deleteSongs(selectedSongs)
             showDeleteConfirmationDialog = false
             selectedSongs = emptyList()
         },
-        onEmptySelection = { playerViewModel.showMessage(emptySelectionText) },
+        onEmptySelection = { playerPresenter.showMessage(emptySelectionText) },
         onDismissChooseSongDialog = { showChooseSongDialog = false },
         onDismissDeleteSongDialog = { showDeleteSongDialog = false },
         onDismissDeleteConfirmationDialog = { showDeleteConfirmationDialog = false },

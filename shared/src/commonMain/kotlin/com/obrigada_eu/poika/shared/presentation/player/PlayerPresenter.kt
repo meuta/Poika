@@ -1,13 +1,8 @@
-package com.obrigada_eu.poika.player.ui
+package com.obrigada_eu.poika.shared.presentation.player
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.obrigada_eu.poika.player.ui.formatters.SpeedStringFormatter
-import com.obrigada_eu.poika.player.ui.formatters.TimeStringFormatter
-import com.obrigada_eu.poika.player.ui.mappers.toTitleString
-import com.obrigada_eu.poika.player.data.infra.audio.ChangeSpeedDirection
-import com.obrigada_eu.poika.player.data.infra.audio.RewindDirection
 import com.obrigada_eu.poika.shared.domain.audio.AudioService
+import com.obrigada_eu.poika.shared.domain.audio.ChangeSpeedDirection
+import com.obrigada_eu.poika.shared.domain.audio.RewindDirection
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.shared.domain.progress.ProgressStateProvider
 import com.obrigada_eu.poika.shared.domain.session.PlayerSessionReader
@@ -16,21 +11,24 @@ import com.obrigada_eu.poika.shared.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.GetAllSongsUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
-import com.obrigada_eu.poika.player.ui.mappers.toUi
-import com.obrigada_eu.poika.player.ui.mappers.toSpeedString
-import com.obrigada_eu.poika.player.ui.model.UiTextPart
-import com.obrigada_eu.poika.player.ui.model.ProgressStateUi
-import com.obrigada_eu.poika.player.ui.model.UiEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.obrigada_eu.poika.shared.presentation.player.formatters.SpeedStringFormatter
+import com.obrigada_eu.poika.shared.presentation.player.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.shared.presentation.player.mappers.toSpeedString
+import com.obrigada_eu.poika.shared.presentation.player.mappers.toTitleString
+import com.obrigada_eu.poika.shared.presentation.player.mappers.toUi
+import com.obrigada_eu.poika.shared.presentation.player.model.ProgressStateUi
+import com.obrigada_eu.poika.shared.presentation.player.model.UiEvent
+import com.obrigada_eu.poika.shared.presentation.player.model.UiTextPart
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class   PlayerViewModel @Inject constructor(
+class PlayerPresenter(
     private val audioService: AudioService,
     private val importZipUseCase: ImportZipUseCase,
     private val getAllSongsUseCase: GetAllSongsUseCase,
@@ -38,7 +36,11 @@ class   PlayerViewModel @Inject constructor(
     private val deleteSongUseCase: DeleteSongUseCase,
     progressProvider: ProgressStateProvider,
     playerSessionReader: PlayerSessionReader
-) : ViewModel() {
+) {
+
+    private val scope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main
+    )
 
     private val _uiEvent = Channel<UiEvent>(Channel.Factory.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
@@ -60,15 +62,19 @@ class   PlayerViewModel @Inject constructor(
         speed.toSpeedString(SpeedStringFormatter)
     }
 
+    fun dispose() {
+        scope.cancel()
+    }
+
     fun showChooseDialog() = showListDialog(UiEvent.Mode.CHOOSE)
     fun showDeleteDialog() = showListDialog(UiEvent.Mode.DELETE)
 
     fun showHelpDialog() {
-        viewModelScope.launch { _uiEvent.send(UiEvent.ShowHelpDialog) }
+        scope.launch { _uiEvent.send(UiEvent.ShowHelpDialog) }
     }
 
     private fun showListDialog(mode: UiEvent.Mode) {
-        viewModelScope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.IO) {
             val songs = getAllSongsUseCase()
             if (songs.isEmpty()) {
                 showMessage("The song list is empty.")
@@ -79,7 +85,7 @@ class   PlayerViewModel @Inject constructor(
     }
 
     fun showMessage(message: List<UiTextPart>, shortDuration: Boolean = true) {
-        viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message, shortDuration)) }
+        scope.launch { _uiEvent.send(UiEvent.ShowToast(message, shortDuration)) }
     }
 
     fun showMessage(message: String, shortDuration: Boolean = true) {
@@ -87,7 +93,7 @@ class   PlayerViewModel @Inject constructor(
     }
 
     fun handleZipImport(uriString: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.IO) {
             val result = importZipUseCase(uriString)
             if (result != null) {
 
@@ -111,7 +117,7 @@ class   PlayerViewModel @Inject constructor(
     }
 
     fun deleteSongs(songs: List<SongMetaData>) {
-        viewModelScope.launch {
+        scope.launch {
             val success = songs.map { deleteSongUseCase(it) }.contains(false).not()
             showMessage(if (success) "Songs deleted" else "Deletion error")
         }
@@ -140,7 +146,7 @@ class   PlayerViewModel @Inject constructor(
     }
 
     private fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
-        viewModelScope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
+        scope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
     }
 
     companion object {

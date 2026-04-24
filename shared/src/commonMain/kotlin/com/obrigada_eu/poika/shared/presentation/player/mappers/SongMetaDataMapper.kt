@@ -1,4 +1,4 @@
-package com.obrigada_eu.poika.player.ui.mappers
+package com.obrigada_eu.poika.shared.presentation.player.mappers
 
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 

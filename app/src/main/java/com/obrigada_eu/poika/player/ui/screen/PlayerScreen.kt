@@ -27,7 +27,7 @@ import com.obrigada_eu.poika.player.ui.components.HelpDialog
 import com.obrigada_eu.poika.player.ui.components.ListDialog
 import com.obrigada_eu.poika.player.ui.components.PlayerPane
 import com.obrigada_eu.poika.player.ui.components.PoikaTopAppBar
-import com.obrigada_eu.poika.player.ui.formatters.TimeStringFormatter
+import com.obrigada_eu.poika.shared.presentation.player.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
 import com.obrigada_eu.poika.player.ui.preview.PreviewData

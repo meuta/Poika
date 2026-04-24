@@ -1,6 +1,6 @@
-package com.obrigada_eu.poika.player.ui.mappers
+package com.obrigada_eu.poika.shared.presentation.player.mappers
 
-import com.obrigada_eu.poika.player.ui.formatters.SpeedStringFormatter
+import com.obrigada_eu.poika.shared.presentation.player.formatters.SpeedStringFormatter
 
 fun Float.toSpeedString(stringFormatter: SpeedStringFormatter): String {
     val currentSpeedString = stringFormatter.formatSpeedToString(this)

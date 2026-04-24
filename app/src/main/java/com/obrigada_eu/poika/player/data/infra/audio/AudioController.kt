@@ -194,11 +194,4 @@ class AudioController @Inject constructor(
     }
 }
 
-enum class RewindDirection {
-    BACK, FORWARD
-}
 
-
-enum class ChangeSpeedDirection {
-    BACK, FORWARD
-}
