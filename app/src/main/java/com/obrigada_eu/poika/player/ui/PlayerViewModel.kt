@@ -1,9 +1,5 @@
 package com.obrigada_eu.poika.player.ui
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.obrigada_eu.poika.player.ui.formatters.SpeedStringFormatter
@@ -22,6 +18,7 @@ import com.obrigada_eu.poika.shared.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
 import com.obrigada_eu.poika.player.ui.mappers.toUi
 import com.obrigada_eu.poika.player.ui.mappers.toSpeedString
+import com.obrigada_eu.poika.player.ui.model.UiTextPart
 import com.obrigada_eu.poika.player.ui.model.ProgressStateUi
 import com.obrigada_eu.poika.player.ui.model.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -81,12 +78,12 @@ class   PlayerViewModel @Inject constructor(
         }
     }
 
-    fun showMessage(message: Spannable, shortDuration: Boolean = true) {
+    fun showMessage(message: List<UiTextPart>, shortDuration: Boolean = true) {
         viewModelScope.launch { _uiEvent.send(UiEvent.ShowToast(message, shortDuration)) }
     }
 
     fun showMessage(message: String, shortDuration: Boolean = true) {
-        showMessage(SpannableString(message), shortDuration)
+        showMessage(listOf(UiTextPart(message)), shortDuration)
     }
 
     fun handleZipImport(uriString: String) {
@@ -94,16 +91,14 @@ class   PlayerViewModel @Inject constructor(
             val result = importZipUseCase(uriString)
             if (result != null) {
 
-                val text = "Song ${result.toTitleString()} is available in your list"
-                val spannable = SpannableString(text).apply {
-                    setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        5,
-                        text.length - 26,
-                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-                    )
-                }
-                showMessage(spannable, false)
+                val songTitle = result.toTitleString()
+
+                val message = listOf(
+                    UiTextPart("Song "),
+                    UiTextPart(songTitle, bold = true),
+                    UiTextPart(" is available in your list")
+                )
+                showMessage(message, false)
             } else {
                 showMessage("Error importing a song")
             }

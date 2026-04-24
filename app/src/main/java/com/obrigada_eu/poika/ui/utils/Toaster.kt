@@ -1,37 +1,43 @@
 package com.obrigada_eu.poika.ui.utils
 
 import android.content.Context
-import android.text.Spannable
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.widget.Toast
-import androidx.compose.ui.text.AnnotatedString
+import com.obrigada_eu.poika.player.ui.model.UiTextPart
 
 object Toaster {
 
-    fun show(context: Context, message: Spannable, shortDuration: Boolean = true) {
-        val text = message.apply {
-            setSpan(
-                RelativeSizeSpan(1.1f),
-                0,
-                message.length,
-                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-            )
+    fun show(context: Context, parts: List<UiTextPart>, shortDuration: Boolean = true) {
+        val ssb = SpannableStringBuilder()
+        parts.forEach { part ->
+            val start = ssb.length
+            ssb.append(part.text)
+            if (part.bold) {
+                ssb.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    start,
+                    ssb.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
 
+        ssb.setSpan(
+            RelativeSizeSpan(1.1f),
+            0,
+            ssb.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
         Toast.makeText(
             context,
-            text,
+            ssb,
             if (shortDuration) Toast.LENGTH_SHORT else Toast.LENGTH_LONG
         ).show()
     }
 
-    fun show(context: Context, message: AnnotatedString, shortDuration: Boolean = true) {
-        val text = message
-
-        Toast.makeText(
-            context,
-            text,
-            if (shortDuration) Toast.LENGTH_SHORT else Toast.LENGTH_LONG
-        ).show()
-    }
 }
