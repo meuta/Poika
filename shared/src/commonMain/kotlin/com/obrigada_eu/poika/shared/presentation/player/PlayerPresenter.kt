@@ -74,8 +74,12 @@ class PlayerPresenter(
     }
 
     private fun showListDialog(mode: UiEvent.Mode) {
+        println("mode = $mode")
         scope.launch(Dispatchers.IO) {
+            println("context = Dispatchers.IO")
+
             val songs = getAllSongsUseCase()
+            println("songs = $songs")
             if (songs.isEmpty()) {
                 showMessage("The song list is empty.")
             } else {
@@ -128,11 +132,11 @@ class PlayerPresenter(
 
     fun stop() = audioService.stop()
     fun rewind(direction: RewindDirection) = audioService.rewind(
-        if (direction == RewindDirection.BACK) - 5000L else + 5000L
+        if (direction == RewindDirection.BACKWARD) - 5000L else + 5000L
     )
 
     fun changeSpeed(direction: ChangeSpeedDirection) = audioService.changeSpeed(
-        if (direction == ChangeSpeedDirection.BACK) - 0.1f else + 0.1f
+        if (direction == ChangeSpeedDirection.BACKWARD) - 0.1f else + 0.1f
     )
 
     fun setVolume(part: String, volume: Float) {
@@ -146,10 +150,14 @@ class PlayerPresenter(
     }
 
     private fun showListDialog(list: List<SongMetaData>, mode: UiEvent.Mode) {
-        scope.launch { _uiEvent.send(UiEvent.ShowSongDialog(list, mode)) }
+        println("showListDialog")
+        scope.launch {
+            println("showListDialog, scope.launch")
+            _uiEvent.send(UiEvent.ShowSongDialog(list, mode))
+        }
     }
 
     companion object {
-        private const val TAG = "PlayerViewModel"
+        private const val TAG = "PlayerPresenter"
     }
 }

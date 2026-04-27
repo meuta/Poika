@@ -1,5 +1,5 @@
 package com.obrigada_eu.poika.shared.domain.audio
 
 enum class ChangeSpeedDirection {
-    BACK, FORWARD
+    BACKWARD, FORWARD
 }

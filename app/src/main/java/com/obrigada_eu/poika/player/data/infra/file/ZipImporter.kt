@@ -2,6 +2,7 @@ package com.obrigada_eu.poika.player.data.infra.file
 
 import android.content.Context
 import android.net.Uri
+import com.obrigada_eu.poika.shared.data.metadata.MetaDataParser
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.utils.Logger
 import java.io.File

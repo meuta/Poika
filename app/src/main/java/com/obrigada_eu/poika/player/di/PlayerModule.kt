@@ -2,16 +2,16 @@ package com.obrigada_eu.poika.player.di
 
 import android.content.Context
 import com.obrigada_eu.poika.di.ApplicationScope
-import com.obrigada_eu.poika.player.data.infra.session.PlayerSession
+import com.obrigada_eu.poika.shared.presentation.player.session.PlayerSession
 import com.obrigada_eu.poika.shared.domain.session.PlayerSessionReader
 import com.obrigada_eu.poika.shared.domain.session.PlayerSessionWriter
-import com.obrigada_eu.poika.player.data.infra.file.MetaDataParser
+import com.obrigada_eu.poika.shared.data.metadata.MetaDataParser
 import com.obrigada_eu.poika.shared.domain.repository.SongRepository
 import com.obrigada_eu.poika.player.data.repository.SongRepositoryImpl
 import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
 import com.obrigada_eu.poika.player.data.infra.audio.AudioController
 import com.obrigada_eu.poika.player.data.infra.file.FileResolver
-import com.obrigada_eu.poika.player.data.infra.progress.ProgressTracker
+import com.obrigada_eu.poika.shared.presentation.player.progress.ProgressTracker
 import com.obrigada_eu.poika.shared.domain.audio.AudioService
 import com.obrigada_eu.poika.shared.domain.progress.ProgressStateProvider
 import com.obrigada_eu.poika.shared.domain.progress.ProgressStateUpdater

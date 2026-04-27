@@ -11,19 +11,20 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import poika.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
-import com.obrigada_eu.poika.R
 import com.obrigada_eu.poika.shared.presentation.player.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.shared.domain.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.shared.domain.audio.RewindDirection
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
-import com.obrigada_eu.poika.player.ui.components.SpeedControllerButtonType
-import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
-import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
+import com.obrigada_eu.poika.shared.platform
+import com.obrigada_eu.poika.shared.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.shared.presentation.player.PlayerPresenter
 import com.obrigada_eu.poika.shared.presentation.player.model.UiEvent
+import com.obrigada_eu.poika.shared.ui.model.TriangleButtonItem
+import com.obrigada_eu.poika.shared.ui.screen.PlayerScreen
 import com.obrigada_eu.poika.ui.utils.Toaster
 import kotlin.collections.mapKeys
 import kotlin.collections.mapOf
@@ -33,10 +34,11 @@ fun PlayerScreenHost(
     playerPresenter: PlayerPresenter,
 ) {
 
-    val context = LocalContext.current
+    val platform = platform()
+    val context = LocalPlatformContext.current
 
-    val emptySelectionText = stringResource(R.string.select_at_least_one)
-    val stringZeroZero = stringResource(R.string._00_00)
+    val emptySelectionText = stringResource(Res.string.select_at_least_one)
+    val stringZeroZero = stringResource(Res.string._00_00)
 
     var showChooseSongDialog by remember { mutableStateOf(false) }
     var showDeleteSongDialog by remember { mutableStateOf(false) }
@@ -84,16 +86,19 @@ fun PlayerScreenHost(
                         UiEvent.Mode.CHOOSE -> {
                             showChooseSongDialog = true
                         }
+
                         UiEvent.Mode.DELETE -> {
                             showDeleteSongDialog = true
                         }
                     }
                 }
+
                 is UiEvent.ShowToast -> {
                     if (event.message.isNotEmpty()) {
                         Toaster.show(context, event.message, event.shortDuration)
                     }
                 }
+
                 is UiEvent.ShowHelpDialog -> {
                     showHelpDialog = true
                 }
@@ -103,9 +108,9 @@ fun PlayerScreenHost(
 
     PlayerScreen(
         menuItems = mapOf(
-            R.string.choose_song to playerPresenter::showChooseDialog,
-            R.string.delete_song to playerPresenter::showDeleteDialog,
-            R.string.help to playerPresenter::showHelpDialog
+            Res.string.choose_song to playerPresenter::showChooseDialog,
+            Res.string.delete_song to playerPresenter::showDeleteDialog,
+            Res.string.help to playerPresenter::showHelpDialog
         )
             .mapKeys { stringResource(it.key) }
             .mapValues { (_, action) ->
@@ -119,8 +124,11 @@ fun PlayerScreenHost(
         onDismissMenuRequest = { menuExpanded = false },
         songTitle = songTitle,
         imageRequest = ImageRequest.Builder(context)
-            .data("android.resource://${context.packageName}/${R.raw.logo_pink_512_512}")
-            .build(),
+            .data(
+                Res.getUri(
+                    "drawable/logo_pink_${if (platform == "Desktop") "200_200" else "512_512"}.png"
+                )
+            ).build(),
         currentPositionText = currentPositionText,
         trackDurationText = trackDurationText,
         playbackSeekbarPosition = playbackSeekbarPosition,
@@ -136,13 +144,13 @@ fun PlayerScreenHost(
         },
         changeSpeedButtons = Pair(
             TriangleButtonItem(
-                type = SpeedControllerButtonType.BACKWARD,
-                label = stringResource(R.string.minus_speed),
+                type = ChangeSpeedDirection.BACKWARD,
+                label = stringResource(Res.string.minus_speed),
                 icon = Icons.Filled.Remove,
-                onClick = { playerPresenter.changeSpeed(ChangeSpeedDirection.BACK) }),
+                onClick = { playerPresenter.changeSpeed(ChangeSpeedDirection.BACKWARD) }),
             TriangleButtonItem(
-                type = SpeedControllerButtonType.FORWARD,
-                label = stringResource(R.string.plus_speed),
+                type = ChangeSpeedDirection.FORWARD,
+                label = stringResource(Res.string.plus_speed),
                 icon = Icons.Filled.Add,
                 onClick = { playerPresenter.changeSpeed(ChangeSpeedDirection.FORWARD) }
             ),
@@ -151,25 +159,25 @@ fun PlayerScreenHost(
 
         playbackButtons = listOf(
             ImageButtonItem(
-                label = stringResource(R.string.minus_5_sec),
+                label = stringResource(Res.string.minus_5_sec),
                 icon = Icons.Filled.Replay5,
                 weight = 2f,
-                onClick = { playerPresenter.rewind(RewindDirection.BACK) }
+                onClick = { playerPresenter.rewind(RewindDirection.BACKWARD) }
             ),
             ImageButtonItem(
-                label = stringResource(if (isPlaying) R.string.pause else R.string.play),
+                label = stringResource(if (isPlaying) Res.string.pause else Res.string.play),
                 icon = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 weight = 4f,
                 onClick = playerPresenter::togglePlayPause
             ),
             ImageButtonItem(
-                label = stringResource(R.string.stop),
+                label = stringResource(Res.string.stop),
                 icon = Icons.Filled.Stop,
                 weight = 3f,
                 onClick = playerPresenter::stop
             ),
             ImageButtonItem(
-                label = stringResource(R.string.plus_5_sec),
+                label = stringResource(Res.string.plus_5_sec),
                 icon = Icons.Filled.Forward5,
                 weight = 2f,
                 onClick = { playerPresenter.rewind(RewindDirection.FORWARD) }

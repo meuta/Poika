@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.obrigada_eu.poika.ui.theme.PoikaTheme
+import com.obrigada_eu.poika.shared.ui.theme.PoikaTheme
 
 
 @Composable

@@ -4,9 +4,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.shared.domain.model.TrackInfo
-import com.obrigada_eu.poika.player.ui.components.SpeedControllerButtonType
-import com.obrigada_eu.poika.player.ui.model.ImageButtonItem
-import com.obrigada_eu.poika.player.ui.model.TriangleButtonItem
+import com.obrigada_eu.poika.shared.ui.model.ImageButtonItem
+import com.obrigada_eu.poika.shared.domain.audio.ChangeSpeedDirection
+import com.obrigada_eu.poika.shared.ui.model.TriangleButtonItem
 
 object PreviewData {
 
@@ -63,8 +63,8 @@ object PreviewData {
 
     val playbackButtonsRow = playbackButtons.filterNot { it.label == "Pause" }
 
-    val reduceSpeedButton = TriangleButtonItem(SpeedControllerButtonType.BACKWARD, "-", Icons.Filled.Remove, {})
-    val increaseSpeedButton = TriangleButtonItem(SpeedControllerButtonType.FORWARD, "+", Icons.Filled.Add, {})
+    val reduceSpeedButton = TriangleButtonItem(ChangeSpeedDirection.BACKWARD, "-", Icons.Filled.Remove, {})
+    val increaseSpeedButton = TriangleButtonItem(ChangeSpeedDirection.FORWARD, "+", Icons.Filled.Add, {})
     val changeSpeedButtons = reduceSpeedButton to increaseSpeedButton
 
     val currentSpeed = "x0.8"

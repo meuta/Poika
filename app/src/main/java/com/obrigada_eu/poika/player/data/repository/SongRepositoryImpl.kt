@@ -3,7 +3,7 @@ package com.obrigada_eu.poika.player.data.repository
 import android.content.Context
 import androidx.core.net.toUri
 import com.obrigada_eu.poika.player.data.infra.file.FileResolver
-import com.obrigada_eu.poika.player.data.infra.file.MetaDataParser
+import com.obrigada_eu.poika.shared.data.metadata.MetaDataParser
 import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
 import com.obrigada_eu.poika.shared.domain.repository.SongRepository
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData

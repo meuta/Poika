@@ -1,6 +1,8 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
+    id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 kotlin {
@@ -17,6 +19,22 @@ kotlin {
 
             // Coroutines
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+
+            // Material
+            implementation("org.jetbrains.compose.material3:material3:1.9.0")
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
+
+            // Res
+            implementation("org.jetbrains.compose.components:components-resources:1.10.3")
+
+            implementation("org.jetbrains.compose.runtime:runtime:1.10.3")
+            implementation("org.jetbrains.compose.foundation:foundation:1.10.3")
+
+            // Coil
+            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+
+            // Preview
+            implementation("androidx.compose.ui:ui-tooling-preview:1.10.1")
         }
 
         commonTest.dependencies {
@@ -24,7 +42,11 @@ kotlin {
         }
 
         androidMain.dependencies {}
-        desktopMain.dependencies {}
+
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2")
+        }
     }
 }
 
@@ -34,4 +56,14 @@ android {
     defaultConfig {
         minSdk = 24
     }
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.obrigada_eu.poika.desktop.PoikaDesktopAppKt"
+    }
+}
+
+compose.resources {
+    publicResClass = true
 }

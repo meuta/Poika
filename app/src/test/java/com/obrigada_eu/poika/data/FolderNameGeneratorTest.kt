@@ -1,6 +1,6 @@
 package com.obrigada_eu.poika.data
 
-import com.obrigada_eu.poika.player.data.infra.file.FolderNameGenerator
+import com.obrigada_eu.poika.shared.domain.metadata.FolderNameGenerator
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.shared.domain.model.TrackInfo
 import org.junit.Test

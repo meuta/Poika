@@ -1,0 +1,156 @@
+package com.obrigada_eu.poika.shared.ui.screen
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.ui.components.ConfirmDeleteDialog
+import com.obrigada_eu.poika.shared.ui.components.HelpDialog
+import com.obrigada_eu.poika.shared.ui.components.ListDialog
+import com.obrigada_eu.poika.shared.ui.components.PlayerPane
+import com.obrigada_eu.poika.shared.ui.components.PoikaTopAppBar
+import com.obrigada_eu.poika.shared.ui.model.ImageButtonItem
+import com.obrigada_eu.poika.shared.ui.model.TriangleButtonItem
+import com.obrigada_eu.poika.shared.ui.theme.Dimens
+import org.jetbrains.compose.resources.stringResource
+import poika.shared.generated.resources.*
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun PlayerScreen(
+    menuItems: Map<String, () -> Unit>,
+    menuExpanded: Boolean,
+    menuIconOnClick: () -> Unit,
+    onDismissMenuRequest: () -> Unit,
+    songTitle: String?,
+    imageRequest: ImageRequest,
+    currentPositionText: String,
+    trackDurationText: String,
+    playbackSeekbarPosition: Float,
+    playbackSeekbarMax: Float,
+    onSeekChanged: (Float) -> Unit,
+    onSeekReleased: () -> Unit,
+    changeSpeedButtons: Pair<TriangleButtonItem, TriangleButtonItem>,
+    currentSpeed: String,
+    playbackButtons: List<ImageButtonItem>,
+    volumeStates: Map<String, Float>,
+    setVolume: (String, Float) -> Unit,
+    showChooseSongDialog: Boolean,
+    showDeleteSongDialog: Boolean,
+    showDeleteConfirmationDialog: Boolean,
+    showHelpDialog: Boolean,
+    songs: List<SongMetaData>,
+    selectedSongs: List<SongMetaData>,
+    onLoadSong: (SongMetaData) -> Unit,
+    onTryDeleteSongs: (List<SongMetaData>) -> Unit,
+    onConfirmDeleteSongs: () -> Unit,
+    onEmptySelection: () -> Unit,
+    onDismissChooseSongDialog: () -> Unit,
+    onDismissDeleteSongDialog: () -> Unit,
+    onDismissDeleteConfirmationDialog: () -> Unit,
+    onDismissHelpDialog: () -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            PoikaTopAppBar(
+                menuItems = menuItems,
+                menuIconOnclick = menuIconOnClick,
+                onDismissRequest = onDismissMenuRequest,
+                expanded = menuExpanded
+            )
+        }
+    ) { innerPadding ->
+        SelectionContainer {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(Dimens.ScreenPadding)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                // Song title
+                Text(
+                    text = songTitle ?: stringResource(Res.string.to_start_singing_practice_),
+                    textAlign = TextAlign.Center,
+                    fontSize = Dimens.MediumFontSize,
+                    lineHeight = Dimens.SongTitleLineHeight,
+                    letterSpacing = Dimens.SongTitleLetterSpacing,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(Dimens.SongTitlePadding),
+                )
+
+                // Player Pane
+                if (songTitle != null) {
+                    PlayerPane(
+                        currentPositionText = currentPositionText,
+                        trackDurationText = trackDurationText,
+                        playbackSeekbarPosition = playbackSeekbarPosition,
+                        playbackSeekbarMax = playbackSeekbarMax,
+                        onSeekChanged = onSeekChanged,
+                        onSeekReleased = onSeekReleased,
+                        changeSpeedButtons = changeSpeedButtons,
+                        currentSpeed = currentSpeed,
+                        playbackButtons = playbackButtons,
+                        volumeStates = volumeStates,
+                        setVolume = setVolume,
+                    )
+                } else {
+                    AsyncImage(
+                        model = imageRequest,
+                        contentDescription = "logo",
+                        alignment = Alignment.Center,
+                    )
+                }
+            }
+        }
+    }
+
+
+    if (showChooseSongDialog) {
+        ListDialog(
+            title = stringResource(Res.string.choose_song),
+            items = songs,
+            onConfirm = onLoadSong,
+            onDismiss = onDismissChooseSongDialog,
+        )
+    }
+
+    if (showDeleteSongDialog) {
+        ListDialog(
+            title = stringResource(Res.string.delete_song),
+            items = songs,
+            isMultiChoice = true,
+            onConfirmMultiChoice = onTryDeleteSongs,
+            onEmptySelection = onEmptySelection,
+            onDismiss = onDismissDeleteSongDialog,
+        )
+    }
+
+    if (showDeleteConfirmationDialog) {
+        ConfirmDeleteDialog(
+            songs = selectedSongs,
+            onConfirm = onConfirmDeleteSongs,
+            onDismiss = onDismissDeleteConfirmationDialog,
+        )
+    }
+
+    if (showHelpDialog) {
+        HelpDialog(
+            onDismiss = onDismissHelpDialog,
+        )
+    }
+}

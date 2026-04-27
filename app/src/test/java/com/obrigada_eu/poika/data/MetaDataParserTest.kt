@@ -1,6 +1,6 @@
 package com.obrigada_eu.poika.data
 
-import com.obrigada_eu.poika.player.data.infra.file.MetaDataParser
+import com.obrigada_eu.poika.shared.data.metadata.MetaDataParser
 import com.obrigada_eu.poika.shared.domain.model.TrackInfo
 import org.junit.Assert.*
 import org.junit.Before
