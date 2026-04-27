@@ -5,7 +5,6 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.obrigada_eu.poika.desktop.fake.DesktopFakeAudioService
 import com.obrigada_eu.poika.desktop.fake.DesktopFakeSongRepository
-import com.obrigada_eu.poika.desktop.ui.screen.DesktopPlayerScreenHost
 import com.obrigada_eu.poika.shared.domain.usecase.DeleteSongUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.GetAllSongsUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.ImportZipUseCase
@@ -13,6 +12,7 @@ import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
 import com.obrigada_eu.poika.shared.presentation.player.PlayerPresenter
 import com.obrigada_eu.poika.shared.presentation.player.progress.ProgressTracker
 import com.obrigada_eu.poika.shared.presentation.player.session.PlayerSession
+import com.obrigada_eu.poika.shared.ui.root.PoikaRoot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -31,7 +31,7 @@ fun main() = application {
         },
         title = "Poika"
     ) {
-        DesktopPlayerScreenHost(presenter)
+        PoikaRoot(presenter)
     }
 }
 

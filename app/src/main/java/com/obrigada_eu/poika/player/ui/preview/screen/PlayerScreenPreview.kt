@@ -1,6 +1,7 @@
 package com.obrigada_eu.poika.player.ui.preview.screen
 
 import android.content.res.Configuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.LocalPlatformContext
@@ -58,7 +59,9 @@ fun PlayerScreenPreview() {
             onDismissDeleteSongDialog = {},
             onDismissDeleteConfirmationDialog = {},
             changeSpeedButtons = PreviewData.changeSpeedButtons,
-            currentSpeed = PreviewData.currentSpeed
+            currentSpeed = PreviewData.currentSpeed,
+            snackbarHostState = SnackbarHostState(),
+            snackbarMessage = null
         ) {}
     }
 }

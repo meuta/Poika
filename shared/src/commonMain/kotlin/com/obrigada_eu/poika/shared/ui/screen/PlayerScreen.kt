@@ -8,6 +8,8 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
+import com.obrigada_eu.poika.shared.presentation.player.model.UiTextPart
 import com.obrigada_eu.poika.shared.ui.components.ConfirmDeleteDialog
 import com.obrigada_eu.poika.shared.ui.components.HelpDialog
 import com.obrigada_eu.poika.shared.ui.components.ListDialog
@@ -25,12 +28,15 @@ import com.obrigada_eu.poika.shared.ui.components.PoikaTopAppBar
 import com.obrigada_eu.poika.shared.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.shared.ui.model.TriangleButtonItem
 import com.obrigada_eu.poika.shared.ui.theme.Dimens
+import com.obrigada_eu.poika.shared.ui.utils.CustomSnackbar
 import org.jetbrains.compose.resources.stringResource
 import poika.shared.generated.resources.*
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun PlayerScreen(
+    snackbarHostState: SnackbarHostState,
+    snackbarMessage: List<UiTextPart>?,
     menuItems: Map<String, () -> Unit>,
     menuExpanded: Boolean,
     menuIconOnClick: () -> Unit,
@@ -71,6 +77,11 @@ fun PlayerScreen(
                 onDismissRequest = onDismissMenuRequest,
                 expanded = menuExpanded
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                CustomSnackbar(snackbarMessage)
+            }
         }
     ) { innerPadding ->
         SelectionContainer {

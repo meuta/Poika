@@ -13,7 +13,7 @@ import com.obrigada_eu.poika.shared.domain.usecase.GetAllSongsUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
 import com.obrigada_eu.poika.shared.presentation.player.PlayerPresenter
-import com.obrigada_eu.poika.ui.root.PoikaRoot
+import com.obrigada_eu.poika.shared.ui.root.PoikaRoot
 import com.obrigada_eu.poika.utils.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

@@ -1,5 +1,6 @@
 package com.obrigada_eu.poika.player.ui.preview
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -81,7 +82,16 @@ private fun ColorItem(name: String, color: Color) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    name = "Light Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
 @Composable
 fun ColorSchemePreview_Preview() {
     PoikaTheme {

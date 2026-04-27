@@ -6,6 +6,7 @@ import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.shared.domain.model.TrackInfo
 import com.obrigada_eu.poika.shared.ui.model.ImageButtonItem
 import com.obrigada_eu.poika.shared.domain.audio.ChangeSpeedDirection
+import com.obrigada_eu.poika.shared.presentation.player.model.UiTextPart
 import com.obrigada_eu.poika.shared.ui.model.TriangleButtonItem
 
 object PreviewData {
@@ -44,6 +45,12 @@ object PreviewData {
     val duration = 228f
 
     val timeStringZeroZero = "00:00"
+
+    val snackbarMessage: List<UiTextPart>? = listOf(
+        UiTextPart("Song "),
+        UiTextPart(songTitle, bold = true),
+        UiTextPart(" is available in your list")
+    )
 
     val menuItems = mapOf(
         "Choose Song" to {},

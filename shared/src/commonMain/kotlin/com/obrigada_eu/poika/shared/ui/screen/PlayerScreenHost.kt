@@ -1,13 +1,9 @@
-package com.obrigada_eu.poika.desktop.ui.screen
+package com.obrigada_eu.poika.shared.ui.screen
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Forward5
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.Replay5
-import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,23 +12,23 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import poika.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
+import com.obrigada_eu.poika.shared.presentation.player.formatters.TimeStringFormatter
 import com.obrigada_eu.poika.shared.domain.audio.ChangeSpeedDirection
 import com.obrigada_eu.poika.shared.domain.audio.RewindDirection
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
 import com.obrigada_eu.poika.shared.platform
-import com.obrigada_eu.poika.shared.presentation.player.PlayerPresenter
-import com.obrigada_eu.poika.shared.presentation.player.formatters.TimeStringFormatter
-import com.obrigada_eu.poika.shared.presentation.player.model.UiEvent
 import com.obrigada_eu.poika.shared.ui.model.ImageButtonItem
+import com.obrigada_eu.poika.shared.presentation.player.PlayerPresenter
+import com.obrigada_eu.poika.shared.presentation.player.model.UiEvent
+import com.obrigada_eu.poika.shared.presentation.player.model.UiTextPart
 import com.obrigada_eu.poika.shared.ui.model.TriangleButtonItem
-import com.obrigada_eu.poika.shared.ui.screen.PlayerScreen
-import org.jetbrains.compose.resources.stringResource
-import poika.shared.generated.resources.*
 
 @Composable
-fun DesktopPlayerScreenHost(
+fun PlayerScreenHost(
     playerPresenter: PlayerPresenter,
 ) {
     val platform = platform()
@@ -66,6 +62,9 @@ fun DesktopPlayerScreenHost(
 
     val volumeStates by playerPresenter.volumeMap.collectAsState()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    var snackbarMessage by remember { mutableStateOf<List<UiTextPart>?>(null) }
+
 
     LaunchedEffect(Unit) {
         playerPresenter.progressStateUi.collect { progressState ->
@@ -82,7 +81,6 @@ fun DesktopPlayerScreenHost(
         playerPresenter.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.ShowSongDialog -> {
-                    println("uiEvent.collect = ShowSongDialog")
                     songs = event.songs
                     when (event.mode) {
                         UiEvent.Mode.CHOOSE -> {
@@ -97,8 +95,15 @@ fun DesktopPlayerScreenHost(
 
                 is UiEvent.ShowToast -> {
                     if (event.message.isNotEmpty()) {
-//                        Toaster.show(context, event.message, event.shortDuration)
-                        println(event.message)
+                        snackbarMessage = event.message
+                        snackbarHostState.showSnackbar(
+                            message = "",
+                            duration = if (event.shortDuration) {
+                                SnackbarDuration.Short
+                            } else {
+                                SnackbarDuration.Long
+                            }
+                        )
                     }
                 }
 
@@ -110,6 +115,8 @@ fun DesktopPlayerScreenHost(
     }
 
     PlayerScreen(
+        snackbarHostState = snackbarHostState,
+        snackbarMessage = snackbarMessage,
         menuItems = mapOf(
             Res.string.choose_song to playerPresenter::showChooseDialog,
             Res.string.delete_song to playerPresenter::showDeleteDialog,
