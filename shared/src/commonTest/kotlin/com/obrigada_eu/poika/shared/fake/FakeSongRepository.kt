@@ -13,8 +13,8 @@ class FakeSongRepository() : SongRepository {
     var lastDeletedSong: SongMetaData? = null
 
 
-    override fun importSong(uriString: String): SongMetaData? {
-        lastImportedUri = uriString
+    override fun importSong(source: String): SongMetaData? {
+        lastImportedUri = source
         return songToReturn
     }
 

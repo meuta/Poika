@@ -7,7 +7,7 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.obrigada_eu.poika.player.data.infra.file.FileResolver
+import com.obrigada_eu.poika.shared.data.infra.file.FileResolver
 import com.obrigada_eu.poika.shared.domain.audio.AudioService
 import com.obrigada_eu.poika.shared.domain.progress.ProgressStateUpdater
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
@@ -20,6 +20,7 @@ class AudioController @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val progressTracker: ProgressStateUpdater,
     private val playerSessionWriter: PlayerSessionWriter,
+    private val fileResolver: FileResolver
 ) : AudioService {
 
     private var playersMap: Map<String, ExoPlayer> = mapOf()
@@ -53,7 +54,7 @@ class AudioController @Inject constructor(
         }
 
         // load tracks from files into players
-        val base = FileResolver(context).getSongFolder(songMetaData.folderName)
+        val base = fileResolver.getSongFolder(songMetaData.folderName)
         tracks.forEach { track ->
             val uri = File(base, track.file).toUri()
             playersMap[track.name]?.apply {

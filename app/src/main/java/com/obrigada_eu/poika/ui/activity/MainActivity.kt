@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.obrigada_eu.poika.R
+import com.obrigada_eu.poika.shared.Logger
 import com.obrigada_eu.poika.shared.domain.audio.AudioService
 import com.obrigada_eu.poika.shared.domain.progress.ProgressStateProvider
 import com.obrigada_eu.poika.shared.domain.session.PlayerSessionReader
@@ -14,7 +15,6 @@ import com.obrigada_eu.poika.shared.domain.usecase.ImportZipUseCase
 import com.obrigada_eu.poika.shared.domain.usecase.LoadSongUseCase
 import com.obrigada_eu.poika.shared.presentation.player.PlayerPresenter
 import com.obrigada_eu.poika.shared.ui.root.PoikaRoot
-import com.obrigada_eu.poika.utils.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleIncomingZip(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
             intent.data?.let { uri ->
-                playerPresenter.handleZipImport(uri.toString())
+                playerPresenter.importZipSong(uri.toString())
             } ?: { Logger.e(getString(R.string.app_name), "URI is null") }
         }
     }

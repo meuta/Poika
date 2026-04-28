@@ -7,10 +7,12 @@ import com.obrigada_eu.poika.shared.domain.session.PlayerSessionReader
 import com.obrigada_eu.poika.shared.domain.session.PlayerSessionWriter
 import com.obrigada_eu.poika.shared.data.metadata.MetaDataParser
 import com.obrigada_eu.poika.shared.domain.repository.SongRepository
-import com.obrigada_eu.poika.player.data.repository.SongRepositoryImpl
-import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
+import com.obrigada_eu.poika.shared.data.repository.SongRepositoryImpl
+import com.obrigada_eu.poika.shared.data.infra.file.ZipImporter
 import com.obrigada_eu.poika.player.data.infra.audio.AudioController
-import com.obrigada_eu.poika.player.data.infra.file.FileResolver
+import com.obrigada_eu.poika.player.data.infra.file.AndroidSongInputStreamProvider
+import com.obrigada_eu.poika.shared.data.infra.file.FileResolver
+import com.obrigada_eu.poika.shared.data.infra.file.SongInputStreamProvider
 import com.obrigada_eu.poika.shared.presentation.player.progress.ProgressTracker
 import com.obrigada_eu.poika.shared.domain.audio.AudioService
 import com.obrigada_eu.poika.shared.domain.progress.ProgressStateProvider
@@ -58,7 +60,13 @@ object PlayerModule {
         @ApplicationContext context: Context,
         progressStateUpdater: ProgressStateUpdater,
         playerSessionWriter: PlayerSessionWriter,
-    ): AudioService = AudioController(context, progressStateUpdater, playerSessionWriter)
+        fileResolver: FileResolver
+    ): AudioService = AudioController(
+        context,
+        progressStateUpdater,
+        playerSessionWriter,
+        fileResolver
+    )
 
 
     @Provides
@@ -76,21 +84,25 @@ object PlayerModule {
     fun providePlayerSessionWriter(session: PlayerSession): PlayerSessionWriter = session
 
     @Provides
-    fun provideZipImporter(@ApplicationContext context: Context): ZipImporter =
-        ZipImporter(context, MetaDataParser())
+    fun provideZipImporter(fileResolver: FileResolver): ZipImporter =
+        ZipImporter(fileResolver, MetaDataParser())
 
+    @Provides
+    fun provideStreamProvider(@ApplicationContext context: Context): SongInputStreamProvider =
+        AndroidSongInputStreamProvider(context)
 
     @Provides
     @Singleton
     fun provideSongRepository(
-        @ApplicationContext context: Context,
+        streamProvider: SongInputStreamProvider,
         zipImporter: ZipImporter,
+        fileResolver: FileResolver
     ): SongRepository =
-        SongRepositoryImpl(context, zipImporter, MetaDataParser())
+        SongRepositoryImpl(streamProvider, zipImporter, MetaDataParser(), fileResolver)
 
     @Provides
     fun provideFileResolver(@ApplicationContext context: Context): FileResolver =
-        FileResolver(context)
+        FileResolver(context.filesDir)
 
 
     @Provides

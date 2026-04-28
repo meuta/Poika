@@ -5,7 +5,7 @@ import com.obrigada_eu.poika.shared.domain.repository.SongRepository
 
 class ImportZipUseCase(private val repository: SongRepository) {
 
-    operator fun invoke(uriString: String): SongMetaData? {
-        return repository.importSong(uriString)
+    operator fun invoke(source: String): SongMetaData? {
+        return repository.importSong(source)
     }
 }

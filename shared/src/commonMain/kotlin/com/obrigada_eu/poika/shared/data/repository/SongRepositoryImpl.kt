@@ -1,27 +1,34 @@
-package com.obrigada_eu.poika.player.data.repository
+package com.obrigada_eu.poika.shared.data.repository
 
-import android.content.Context
-import androidx.core.net.toUri
-import com.obrigada_eu.poika.player.data.infra.file.FileResolver
+
 import com.obrigada_eu.poika.shared.data.metadata.MetaDataParser
-import com.obrigada_eu.poika.player.data.infra.file.ZipImporter
+import com.obrigada_eu.poika.shared.data.infra.file.ZipImporter
+import com.obrigada_eu.poika.shared.Logger
+import com.obrigada_eu.poika.shared.data.infra.file.FileResolver
+import com.obrigada_eu.poika.shared.data.infra.file.SongInputStreamProvider
 import com.obrigada_eu.poika.shared.domain.repository.SongRepository
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
-import com.obrigada_eu.poika.utils.Logger
 import java.io.File
 
 class SongRepositoryImpl(
-    private val context: Context,
+//    private val context: Context,
+
+    private val streamProvider: SongInputStreamProvider,
     private val zipImporter: ZipImporter,
     private val metaDataParser: MetaDataParser,
+    private val fileResolver: FileResolver
 ) : SongRepository {
 
-    override fun importSong(uriString: String): SongMetaData? {
-        return zipImporter.importDataFromUri(uriString.toUri())
+
+    override fun importSong(source: String): SongMetaData? {
+//        val inputStream = context.contentResolver.openInputStream(source.toUri())
+        val stream = streamProvider.open(source)
+//        return inputStream?.let { stream -> zipImporter.import(stream) }
+        return stream?.let { zipImporter.import(it) }
     }
 
     override fun getAllSongsMetadata(): List<SongMetaData> {
-        val songsDir = FileResolver(context).getSongsFolder()
+        val songsDir = fileResolver.getSongsFolder()
         if (!songsDir.exists()) return emptyList()
 
         return songsDir.listFiles()
@@ -39,7 +46,7 @@ class SongRepositoryImpl(
     }
 
     override fun deleteSong(song: SongMetaData): Boolean {
-        val folder = FileResolver(context).getSongFolder(song.folderName)
+        val folder = fileResolver.getSongFolder(song.folderName)
         return folder.deleteRecursively()
     }
 }

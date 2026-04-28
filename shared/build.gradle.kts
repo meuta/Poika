@@ -61,6 +61,17 @@ android {
 compose.desktop {
     application {
         mainClass = "com.obrigada_eu.poika.desktop.PoikaDesktopAppKt"
+        nativeDistributions {
+            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
+            packageName = "poika"
+            packageVersion = "1.0.0"
+
+            linux {
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo_512_512.png"))
+                shortcut = true
+                appCategory = "Utility"
+            }
+        }
     }
 }
 

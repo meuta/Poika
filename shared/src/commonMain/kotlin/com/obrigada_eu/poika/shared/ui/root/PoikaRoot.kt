@@ -10,9 +10,10 @@ import com.obrigada_eu.poika.shared.ui.theme.PoikaTheme
 @Composable
 fun PoikaRoot(
     playerPresenter: PlayerPresenter,
+    onImportZip: (() -> Unit)? = null
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     PoikaTheme(useDarkTheme = isDarkTheme) {
-        PlayerScreenHost(playerPresenter = playerPresenter)
+        PlayerScreenHost(playerPresenter = playerPresenter, onImportZip)
     }
 }

@@ -96,9 +96,9 @@ class PlayerPresenter(
         showMessage(listOf(UiTextPart(message)), shortDuration)
     }
 
-    fun handleZipImport(uriString: String) {
+    fun importZipSong(source: String) {
         scope.launch(Dispatchers.IO) {
-            val result = importZipUseCase(uriString)
+            val result = importZipUseCase(source)
             if (result != null) {
 
                 val songTitle = result.toTitleString()
@@ -108,7 +108,7 @@ class PlayerPresenter(
                     UiTextPart(songTitle, bold = true),
                     UiTextPart(" is available in your list")
                 )
-                showMessage(message, false)
+                showMessage(message, true)
             } else {
                 showMessage("Error importing a song")
             }

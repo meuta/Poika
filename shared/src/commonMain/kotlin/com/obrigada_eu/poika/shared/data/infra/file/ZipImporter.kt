@@ -1,22 +1,23 @@
-package com.obrigada_eu.poika.player.data.infra.file
+package com.obrigada_eu.poika.shared.data.infra.file
 
-import android.content.Context
-import android.net.Uri
+import com.obrigada_eu.poika.shared.Logger
 import com.obrigada_eu.poika.shared.data.metadata.MetaDataParser
 import com.obrigada_eu.poika.shared.domain.model.SongMetaData
-import com.obrigada_eu.poika.utils.Logger
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import kotlin.collections.forEach
 
 class ZipImporter(
-    private val context: Context,
+    private val fileResolver: FileResolver,
     private val metadataParser: MetaDataParser
 ) {
 
-    fun importDataFromUri(uri: Uri): SongMetaData? {
-        val tempDir = unzipToTemporaryFolder(uri) ?: return null
+    fun import(inputStream: InputStream): SongMetaData? {
+        val tempDir = extractToTemporaryFolder(inputStream) ?: return null
+
         val metaFile = File(tempDir, "metadata.json")
         if (!metaFile.exists()) {
             Logger.e("FileOps", "metadata.json not found in archive")
@@ -26,7 +27,7 @@ class ZipImporter(
 
         return try {
             val songMetaData = metadataParser.parse(metaFile)
-            val targetDir = FileResolver(context).getSongFolder(songMetaData.folderName)
+            val targetDir = fileResolver.getSongFolder(songMetaData.folderName)
 
             copyFiles(tempDir, targetDir)
             songMetaData
@@ -37,19 +38,16 @@ class ZipImporter(
             tempDir.deleteRecursively()
         }
     }
-
-
-    private fun unzipToTemporaryFolder(uri: Uri): File? {
-        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+    private fun extractToTemporaryFolder(inputStream: InputStream): File? {
         val zipInputStream = ZipInputStream(inputStream)
 
-        val outputDir = FileResolver(context).getTempImportFolder()
-        outputDir.mkdirs()
+        val tempDir = fileResolver.getTempImportFolder()
+        tempDir.mkdirs()
 
         zipInputStream.use { zis ->
             var entry: ZipEntry? = zis.nextEntry
             while (entry != null) {
-                val outFile = File(outputDir, entry.name)
+                val outFile = File(tempDir, entry.name)
                 FileOutputStream(outFile).use { fos ->
                     zis.copyTo(fos)
                 }
@@ -57,9 +55,10 @@ class ZipImporter(
                 entry = zis.nextEntry
             }
         }
-
-        return outputDir
+        return tempDir
     }
+
+
 
     private fun copyFiles(from: File, to: File) {
         if (!from.exists()) throw IllegalArgumentException("Source folder does not exist: ${from.absolutePath}")

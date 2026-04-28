@@ -1,12 +1,10 @@
-package com.obrigada_eu.poika.player.data.infra.file
+package com.obrigada_eu.poika.shared.data.infra.file
 
-import android.content.Context
 import java.io.File
 
 class FileResolver(
-    context: Context,
+    private val appFolder: File
 ) {
-    val appFolder: File? = context.filesDir
 
     fun getSongsFolder(): File {
         return File(appFolder, "songs")

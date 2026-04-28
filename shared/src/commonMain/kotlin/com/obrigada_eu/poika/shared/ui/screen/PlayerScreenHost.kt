@@ -30,9 +30,20 @@ import com.obrigada_eu.poika.shared.ui.model.TriangleButtonItem
 @Composable
 fun PlayerScreenHost(
     playerPresenter: PlayerPresenter,
+    onImportZip: (() -> Unit)? = null
 ) {
     val platform = platform()
     val context = LocalPlatformContext.current
+
+    val baseItems = mapOf(
+        Res.string.choose_song to playerPresenter::showChooseDialog,
+        Res.string.delete_song to playerPresenter::showDeleteDialog,
+        Res.string.help to playerPresenter::showHelpDialog
+    )
+
+    val importItem = onImportZip?.let {
+        mapOf(Res.string.import_song to it)
+    } ?: emptyMap()
 
     val emptySelectionText = stringResource(Res.string.select_at_least_one)
     val stringZeroZero = stringResource(Res.string._00_00)
@@ -117,11 +128,7 @@ fun PlayerScreenHost(
     PlayerScreen(
         snackbarHostState = snackbarHostState,
         snackbarMessage = snackbarMessage,
-        menuItems = mapOf(
-            Res.string.choose_song to playerPresenter::showChooseDialog,
-            Res.string.delete_song to playerPresenter::showDeleteDialog,
-            Res.string.help to playerPresenter::showHelpDialog
-        )
+        menuItems = (baseItems + importItem)
             .mapKeys { stringResource(it.key) }
             .mapValues { (_, action) ->
                 {
