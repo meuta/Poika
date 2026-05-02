@@ -7,7 +7,7 @@ data class SongMetaData(
     @SerializedName("artist") val artist: String,
     @SerializedName("voiceInstrument") val voiceInstrument: String?,
     @SerializedName("tracks") val tracks: List<TrackInfo>,
-    val folderName: String
+    val folderName: String = ""
 )
 
 data class TrackInfo(
